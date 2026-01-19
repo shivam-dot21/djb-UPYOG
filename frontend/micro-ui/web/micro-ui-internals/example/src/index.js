@@ -6,7 +6,7 @@ import { PGRReducers } from "@upyog/digit-ui-module-pgr";
 import { MCollectModule, MCollectLinks } from "@upyog/digit-ui-module-mcollect";
 // import { TLModule, TLLinks } from "@upyog/digit-ui-module-tl";
 import { initPGRComponents } from "@upyog/digit-ui-module-pgr";
-import {initfsmComponents} from "@upyog/digit-ui-module-fsm";
+import {initFSMComponents} from "@upyog/digit-ui-module-fsm";
 import { initDSSComponents } from "@upyog/digit-ui-module-dss";
 import { initHRMSComponents } from "@upyog/digit-ui-module-hrms";
 import { initReceiptsComponents, ReceiptsModule } from "@upyog/digit-ui-module-receipts";
@@ -25,7 +25,7 @@ import { initBillsComponents, BillsModule } from "@upyog/digit-ui-module-bills";
 
 // import { PGRModule, PGRLinks } from "@upyog/digit-ui-module-pgr";
 // import { Body, TopBar } from "@upyog/digit-ui-react-components";
-import "@mcd89/digit-ui-css";
+import "@mcd89/upyog-css";
 
 import { PTRModule, PTRLinks, PTRComponents } from "@upyog/upyog-ui-module-ptr";
 import { ASSETComponents, ASSETLinks, ASSETModule } from "@upyog/upyog-ui-module-asset";
@@ -132,7 +132,7 @@ const initDigitUI = () => {
   });
 
   initPGRComponents();
-  initfsmComponents();
+  initFSMComponents();
   initDSSComponents();
   initMCollectComponents();
   initHRMSComponents();
