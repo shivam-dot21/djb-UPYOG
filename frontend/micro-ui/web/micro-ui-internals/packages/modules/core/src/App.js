@@ -2,6 +2,10 @@ import React, { useEffect } from "react";
 import { Redirect, Route, Switch, useHistory, useLocation } from "react-router-dom";
 import EmployeeApp from "./pages/employee";
 import CitizenApp from "./pages/citizen";
+import LandingPage from "./pages/LandingPage/LandingPage"
+import ContactUs from "./pages/LandingPage/ContactUs"
+import About from "./pages/LandingPage/About"
+
 
 export const DigitApp = ({ stateCode, modules, appTenants, logoUrl, initData }) => {
   const history = useHistory();
@@ -65,15 +69,38 @@ export const DigitApp = ({ stateCode, modules, appTenants, logoUrl, initData }) 
   };
   return (
     <Switch>
-      <Route path="/digit-ui/employee">
+
+       {/* ABOUT PAGE */}
+    <Route exact path={`/${window?.contextPath}/about`}>
+      <About {...commonProps} />
+    </Route>
+
+
+       {/* CONTACT US — MUST COME FIRST */}
+    <Route exact path={`/${window?.contextPath}/contact-us`}>
+      <ContactUs {...commonProps} />
+    </Route>
+
+      {/* ✅ DEFAULT LANDING PAGE ROUTE */}
+      <Route exact path={`/${window?.contextPath}`}>
+        <LandingPage {...commonProps} />
+      </Route>
+
+      {/* EMPLOYEE */}
+      <Route path={`/${window?.contextPath}/employee`}>
         <EmployeeApp {...commonProps} />
       </Route>
-      <Route path="/digit-ui/citizen">
+
+      {/* CITIZEN */}
+      <Route path={`/${window?.contextPath}/citizen`}>
         <CitizenApp {...commonProps} />
       </Route>
-      <Route path="/digit-ui">
-        <Redirect to="/digit-ui/citizen" />
+
+      {/* DEFAULT REDIRECT */}
+      <Route>
+        <Redirect to={`/${window?.contextPath}`} />
       </Route>
+
     </Switch>
   );
 };
