@@ -502,7 +502,9 @@ const TrainingModal = ({ open, onClose }) => {
         className="modal-content"
         onClick={(e) => e.stopPropagation()}
       >
-        <button className="modal-close" onClick={onClose}>✕</button>
+        <button className="modal-close" onClick={onClose}>
+          ✕
+        </button>
 
         <iframe
           src="https://docs.google.com/presentation/d/e/2PACX-1vRyjm4bQkEWVwpc6F0ZQDYEaOw66ngOuCb8FeSorxPM6mredx1T0mvRVhdH0xUguw/pubembed?start=true&loop=true&delayms=3000"
@@ -515,7 +517,19 @@ const TrainingModal = ({ open, onClose }) => {
   );
 };
 
+/* =========================
+   🔹 HeaderBar Component
+========================= */
 const HeaderBar = () => {
+  const { t } = useTranslation();
+  const { topBar, branding, navbar } = headerConfig;
+
+  /* =========================
+     🔹 States
+  ========================= */
+  const [loginDropdownOpen, setLoginDropdownOpen] = useState(false);
+  const [showTrainingModal, setShowTrainingModal] = useState(false);
+
   /* =========================
      🔹 Scroll Hide Header Logic
   ========================= */
@@ -538,17 +552,8 @@ const HeaderBar = () => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  const { t } = useTranslation();
-  const { topBar, branding, navbar } = headerConfig;
-
   /* =========================
-     🔹 States
-  ========================= */
-  const [loginDropdownOpen, setLoginDropdownOpen] = useState(false);
-  const [showTrainingModal, setShowTrainingModal] = useState(false);
-
-  /* =========================
-     🔹 FIX: BODY SCROLL CONTROL
+     🔹 Body Scroll Lock (Modal)
   ========================= */
   useEffect(() => {
     if (showTrainingModal) {
@@ -562,7 +567,9 @@ const HeaderBar = () => {
     };
   }, [showTrainingModal]);
 
-  /* Close login dropdown on outside click */
+  /* =========================
+     🔹 Close dropdown on outside click
+  ========================= */
   useEffect(() => {
     const close = () => setLoginDropdownOpen(false);
     document.addEventListener("click", close);
@@ -594,7 +601,7 @@ const HeaderBar = () => {
           background: #fff;
           border-radius: 6px;
           box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-          width: 180px;
+          width: 200px;
           z-index: 999;
         }
 
@@ -604,12 +611,12 @@ const HeaderBar = () => {
           color: #333;
           font-size: 14px;
           text-decoration: none;
+          cursor: pointer;
         }
 
         .dropdown-item:hover {
           background: #f5f5f5;
         }
-
       `}</style>
 
       {/* =========================
@@ -657,8 +664,10 @@ const HeaderBar = () => {
         <nav className="mcd-nav">
           {navbar.map((item, index) => {
 
-            /* LOGIN dropdown */
-            if (item.label === "LOGIN") {
+            /* =========================
+               🔹 LOGIN DROPDOWN
+            ========================= */
+            if (item.type === "dropdown") {
               return (
                 <div
                   key={index}
@@ -674,27 +683,31 @@ const HeaderBar = () => {
 
                   {loginDropdownOpen && (
                     <div className="login-dropdown-menu">
-                      <a href="/citizen/login" className="dropdown-item">
-                        Citizen Login
-                      </a>
-                      <a
-                        href={`${window?.contextPath}/employee/user/login`}
-                        className="dropdown-item"
-                      >
-                        Employee Login
-                      </a>
+                      {item.children?.map((child, idx) => (
+                        <a
+                          key={idx}
+                          href={child.link}
+                          className="dropdown-item"
+                        >
+                          {t(child.label)}
+                        </a>
+                      ))}
                     </div>
                   )}
                 </div>
               );
             }
 
-            /* Normal nav items + modal handling */
+            /* =========================
+               🔹 NORMAL NAV ITEMS
+            ========================= */
             return (
               <a
                 key={index}
                 href={item.link || "#"}
                 className="nav-hover-btn"
+                target={item.external ? "_blank" : "_self"}
+                rel={item.external ? "noopener noreferrer" : undefined}
                 onClick={(e) => {
                   if (item.openModal === "TRAINING_PPT") {
                     e.preventDefault();

@@ -3,12 +3,23 @@ import React from "react";
 // import { MailOutline } from "../../../../../../svg-components/src/svg/MailOutline";
 import VideoPlayIcon from "../icons/VideoPlayIcon";
 import XIcon from "../icons/XIcon";
+
+/* =========================
+   🔹 Context Path Resolver
+========================= */
+const contextPath = window?.contextPath || "digit-ui";
+
 const headerConfig = {
+  /* =========================
+     🔹 Top Bar Config
+  ========================= */
   topBar: {
-    showLanguage: [{
-      name: "Hindi",
-      type: "dropdown"
-    }],
+    showLanguage: [
+      {
+        name: "Hindi",
+        type: "dropdown",
+      },
+    ],
     organizationName: "Delhi Jal Board",
     socialLinks: [
       {
@@ -38,21 +49,50 @@ const headerConfig = {
     ],
   },
 
+  /* =========================
+     🔹 Branding
+  ========================= */
   branding: {
     logo: "https://objectstorage.ap-hyderabad-1.oraclecloud.com/n/axn3czn1s06y/b/djb-dev-asset-bucket/o/DJB_integrated_logo_without_bg_dark.png",
     alt: "ALT_INDIA_EMBLEM",
   },
 
+  /* =========================
+     🔹 Navbar Links
+  ========================= */
   navbar: [
-    { label: "HOME", link: "/" },
-      { label: "ABOUT", link: "/finance-ui/about" },  // ✅ added
-    { label: "HELP/SUPPORT", link: "https://forms.gle/A6vXKSED3gB1mqhF7" },
+    {
+      label: "HOME",
+      link: `/${contextPath}/home`,
+    },
+    {
+      label: "ABOUT",
+      link: `/${contextPath}/about`,
+    },
+    {
+      label: "HELP/SUPPORT",
+      link: "https://forms.gle/A6vXKSED3gB1mqhF7",
+      external: true,
+    },
     {
       label: "TRAINING",
-      link: "#downloads",
-      openModal: "TRAINING_PPT"   // ✅ added
+      link: "#",
+      openModal: "TRAINING_PPT",
     },
-    { label: "LOGIN", link: "/digit-ui/employee/user/login" },
+    {
+      label: "LOGIN",
+      type: "dropdown",   // 🔥 used by HeaderBar logic
+      children: [
+        {
+          label: "Citizen Login",
+          link: `/${contextPath}/citizen`,
+        },
+        {
+          label: "Employee Login",
+          link: `/${contextPath}/employee/user/login`,
+        },
+      ],
+    },
   ],
 };
 

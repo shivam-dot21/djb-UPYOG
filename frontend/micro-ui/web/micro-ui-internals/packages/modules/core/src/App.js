@@ -2,14 +2,23 @@ import React, { useEffect } from "react";
 import { Redirect, Route, Switch, useHistory, useLocation } from "react-router-dom";
 import EmployeeApp from "./pages/employee";
 import CitizenApp from "./pages/citizen";
-import LandingPage from "./pages/LandingPage/LandingPage"
-import ContactUs from "./pages/LandingPage/ContactUs"
-import About from "./pages/LandingPage/About"
+import LandingPage from "./pages/LandingPage/LandingPage";
+import ContactUs from "./pages/LandingPage/ContactUs";
+import About from "./pages/LandingPage/About";
 
-
-export const DigitApp = ({ stateCode, modules, appTenants, logoUrl, initData }) => {
+export const DigitApp = ({
+  stateCode,
+  modules,
+  appTenants,
+  logoUrl,
+  initData,
+}) => {
   const history = useHistory();
   const { pathname } = useLocation();
+
+  // 🛠️ DEBUG: Verify context path in browser console
+  // console.log("✅ Context Path:", window.contextPath);
+
   const innerWidth = window.innerWidth;
   const cityDetails = Digit.ULBService.getCurrentUlb();
   const userDetails = Digit.UserService.getUser();
@@ -29,9 +38,11 @@ export const DigitApp = ({ stateCode, modules, appTenants, logoUrl, initData }) 
         Digit.SessionStorage.del("fsm/search/searchParams");
       }
     }
+
     if (!pathname?.includes("dss")) {
       Digit.SessionStorage.del("DSS_FILTERS");
     }
+
     if (pathname?.toString() === "/digit-ui/employee") {
       Digit.SessionStorage.del("SEARCH_APPLICATION_DETAIL");
       Digit.SessionStorage.del("WS_EDIT_APPLICATION_DETAILS");
@@ -67,6 +78,7 @@ export const DigitApp = ({ stateCode, modules, appTenants, logoUrl, initData }) 
     pathname,
     initData,
   };
+
   return (
     <Switch>
 
@@ -81,7 +93,7 @@ export const DigitApp = ({ stateCode, modules, appTenants, logoUrl, initData }) 
       <ContactUs {...commonProps} />
     </Route>
 
-      {/* ✅ DEFAULT LANDING PAGE ROUTE */}
+      {/* ✅ HOME PAGE */}
       <Route exact path={`/${window?.contextPath}/home`}>
         <LandingPage {...commonProps} />
       </Route>
@@ -98,7 +110,7 @@ export const DigitApp = ({ stateCode, modules, appTenants, logoUrl, initData }) 
 
       {/* DEFAULT REDIRECT */}
       <Route>
-        <Redirect to={`/${window?.contextPath}`} />
+        <Redirect to={`/${window?.contextPath}/home`} />
       </Route>
 
     </Switch>
