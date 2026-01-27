@@ -1,18 +1,19 @@
 {
-  "name": "@djb25/digit-ui-css",
-  "version": "1.0.0",
+  "name": "@satyamgupta14333/digit-ui-css",
+  "version": "1.0.2",
   "license": "MIT",
   "main": "dist/index.css",
-  "author": "Jagankumar <jagan.kumar@egov.org.in>",
+  "author": "satyam",
   "engines": {
-    "node": ">=14"
+    "node": ">=18"
   },
   "cssConfig": {
     "prefix": ""
   },
   "scripts": {
     "start": "gulp build",
-    "build:prod": "gulp build",
+    "watch": "gulp watch",
+    "build:prod": "NODE_ENV=production gulp build",
     "prepublish": "yarn build:prod",
     "deploy": "gulp && cp -R svg example && cp -R img example && gh-pages -d example"
   },
@@ -22,9 +23,10 @@
   ],
   "style": "./dist/index.css",
   "dependencies": {
-    "node-sass": "4.14.1",
+    "gulp-sass": "^5.1.0",
     "normalize.css": "8.0.1",
     "postcss-scss": "3.0.5",
+    "sass": "^1.72.0",
     "tailwindcss": "1.9.6"
   },
   "devDependencies": {
@@ -45,7 +47,7 @@
     "postcss-prefixer": "2.1.3",
     "postcss-preset-env": "6.7.1",
     "postcss-scss": "3.0.5",
-    "sass": "1.26.11"
+    "sass": "^1.26.11"
   },
   "files": [
     "dist/index.min.css",
@@ -61,5 +63,9 @@
     "dpg",
     "digit-ui",
     "css"
-  ]
+  ],
+  "description": "<!-- TODO: update this -->",
+  "directories": {
+    "example": "example"
+  }
 }

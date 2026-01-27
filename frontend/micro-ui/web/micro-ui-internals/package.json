@@ -19,10 +19,10 @@
   "license": "MIT",
   "private": true,
   "engines": {
-    "node": ">=14"
+    "node": ">=18"
   },
   "scripts": {
-    "start": "run-s build start:dev",
+    "start": "DISABLE_ESLINT_PLUGIN=true NODE_OPTIONS=--openssl-legacy-provider react-scripts start",
     "sprint": "SKIP_PREFLIGHT_CHECK=true run-s start:script",
     "start:dev": "run-p dev:**",
     "start:script": "./scripts/create.sh",
@@ -49,7 +49,7 @@
     "dev:wt": "cd packages/modules/wt && yarn start",
     "dev:pgrai": "cd packages/modules/pgrai && yarn start",
     "dev:vendor": "cd packages/modules/vendor && yarn start",
-    "build": "run-p build:**",
+    "build": "NODE_OPTIONS=--openssl-legacy-provider run-p build:**",
     "build:libraries": "cd packages/libraries && yarn build",
     "buildD:fsm": "cd packages/modules/fsm && yarn build",
     "buildD:asset": "cd packages/modules/asset && yarn build",
@@ -74,6 +74,7 @@
     "deploy:jenkins": "./scripts/jenkins.sh"
   },
   "devDependencies": {
+    "babel-loader": "^9.1.2",
     "husky": "7.0.4",
     "lint-staged": "12.3.7",
     "npm-run-all": "4.1.5",
@@ -85,11 +86,13 @@
   },
   "dependencies": {
     "crypto-js": "^4.2.0",
+    "keycloak-js": "26.0.7",
     "lodash": "4.17.21",
-    "microbundle-crl": "^0.13.11"
+    "microbundle-crl": "^0.13.11",
+    "react-scripts": "5.0.1"
   },
   "resolutions": {
-    "**/babel-loader": "8.2.2",
+    "**/babel-loader": "^9.1.2",
     "**/@babel/core": "7.14.0",
     "**/@babel/preset-env": "7.14.0",
     "**/@babel/plugin-transform-modules-commonjs": "7.14.0",

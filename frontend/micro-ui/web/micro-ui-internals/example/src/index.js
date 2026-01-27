@@ -24,11 +24,10 @@ import { initBillsComponents, BillsModule } from "@upyog/digit-ui-module-bills";
 
 // import { PGRModule, PGRLinks } from "@upyog/digit-ui-module-pgr";
 // import { Body, TopBar } from "@upyog/digit-ui-react-components";
-import "@djb25/digit-ui-css";
+import "@satyamgupta14333/digit-ui-css";
 
 import { PTRModule, PTRLinks, PTRComponents } from "@upyog/upyog-ui-module-ptr";
 import { ASSETComponents, ASSETLinks, ASSETModule } from "@upyog/upyog-ui-module-asset";
-
 
 import { WTModule, WTLinks, WTComponents } from "@nudmcdgnpm/upyog-ui-module-wt";
 import { VENDORComponents, VENDORLinks, VENDORModule } from "@nudmcdgnpm/upyog-ui-module-vendor";
@@ -64,12 +63,12 @@ const enabledModules = [
   "Death",
   "PTR",
   "ASSET",
-  
+
   "WT",
   "VENDOR",
   "MT",
   "PGRAI",
-  "TP"
+  "TP",
 ];
 
 const initTokens = (stateCode) => {
@@ -100,7 +99,14 @@ const initTokens = (stateCode) => {
 };
 
 const initDigitUI = () => {
-  window.contextPath = window?.globalConfigs?.getConfig("CONTEXT_PATH") || "digit-ui";
+  const contextPath = window?.globalConfigs?.getConfig("CONTEXT_PATH") || "digit-ui";
+  window.contextPath = contextPath;
+
+  window.Digit.Utils = window.Digit.Utils || {};
+  window.Digit.Utils.getConfig = (key) => {
+    if (key === "CONTEXT_PATH") return contextPath;
+    return window.globalConfigs?.getConfig(key);
+  };
   window?.Digit.ComponentRegistryService.setupRegistry({
     ...pgrComponents,
     PaymentModule,
@@ -127,7 +133,7 @@ const initDigitUI = () => {
     ...VENDORComponents,
     PGRAIModule,
     PGRAILinks,
-    ...PGRAIComponents
+    ...PGRAIComponents,
   });
 
   initFSMComponents();
