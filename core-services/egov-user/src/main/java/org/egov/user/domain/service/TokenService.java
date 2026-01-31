@@ -128,7 +128,7 @@ public class TokenService {
                     .orElseGet(Collections::emptyList)
                     .stream()
                     .filter(Objects::nonNull)
-                    .map(dto -> new Role(dto.getName(), dto.getCode(), tenantId))
+                    .map(dto -> new Role(dto.getCode(), dto.getName(), tenantId))
                     .collect(Collectors.toCollection(HashSet::new));
 
             log.info("Retrieved roles {}", roles);
