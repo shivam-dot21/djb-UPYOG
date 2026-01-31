@@ -146,6 +146,9 @@ public class TokenService {
                     .collect(Collectors.toCollection(HashSet::new));
 
             log.info("Retrieved roles {}", roles);
+            log.info("Role codes: {}", roles.stream().map(Role::getCode).toList());
+            log.info("Role Name: {}", roles.stream().map(Role::getName).toList());
+            log.info("Role Tenant: {}", roles.stream().map(Role::tenantId).toList());
 
             User u = User.builder()
                         .uuid(uuid)
