@@ -173,12 +173,6 @@ public class RoleRepository {
         return roleFilter.replaceAll("\\$code", filter.toString());
     }
 
-    /**
-     * Get Roles By given parameter
-     * @param userId
-     * @param tenantId
-     * @return
-     */
     public List<UserRoleDTO> fetchUserRoles(
             Long userId,
             String encryptedUsername,
@@ -186,18 +180,43 @@ public class RoleRepository {
             String encryptedMobile,
             String tenantId) {
 
-        Map<String, Object> params = new HashMap<>();
+        if (tenantId == null || tenantId.isBlank()) {
+            throw new IllegalArgumentException("tenantId is mandatory");
+        }
 
-        params.put("userId", userId);
-        params.put("username", encryptedUsername);
-        params.put("uuid", encryptedUuid);
-        params.put("mobileNumber", encryptedMobile);
+        // Choose ONE identifier (priority) to avoid wrong-user matches
+        final String sql;
+        final Map<String, Object> params = new HashMap<>();
         params.put("tenantId", tenantId);
 
-        return namedParameterJdbcTemplate.query(
-                RoleQueryBuilder.GET_ROLES_BY_USER_IDENTIFIER,
-                params,
-                new UserRoleDTORowMapper()
-        );
+        if (userId != null) {
+            sql = RoleQueryBuilder.Q_BY_ID;
+            params.put("userId", userId);
+
+        } else if (encryptedUuid != null && !encryptedUuid.isBlank()) {
+            sql = RoleQueryBuilder.Q_BY_UUID;
+            params.put("uuid", encryptedUuid);
+
+        } else if (encryptedMobile != null && !encryptedMobile.isBlank()) {
+            sql = RoleQueryBuilder.Q_BY_MOBILE;
+            params.put("mobileNumber", encryptedMobile);
+
+        } else if (encryptedUsername != null && !encryptedUsername.isBlank()) {
+            sql = RoleQueryBuilder.Q_BY_USERNAME;
+            params.put("username", encryptedUsername);
+
+        } else {
+            // Nothing to search with
+            throw new IllegalArgumentException("At least one identifier (userId/uuid/mobile/username) is mandatory");
+        }
+
+        log.info("RoleRepository chosen SQL = {}", sql);
+        log.info("RoleRepository params: tenantId='{}', userId={}, hasUsername={}, hasMobile={}, hasUuid={}",
+                tenantId, userId,
+                encryptedUsername != null && !encryptedUsername.isBlank(),
+                encryptedMobile != null && !encryptedMobile.isBlank(),
+                encryptedUuid != null && !encryptedUuid.isBlank());
+
+        return namedParameterJdbcTemplate.query(sql, params, new UserRoleDTORowMapper());
     }
 }

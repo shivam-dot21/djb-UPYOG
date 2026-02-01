@@ -723,6 +723,9 @@ public class UserService {
         String encryptedUsername = encryptUsername(username);
         String encryptedMobile = encryptMobile(mobileNumber);
         //String encryptedUuid = uuid;
+        log.info("Fetching user roles for username={}", encryptedUsername);
+
+        log.info("Fetching user roles for mobileNumber={}", encryptedMobile);
 
         return roleRepository.fetchUserRoles(
                 userId,

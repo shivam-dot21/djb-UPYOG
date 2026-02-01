@@ -115,22 +115,6 @@ public class TokenService {
 
             List<UserRoleDTO> dbRoles = userService.getUserRolesByIdentifier(null, username, null, null, tenantId );
 
-//            Set<Role> roles = new HashSet<>();
-            //roles.add(new Role("SUPERUSER", "SUPERUSER", jwt.getClaimAsString("tenantId")));
-            //roles.add(new Role("EMPLOYEE", "EMPLOYEE", jwt.getClaimAsString("tenantId")));
-//            if (dbRoles != null) {
-//                for (UserRoleDTO dto : dbRoles) {
-//                    roles.add(new Role(dto.getName(), dto.getCode(), jwt.getClaimAsString("tenantId")));
-//                }
-//            }
-
-//            Set<Role> roles = Optional.ofNullable(dbRoles)
-//                    .orElseGet(Collections::emptyList)
-//                    .stream()
-//                    .filter(Objects::nonNull)
-//                    .map(dto -> new Role(dto.getCode(), dto.getName(), tenantId))
-//                    .collect(Collectors.toCollection(HashSet::new));
-
             Set<Role> roles = Optional.ofNullable(dbRoles)
                     .orElseGet(Collections::emptyList)
                     .stream()
@@ -147,8 +131,8 @@ public class TokenService {
 
             log.info("Retrieved roles {}", roles);
             log.info("Role codes: {}", roles.stream().map(Role::getCode).toList());
-            log.info("Role Name: {}", roles.stream().map(Role::getName).toList());
-            log.info("Role Tenant: {}", roles.stream().map(Role::tenantId).toList());
+            log.info("Role Name: {}", roles.stream().map(Role::getCode).toList());
+            log.info("Role Tenant: {}", roles.stream().map(Role::getTenantId).toList());
 
             User u = User.builder()
                         .uuid(uuid)
