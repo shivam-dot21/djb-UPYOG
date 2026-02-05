@@ -1,11 +1,12 @@
 import React from "react";
 
-import {
-  initPGRComponents,
-  PGRReducers,
-} from "@upyog/digit-ui-module-pgr";
+import { initPGRComponents, PGRReducers } from "@upyog/digit-ui-module-pgr";
 import { initFSMComponents } from "@upyog/digit-ui-module-fsm";
-import { MCollectModule, MCollectLinks, initMCollectComponents } from "@upyog/digit-ui-module-mcollect";
+import {
+  MCollectModule,
+  MCollectLinks,
+  initMCollectComponents,
+} from "@upyog/digit-ui-module-mcollect";
 import { initDSSComponents } from "@upyog/digit-ui-module-dss";
 import {
   PaymentModule,
@@ -14,26 +15,35 @@ import {
 } from "@upyog/digit-ui-module-common";
 import { DigitUI } from "@upyog/digit-ui-module-core";
 import { initLibraries } from "@upyog/digit-ui-libraries";
+import { HRMSModule, initHRMSComponents } from "@djb25/digit-ui-module-hrms";
 import {
-  HRMSModule,
-  initHRMSComponents,
-} from "@upyog/digit-ui-module-hrms";
-import { initReceiptsComponents, ReceiptsModule } from "@upyog/digit-ui-module-receipts";
+  initReceiptsComponents,
+  ReceiptsModule,
+} from "@upyog/digit-ui-module-receipts";
 import { initEngagementComponents } from "@upyog/digit-ui-module-engagement";
-import { initWSComponents } from "@upyog/digit-ui-module-ws";
+import { initWSComponents } from "@djb25/digit-ui-module-ws";
 // import { initCustomisationComponents } from "./Customisations";
 import { initCommonPTComponents } from "@upyog/digit-ui-module-commonpt";
 import { initBillsComponents } from "@upyog/digit-ui-module-bills";
+import { PTRModule, PTRLinks, PTRComponents } from "@upyog/upyog-ui-module-ptr";
 import {
-  PTRModule,
-  PTRLinks,
-  PTRComponents,
-} from "@upyog/upyog-ui-module-ptr";
-import { ASSETComponents, ASSETLinks, ASSETModule } from "@upyog/upyog-ui-module-asset";
+  ASSETComponents,
+  ASSETLinks,
+  ASSETModule,
+} from "@djb25/digit-ui-module-asset";
 
-import { WTModule, WTLinks, WTComponents } from "@nudmcdgnpm/upyog-ui-module-wt";
-import { VENDORComponents, VENDORLinks, VENDORModule } from "@nudmcdgnpm/upyog-ui-module-vendor";
-import { PGRAIComponents, PGRAILinks, PGRAIModule } from "@nudmcdgnpm/upyog-ui-module-pgrai";
+import { WTModule, WTLinks, WTComponents } from "@djb25/digit-ui-module-wt";
+import {
+  VENDORComponents,
+  VENDORLinks,
+  VENDORModule,
+} from "@nudmcdgnpm/upyog-ui-module-vendor";
+import {
+  PGRAIComponents,
+  PGRAILinks,
+  PGRAIModule,
+} from "@nudmcdgnpm/upyog-ui-module-pgrai";
+import { WSLinks } from "@djb25/digit-ui-module-ws";
 // import { initReportsComponents } from "@upyog/digit-ui-module-reports";
 
 initLibraries();
@@ -66,7 +76,7 @@ const enabledModules = [
   "MT",
   "VENDOR",
   "PGRAI",
-  "TP"
+  "TP",
 ];
 window.Digit.ComponentRegistryService.setupRegistry({
   ...paymentConfigs,
@@ -90,7 +100,9 @@ window.Digit.ComponentRegistryService.setupRegistry({
   ...VENDORComponents,
   PGRAIModule,
   PGRAILinks,
-  ...PGRAIComponents
+  ...PGRAIComponents,
+  // WSModule,
+  WSLinks,
 });
 
 initPGRComponents();
@@ -111,7 +123,8 @@ const moduleReducers = (initData) => ({
 });
 
 function App() {
-    window.contextPath = window?.globalConfigs?.getConfig("CONTEXT_PATH") || "digit-ui";
+  window.contextPath =
+    window?.globalConfigs?.getConfig("CONTEXT_PATH") || "digit-ui";
   const stateCode =
     window.globalConfigs?.getConfig("STATE_LEVEL_TENANT_ID") ||
     process.env.REACT_APP_STATE_LEVEL_TENANT_ID;

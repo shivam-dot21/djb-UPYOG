@@ -4,9 +4,6 @@ import { useTranslation } from "react-i18next";
 import { checkForEmployee } from "../utils";
 
 const SWCard = () => {
-  if (!Digit.Utils.swAccess()) {
-    return null;
-  }
   const { t } = useTranslation();
   const tenantId = Digit.ULBService.getCurrentTenantId();
   const [totalCount, setTotalCount] = useState(0);
@@ -36,7 +33,7 @@ const SWCard = () => {
     searchForm: searchFormDefaultValues,
     tableForm: tableOrderFormDefaultValues,
   };
-  
+
   const { isLoading: isSWInboxLoading, data: swData } = Digit.Hooks.ws.useInbox({
     tenantId,
     filters: { ...formInitValue },
