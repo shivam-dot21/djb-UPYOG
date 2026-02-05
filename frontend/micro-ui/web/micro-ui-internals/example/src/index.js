@@ -8,14 +8,14 @@ import { MCollectModule, MCollectLinks } from "@upyog/digit-ui-module-mcollect";
 import { initFSMComponents } from "@upyog/digit-ui-module-fsm";
 import { initPGRComponents } from "@upyog/digit-ui-module-pgr";
 import { initDSSComponents } from "@upyog/digit-ui-module-dss";
-import { initHRMSComponents } from "@upyog/digit-ui-module-hrms";
+import { initHRMSComponents } from "@djb25/digit-ui-module-hrms";
 import { initReceiptsComponents, ReceiptsModule } from "@upyog/digit-ui-module-receipts";
 // import { initReportsComponents } from "@upyog/digit-ui-module-reports";
 import { initMCollectComponents } from "@upyog/digit-ui-module-mcollect";
 import { PaymentModule, PaymentLinks, paymentConfigs } from "@upyog/digit-ui-module-common";
-import { HRMSModule } from "@upyog/digit-ui-module-hrms";
+import { HRMSModule } from "@djb25/digit-ui-module-hrms";
 import { initEngagementComponents } from "@upyog/digit-ui-module-engagement";
-import { initWSComponents } from "@upyog/digit-ui-module-ws";
+import { initWSComponents, WSModule } from "@djb25/digit-ui-module-ws";
 import { DigitUI } from "@upyog/digit-ui-module-core";
 import { initCommonPTComponents } from "@upyog/digit-ui-module-commonpt";
 import { initBillsComponents, BillsModule } from "@upyog/digit-ui-module-bills";
@@ -27,9 +27,9 @@ import { initBillsComponents, BillsModule } from "@upyog/digit-ui-module-bills";
 import "@satyamgupta14333/digit-ui-css";
 
 import { PTRModule, PTRLinks, PTRComponents } from "@upyog/upyog-ui-module-ptr";
-import { ASSETComponents, ASSETLinks, ASSETModule } from "@upyog/upyog-ui-module-asset";
+import { ASSETComponents, ASSETLinks, ASSETModule } from "@djb25/digit-ui-module-asset";
 
-import { WTModule, WTLinks, WTComponents } from "@nudmcdgnpm/upyog-ui-module-wt";
+import { WTModule, WTLinks, WTComponents } from "@djb25/digit-ui-module-wt";
 import { VENDORComponents, VENDORLinks, VENDORModule } from "@nudmcdgnpm/upyog-ui-module-vendor";
 import { PGRAIComponents, PGRAILinks, PGRAIModule } from "@nudmcdgnpm/upyog-ui-module-pgrai";
 // import * as comps from "@upyog/digit-ui-react-components";
@@ -63,7 +63,6 @@ const enabledModules = [
   "Death",
   "PTR",
   "ASSET",
-
   "WT",
   "VENDOR",
   "MT",
@@ -134,6 +133,8 @@ const initDigitUI = () => {
     PGRAIModule,
     PGRAILinks,
     ...PGRAIComponents,
+    // WSLinks,
+    WSModule,
   });
 
   initFSMComponents();

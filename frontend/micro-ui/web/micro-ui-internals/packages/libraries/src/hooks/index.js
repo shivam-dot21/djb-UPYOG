@@ -69,6 +69,7 @@ import useFSMInbox from "./fsm/useInbox";
 import useApplicationUpdate from "./fsm/useApplicationUpdate";
 import useWorkflowData from "./fsm/useWorkflowData";
 import useRouteSubscription from "./useRouteSubscription";
+import useFSMRouteSubscription from "./fsm/useRouteSubscription";
 import useDsoSearch from "./fsm/useDsoSearch";
 import usePropertySearch from "./pt/usePropertySearch";
 import usePropertySearchNew from "./pt/usePropertySearchNew";
@@ -227,7 +228,7 @@ import WSuseSearch from "./ws/useSearch";
 import useOldValue from "./ws/useOldValue";
 import useSewSearch from "./ws/useSewSearch";
 import useSearchWS from "./ws/useSearchWS";
-import useBulkSearchWS from "./ws/useBulkSearchWS"
+import useBulkSearchWS from "./ws/useBulkSearchWS";
 import useMypaymentWS from "./ws/useMypaymentWS";
 import useWSDetailsPage from "./ws/useWSDetailsPage";
 import useWSApplicationActions from "./ws/useApplicationActions";
@@ -287,7 +288,7 @@ import useAssetdetail from "./asset/useAssetdetail";
 import useAssetCreateAPI from "./asset/useAssetCreateAPI";
 import useAssetApplicationDetail from "./asset/useAssetApplicationDetail";
 import useASSETSearch from "./asset/useASSETSearch";
-import useTenantsASSET from "./asset/useTenants"
+import useTenantsASSET from "./asset/useTenants";
 import useASSETApplicationAction from "./asset/useASSETApplicationAction";
 import useAssetparentSubType from "./asset/useAssetparentSubType";
 import useAssignCreateAPI from "./asset/useAssignCreateAPI";
@@ -328,11 +329,11 @@ import useServiceSearchCHB from "./chb/useServiceSearchCHB";
 // import useChbCommunityHalls from "./chb/useChbCommunityHalls";
 // import useChbHallCode from "./chb/useChbHallCode"
 import useChbSlotSearch from "./chb/useChbSlotSearch";
-import useDemandEstimation from "./chb/useDemandEstimation"
-import useTenantsADS from "./ads/useTenants"
+import useDemandEstimation from "./chb/useDemandEstimation";
+import useTenantsADS from "./ads/useTenants";
 import useADSDocumentsMDMS from "./ads/useADSDocumentsMDMS";
 import useADSDocumentSearch from "./ads/useADSDocumentSearch";
-import useADSDemandEstimation from "./ads/useADSDemandEstimation"
+import useADSDemandEstimation from "./ads/useADSDemandEstimation";
 import useCMSearch from "./cm/useCMSearch";
 import { useCustomBackNavigation } from "./UseCustomBackNavigationProps";
 import useTankerCreateAPI from "./wt/useTankerCreateAPI";
@@ -358,7 +359,7 @@ import useTreePruningSearchAPI from "./wt/useTreePruningSearchAPI";
 import useTPApplicationDetail from "./wt/useTPApplicationDetail";
 import useTPApplicationAction from "./wt/useTPApplicationAction";
 
-const wt={
+const wt = {
   useTankerCreateAPI,
   useTankerSearchAPI,
   useWTApplicationAction,
@@ -370,14 +371,14 @@ const wt={
   useTreePruningCreateAPI,
   useTreePruningSearchAPI,
   useTPApplicationDetail,
-  useTPApplicationAction
+  useTPApplicationAction,
 };
-const pgrAi={
+const pgrAi = {
   useCreate,
   useSearchPGRAI,
   useFilterEmployee,
-  useApplicationDetails
-}
+  useApplicationDetails,
+};
 const pgr = {
   useComplaintDetails,
   useComplaintsList,
@@ -435,7 +436,8 @@ const fsm = {
   useVehicleTripCreate,
   useVendorSearch,
   useAdvanceBalanceCalulation,
-  useWorkerSearch
+  useWorkerSearch,
+  useRouteSubscription: useFSMRouteSubscription,
 };
 const ptr = {
   usePetMDMS,
@@ -450,8 +452,7 @@ const ptr = {
   useServiceSearchPTR,
   usePetDocumentSearch,
   useMyPetPayments,
-  useTenants: useTenantsPTR
- 
+  useTenants: useTenantsPTR,
 };
 
 const pt = {
@@ -485,12 +486,12 @@ const dss = {
 };
 
 const vendor = {
-  useTenants:useTenantsVENDOR,
+  useTenants: useTenantsVENDOR,
   useEmpvendorCreate,
   useEmpvendorSearch,
   useVendorAdditionaldetailsAPI,
   useEmpvendorCommonSearch,
-}
+};
 const mcollect = {
   useCommonMDMS,
   useMCollectMDMS,
@@ -591,12 +592,12 @@ const survey = {
   useSubmitResponse: useSurveySubmitResponse,
   useShowResults: useSurveyShowResults,
   useSurveyInbox,
-  useServeyCreateDef:useServeyCreateDef,
-  useCfdefinitionsearch:useCfdefinitionsearch,
-  useSubmitSurveyResponse:useSubmitSurveyResponse,
-  useSelectedSurveySearch:useSelectedSurveySearch,
-  useCfdefinitionsearchresult:useCfdefinitionsearchresult,
-  useUpdateSurvey:useUpdateSurvey,
+  useServeyCreateDef: useServeyCreateDef,
+  useCfdefinitionsearch: useCfdefinitionsearch,
+  useSubmitSurveyResponse: useSubmitSurveyResponse,
+  useSelectedSurveySearch: useSelectedSurveySearch,
+  useCfdefinitionsearchresult: useCfdefinitionsearchresult,
+  useUpdateSurvey: useUpdateSurvey,
 };
 
 const noc = {
@@ -664,19 +665,19 @@ const asset = {
   useAssignCreateAPI,
   useMaintenanceAPI,
   useReturnAPI,
-  useEditUpdateAPI
+  useEditUpdateAPI,
 };
 
 const sv = {
   useSVDoc,
   useSvCreateApi,
-  useTenants:useTenantsSV,
+  useTenants: useTenantsSV,
   useSvSearchApplication,
   useSVApplicationDetail,
   useSVApplicationAction,
   useSvSearchApplication,
-  useCreateDemand
-}
+  useCreateDemand,
+};
 
 const ew = {
   // useProductPriceMDMS,
@@ -687,7 +688,7 @@ const ew = {
   useEWApplicationAction,
 };
 
-const chb={
+const chb = {
   // useSpecialCategory,
   // useResidentType,
   // usePurpose,
@@ -696,29 +697,29 @@ const chb={
   useChbDocumentSearch,
   useChbApplicationDetail,
   useChbSearch,
-  useTenants:useTenantsCHB,
+  useTenants: useTenantsCHB,
   useChbApplicationAction,
   useServiceSearchCHB,
   // useChbCommunityHalls,
   // useChbHallCode,
   useChbSlotSearch,
-  useDemandEstimation
-}
-// for using tenant for city and document and search 
-const ads={
-  useTenants:useTenantsADS,
+  useDemandEstimation,
+};
+// for using tenant for city and document and search
+const ads = {
+  useTenants: useTenantsADS,
   useADSDocumentsMDMS,
   useADSDocumentSearch,
   useADSCreateAPI,
   useADSSlotSearch,
   useADSSearch,
   useADSDemandEstimation,
-  useADSApplicationDetail  
-}
+  useADSApplicationDetail,
+};
 
 const cm = {
-  useCMSearch
-}
+  useCMSearch,
+};
 
 const Hooks = {
   useSessionStorage,
@@ -798,9 +799,10 @@ const Hooks = {
   cm,
   useCustomBackNavigation,
   wt,
+
   vendor,
   useRouteSubscription,
-  pgrAi
+  pgrAi,
 };
 
 export default Hooks;
