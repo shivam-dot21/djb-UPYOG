@@ -187,7 +187,7 @@ private MdmsCriteriaReq getRoleMDMSCriteria(RoleSearchCriteria roleSearchCriteri
 
 
 
-private List<Role> convertToRole(JSONArray roleArray)
+    private List<Role> convertToRole(JSONArray roleArray)
 		throws JSONException {
 	List<Role> roleList = new ArrayList<Role>();
 	for (int i = 0; i < roleArray.length(); i++) {
