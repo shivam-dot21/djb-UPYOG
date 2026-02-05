@@ -97,11 +97,31 @@ public class ActionService {
      */
 	public boolean isAuthorized(AuthorizationRequest authorizeRequest){
 
+		log.info("Request tenant ids in isAuthorised:  " + authorizeRequest.getTenantIds());
+		if (authorizeRequest == null) {
+			log.info("isAuthorized() received authorizeRequest = null");
+			return false;
+		}
+
+		log.info("isAuthorized() received: uri={}, rolesCount={} ",
+				authorizeRequest.getUri(),
+				authorizeRequest.getRoles() == null ? 0 : authorizeRequest.getRoles().size());
+
+		log.info("roles={}",
+				authorizeRequest.getRoles().stream()
+						.map(r -> r.getCode() + "@" + r.getTenantId())
+						.toList());
+
+
 		Map<String, ActionContainer>  roleActions = mdmsRepository.fetchRoleActionData(getStateLevelTenant
                 (authorizeRequest.getTenantIds().iterator().next()));
 
+		log.info("roleActions after fetch roleActionData: " + roleActions.toString());
+
 		String uriToBeAuthorized = authorizeRequest.getUri();
+		log.info("uriToBeAuthorized:  " + uriToBeAuthorized);
 		Set<String> applicableRoles = getApplicableRoles(authorizeRequest);
+		log.info("applicableRoles:  " + applicableRoles);
 		Set<String> uris = new HashSet<>();
 		List<String> regexUris = new ArrayList<>();
 
@@ -124,12 +144,31 @@ public class ActionService {
 
 	private Set<String> getApplicableRoles(AuthorizationRequest authorizationRequest){
 		Set<String> requestTenantIds = authorizationRequest.getTenantIds();
+		log.info("requestTenantIds:  " + requestTenantIds);
 		String stateLevelTenantId = getStateLevelTenant(requestTenantIds.iterator().next());
+		log.info("stateLevelTenantId:  " + stateLevelTenantId);
 		Set<Role> roles = authorizationRequest.getRoles();
+		log.info("roles:  " + roles);
 		Set<Role> applicableRoles = new HashSet<>();
 
-		for(Role role : roles){
-			if(requestTenantIds.contains(role.getTenantId()) || role.getTenantId().equalsIgnoreCase(stateLevelTenantId)){
+//		for(Role role : roles){
+//			if(requestTenantIds.contains(role.getTenantId()) || role.getTenantId().equalsIgnoreCase(stateLevelTenantId)){
+//				applicableRoles.add(role);
+//			}
+//		}
+		for (Role role : roles) {
+			String roleTenant = role.getTenantId();
+			if (requestTenantIds.contains(roleTenant)
+					|| roleTenant.equalsIgnoreCase(stateLevelTenantId)
+					// request is state (dl) -> allow roles from any child tenant (dl.*)
+					|| (requestTenantIds.contains(stateLevelTenantId)
+					&& roleTenant.toLowerCase().startsWith(stateLevelTenantId.toLowerCase() + "."))
+					// request is child (dl.*) -> allow state roles (dl)
+					|| (roleTenant.equalsIgnoreCase(stateLevelTenantId)
+					&& requestTenantIds.stream()
+					.anyMatch(t -> t != null
+							&& t.toLowerCase().startsWith(stateLevelTenantId.toLowerCase() + ".")))
+			) {
 				applicableRoles.add(role);
 			}
 		}
