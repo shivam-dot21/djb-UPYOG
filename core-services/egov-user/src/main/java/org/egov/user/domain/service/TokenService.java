@@ -91,7 +91,7 @@ public class TokenService {
             log.info("Received JWT Token");
             String username = jwt.getClaimAsString("preferred_username");
             log.info("Received JWT Token user is {}", username);
-            log.info("Received JWT Token user is {}", jwt.getSubject());
+            log.info("Received JWT Token user subject is {}", jwt.getSubject());
             if (StringUtils.isBlank(username)) {
                 username = jwt.getSubject();
                 log.info("useranme is : {} ",username);
@@ -105,7 +105,10 @@ public class TokenService {
             }
 
             final String tenantId = jwt.getClaimAsString("tenantId");
-            // 2) Extract a stable identifier
+            final String userId = jwt.getClaimAsString("userId");
+            final String locale = jwt.getClaimAsString("locale");
+            final String type = jwt.getClaimAsString("type");
+
             // Prefer UUID if your user-service stores it. Otherwise use preferred_username / email / phone.
 
             String sub = jwt.getSubject();
@@ -114,7 +117,7 @@ public class TokenService {
             String uuid = extractUuidFromSub(sub);
 
             List<UserRoleDTO> dbRoles = userService.getUserRolesByIdentifier(null, username, null, null, tenantId );
-
+            //List<UserRoleDTO> dbRoles = new ArrayList<>();
             Set<Role> roles = Optional.ofNullable(dbRoles)
                     .orElseGet(Collections::emptyList)
                     .stream()
@@ -135,10 +138,13 @@ public class TokenService {
             log.info("Role Tenant: {}", roles.stream().map(Role::getTenantId).toList());
 
             User u = User.builder()
+                        .id(Long.valueOf(userId))
                         .uuid(uuid)
                         .userName(username)
+                        .type(type)
                         .emailId(jwt.getClaimAsString("email"))
                         .tenantId(jwt.getClaimAsString("tenantId"))
+                        .locale(locale)
                         .mobileNumber(jwt.getClaimAsString("mobileNumber"))
                         .active(true)
                         .roles(roles)

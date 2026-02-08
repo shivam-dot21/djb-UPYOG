@@ -34,7 +34,7 @@ public class RoleRepository {
     private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
     private RestTemplate restTemplate;
     private ObjectMapper objectMapper;
-    private EncryptionDecryptionUtil encryptionDecryptionUtil;
+    public EncryptionDecryptionUtil encryptionDecryptionUtil;
 
     @Value("${mdms.roles.filter}")
     private String roleFilter;
