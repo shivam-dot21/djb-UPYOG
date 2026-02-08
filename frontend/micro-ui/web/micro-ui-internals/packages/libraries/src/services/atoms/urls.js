@@ -37,6 +37,7 @@ const Urls = {
   InboxSearch: "/inbox/v1/_search",
 
   UserSearch: "/user/_search",
+  UserDetails:"/user/_details",
   UserLogout: "/user/_logout",
   UserCreate:"/user/users/_createnovalidate",
 

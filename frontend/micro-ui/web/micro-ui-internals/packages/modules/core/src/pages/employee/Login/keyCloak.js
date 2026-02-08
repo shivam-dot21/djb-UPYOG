@@ -6,7 +6,8 @@ export const initKeycloak = (onAuthenticatedCallback) => {
   _kc = new Keycloak({
     url: "https://dev-djb.nitcon.in/keycloak",
     realm: "DL",
-    clientId: "upyog"
+    clientId: "upyog",
+    redirectUri: window.location.origin + "/digit-ui/employee"
   });
 
   _kc.init({

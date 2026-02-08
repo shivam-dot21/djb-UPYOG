@@ -21,7 +21,7 @@
     "start:script": "./scripts/create.sh",
     "dev:libraries": "cd packages/libraries && yarn start",
     "dev:components": "cd packages/react-components && yarn start",
-    "dev:example": "cd example && yarn start",
+    "dev:example": "cd example && export NODE_OPTIONS=--openssl-legacy-provider && yarn start",
     "dev:core": "cd packages/modules/core && yarn start",
     "dev:pgr": "cd packages/modules/pgr && yarn start",
     "dev:dss": "cd packages/modules/dss && yarn start",
@@ -49,9 +49,10 @@
     "**/@babel/runtime": "7.20.1",
     "**/babel-preset-react-app": "10.0.0",
     "**/styled-components": "5.0.0",
-    "fast-uri":"2.1.0",
-    "**/babel-loader": "8.2.2"
-    
+    "fast-uri": "2.1.0",
+    "**/babel-loader": "8.2.5",
+    "glob": "7.2.3",
+    "minimatch": "^3.1.2"
   },
   "devDependencies": {
     "husky": "7.0.4",

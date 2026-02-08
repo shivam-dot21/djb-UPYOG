@@ -1,213 +1,247 @@
 import React, { useEffect, useState } from "react";
+import { useHistory } from "react-router-dom";
 import { initKeycloak, getKeycloak } from "./keyCloak";
-
-const Satyam = () => {
-  const kc = getKeycloak();
-  const name = kc?.tokenParsed?.preferred_username;
-
-  const handleLogout = () => {
-    console.log("Logout clicked");
-
-    kc.logout({
-      redirectUri: `${window.location.origin}/digit-ui`
-    })
-      .then(() => console.log("Logout triggered"))
-      .catch(err => console.error("Logout error:", err));
-  };
-
-  return (
-    <div style={{ padding: 20 }}>
-      <h1>Welcome {name || "User"} 🚀</h1>
-      <button
-        onClick={handleLogout}
-        style={{ marginTop: 20, padding: "10px 20px", fontSize: 16 }}
-      >
-        Logout
-      </button>
-    </div>
-  );
-};
+import { fetchUserDetails } from "../../../../../../libraries/src/services/elements/userDetails";
+import axios from 'axios';
 
 const Login = () => {
-  const [ready, setReady] = useState(false);
+  const history = useHistory();
 
+  const [ready, setReady] = useState(false);
+  const [authenticated, setAuthenticated] = useState(false);
+  const [user, setUser] = useState(null);
+  const [error, setError] = useState(null);
+
+  // Helper function to set employee details in localStorage
+  const setEmployeeDetail = (userObject, token) => {
+    const locale =
+      JSON.parse(sessionStorage.getItem("Digit.locale"))?.value || "en_IN";
+
+    localStorage.setItem("Employee.tenant-id", userObject?.tenantId);
+    localStorage.setItem("tenant-id", userObject?.tenantId);
+
+    localStorage.setItem(
+      "citizen.userRequestObject",
+      JSON.stringify(userObject)
+    );
+
+    localStorage.setItem("locale", locale);
+    localStorage.setItem("Employee.locale", locale);
+
+    localStorage.setItem("token", token);
+    localStorage.setItem("Employee.token", token);
+
+    localStorage.setItem("user-info", JSON.stringify(userObject));
+    localStorage.setItem("Employee.user-info", JSON.stringify(userObject));
+  };
+
+  // New API call to fetch user details by UUID
+  const fetchUserDetailsByUUID = async (uuid, authToken, tenantId, userInfo) => {
+    try {
+      // Ensure we have the necessary information to make the request
+      if (!uuid || !authToken || !tenantId) {
+        throw new Error("Missing required parameters (UUID, AuthToken, TenantId)");
+      }
+
+      const requestPayload = {
+        tenantId,
+        uuid: [uuid],
+        pageSize: "100",
+        RequestInfo: {
+          apiId: "Rainmaker",
+          authToken,
+          userInfo,
+          msgId: `${Date.now()}|en_IN`,
+          plainAccessRequest: {},
+        },
+      };
+
+      // Making the API request using axios (can replace with your custom request function)
+      const response = await axios.post("/user/_search", requestPayload, {
+        headers: {
+          Authorization: `Bearer ${authToken}`,
+        },
+      });
+
+      if (response.status !== 200) {
+        throw new Error(`Failed to fetch user details: ${response.statusText}`);
+      }
+
+      return response.data;  // Return the response data
+    } catch (error) {
+      console.error("Error fetching user details by UUID:", error);
+      throw error;  // Re-throw to be handled at the caller side
+    }
+  };
+
+  // Step 1: Initialize Keycloak
   useEffect(() => {
-    initKeycloak(() => setReady(true));
+    initKeycloak(() => {
+      const kc = getKeycloak();
+      if (kc?.authenticated) {
+        setAuthenticated(true);
+      }
+      setReady(true);
+    });
   }, []);
 
-  if (!ready) return <p>Authenticating...</p>;
-  return <Satyam />;
+  // Step 2: Fetch user details from both APIs
+  useEffect(() => {
+    if (!ready || !authenticated) return;
+
+    const loadUser = async () => {
+      try {
+        const kc = getKeycloak();
+
+        if (!kc?.token) {
+          throw new Error("Keycloak token missing");
+        }
+
+        const tenantId = "dl.djb";
+
+        // API Call 1: Fetch user details using fetchUserDetails
+        console.log("Fetching user details...");
+        const userDetailsResponse = await fetchUserDetails(kc);
+        console.log("User details response:", userDetailsResponse);
+
+        // Extract user info from first API response
+        const userInfoFromFirstCall = userDetailsResponse?.user || 
+                                       userDetailsResponse?.UserRequest || 
+                                       userDetailsResponse ||
+                                       {};
+
+        // Build complete userInfo for second API call
+        const userInfoPayload = {
+          id: userInfoFromFirstCall.id || null,
+          authToken: kc.token,
+          uuid: userInfoFromFirstCall.uuid || kc.tokenParsed?.sub || kc.subject,
+          userName: userInfoFromFirstCall.userName || null,
+          name: userInfoFromFirstCall.name || null,
+          mobileNumber: userInfoFromFirstCall.mobileNumber || null,
+          emailId: userInfoFromFirstCall.emailId || null,
+          locale: userInfoFromFirstCall.locale || "en_IN",
+          type: userInfoFromFirstCall.type || "EMPLOYEE",
+          roles: userInfoFromFirstCall.roles || [],
+          active: userInfoFromFirstCall.active !== undefined ? userInfoFromFirstCall.active : true,
+          tenantId: userInfoFromFirstCall.tenantId || tenantId,
+          permanentCity: userInfoFromFirstCall.permanentCity || null,
+        };
+
+        // API Call 2: Fetch user by UUID with complete userInfo from first call
+        console.log("Fetching user by UUID with userInfo:", userInfoPayload);
+        const userByUUIDResponse = await fetchUserDetailsByUUID(
+          userInfoFromFirstCall.uuid || kc.tokenParsed?.sub || kc.subject,
+          kc.token,  // ✅ Fixed: Pass the Keycloak instance, not kc.token
+          tenantId,
+          userInfoPayload // Pass complete userInfo from first API
+        );
+        console.log("User by UUID response:", userByUUIDResponse);
+
+        // Use the response from second API call as final user info
+        const userInfo = userByUUIDResponse?.user?.[0] || 
+                        userInfoFromFirstCall ||
+                        {};
+
+        setUser({
+          access_token: kc.token,
+          info: userInfo,
+        });
+      } catch (err) {
+        console.error("User details fetch failed:", err);
+        setError("Failed to load user details");
+      }
+    };
+
+    loadUser();
+  }, [ready, authenticated]);
+
+  // Step 3: Setup Digit session & redirect
+  useEffect(() => {
+    if (!user?.info) return;
+
+    try {
+      Digit.SessionStorage.set("User", user);
+
+      const tenantId =
+        user.info.tenantId || Digit.ULBService.getCurrentTenantId();
+
+      if (user.info.roles?.length) {
+        user.info.roles = user.info.roles.filter(
+          (r) => r.tenantId === tenantId
+        );
+      }
+
+      Digit.UserService.setUser(user);
+      setEmployeeDetail(user.info, user.access_token);
+
+      let redirectPath = "/digit-ui/employee";
+
+      if (window.location.href.includes("from=")) {
+        redirectPath =
+          decodeURIComponent(
+            window.location.href.split("from=")[1]
+          ) || redirectPath;
+      }
+
+      // National Admin
+      if (
+        user.info.roles?.length &&
+        user.info.roles.every((r) => r.code === "NATADMIN")
+      ) {
+        redirectPath =
+          "/digit-ui/employee/dss/landing/NURT_DASHBOARD";
+      }
+
+      // State Admin
+      if (
+        user.info.roles?.length &&
+        user.info.roles.every((r) => r.code === "STADMIN")
+      ) {
+        redirectPath =
+          "/digit-ui/employee/dss/landing/home";
+      }
+
+      history.replace(redirectPath);
+    } catch (err) {
+      console.error("User session setup failed:", err);
+      setError("Failed to setup user session");
+    }
+  }, [user, history]);
+
+  // UI states
+  if (!ready) {
+    return (
+      <div style={{ padding: 20, textAlign: "center" }}>
+        <p>Authenticating with Keycloak...</p>
+      </div>
+    );
+  }
+
+  if (!authenticated) {
+    return (
+      <div style={{ padding: 20, textAlign: "center" }}>
+        <p>Authentication failed. Please login again.</p>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div style={{ padding: 20, textAlign: "center", color: "red" }}>
+        <p>{error}</p>
+      </div>
+    );
+  }
+
+  if (!user) {
+    return (
+      <div style={{ padding: 20, textAlign: "center" }}>
+        <p>Loading user details...</p>
+      </div>
+    );
+  }
+
+  return null;
 };
 
 export default Login;
-
-
-
-// import React, { useEffect, useState } from "react";
-// import { initKeycloak, getKeycloak } from "./keyCloak";
-// import { useHistory } from "react-router-dom";
-
-// const Login = () => {
-//   const [ready, setReady] = useState(false);
-//   const [authenticated, setAuthenticated] = useState(false);
-//   const history = useHistory();
-//   const { data: cities, isLoading } = Digit.Hooks.useTenants();
-//   const { data: storeData, isLoading: isStoreLoading } = Digit.Hooks.useStore.getInitData();
-//   const { stateInfo } = storeData || {};
-//   const [user, setUser] = useState(null);
-//   const [showToast, setShowToast] = useState(null);
-//   const [disable, setDisable] = useState(false);
-
-//   const setEmployeeDetail = (userObject, token) => {
-//     let locale = JSON.parse(sessionStorage.getItem("Digit.locale"))?.value || "en_IN";
-//     localStorage.setItem("Employee.tenant-id", userObject?.tenantId);
-//     localStorage.setItem("tenant-id", userObject?.tenantId);
-//     localStorage.setItem("citizen.userRequestObject", JSON.stringify(userObject));
-//     localStorage.setItem("locale", locale);
-//     localStorage.setItem("Employee.locale", locale);
-//     localStorage.setItem("token", token);
-//     localStorage.setItem("Employee.token", token);
-//     localStorage.setItem("user-info", JSON.stringify(userObject));
-//     localStorage.setItem("Employee.user-info", JSON.stringify(userObject));
-//   };
-
-//   let sourceUrl = "https://s3.ap-south-1.amazonaws.com/egov-qa-assets";
-//   const pdfUrl = "https://pg-egov-assets.s3.ap-south-1.amazonaws.com/Upyog+Code+and+Copyright+License_v1.pdf";
-
-//   // Initialize Keycloak
-//   useEffect(() => {
-//     initKeycloak(() => {
-//       const kc = getKeycloak();
-//       if (kc?.authenticated) {
-//         setReady(true);
-//         setAuthenticated(true);
-//       } else {
-//         setReady(true);
-//         // Optionally redirect to login if not authenticated
-//         console.error("User not authenticated");
-//       }
-//     });
-//   }, []);
-
-//   // Fetch user details after Keycloak is ready
-//   useEffect(() => {
-//     if (!ready || !authenticated) {
-//       return;
-//     }
-
-//     const fetchUserDetails = async () => {
-//       try {
-//         const kc = getKeycloak();
-//         const token = kc.token;
-        
-//         // Fetch user info from your backend
-//         // Replace this with your actual API endpoint
-//         const response = await fetch("/user/oauth/token", {
-//           method: "POST",
-//           headers: {
-//             "Content-Type": "application/json",
-//           },
-//           body: JSON.stringify({
-//             username: kc.tokenParsed?.preferred_username,
-//             tenantId: kc.tokenParsed?.tenantId || "pg", // Default tenant
-//             userType: "EMPLOYEE",
-//           }),
-//         });
-
-//         const userData = await response.json();
-        
-//         setUser({
-//           access_token: token,
-//           info: userData.UserRequest || userData.user || userData,
-//         });
-//       } catch (error) {
-//         console.error("Error fetching user details:", error);
-//         setShowToast({ error: true, message: "Failed to load user details" });
-//       }
-//     };
-
-//     fetchUserDetails();
-//   }, [ready, authenticated]);
-
-//   // Handle navigation after user is loaded
-//   useEffect(() => {
-//     if (!user || !user.info) {
-//       return;
-//     }
-
-//     try {
-//       // Set up session storage
-//       Digit.SessionStorage.set("citizen.userRequestObject", user);
-      
-//       // Filter roles by tenant
-//       const tenantId = Digit.SessionStorage.get("Employee.tenantId") || user.info.tenantId;
-//       const filteredRoles = user?.info?.roles?.filter((role) => role.tenantId === tenantId);
-      
-//       if (filteredRoles && filteredRoles.length > 0) {
-//         user.info.roles = filteredRoles;
-//       }
-      
-//       // Set user in Digit service
-//       Digit.UserService.setUser(user);
-      
-//       // Set employee details in storage
-//       setEmployeeDetail(user.info, user.access_token);
-      
-//       // Determine redirect path
-//       let redirectPath = "/digit-ui/employee";
-
-//       /* Logic to redirect back to same screen where we left off */
-//       if (window?.location?.href?.includes("from=")) {
-//         redirectPath = decodeURIComponent(window?.location?.href?.split("from=")?.[1]) || "/digit-ui/employee";
-//       }
-
-//       /* Logic to navigate to National DSS home if user has only NATADMIN role */
-//       if (user?.info?.roles && user?.info?.roles?.length > 0 && user?.info?.roles?.every((e) => e.code === "NATADMIN")) {
-//         redirectPath = "/digit-ui/employee/dss/landing/NURT_DASHBOARD";
-//       }
-      
-//       /* Logic to navigate to State DSS home if user has only STADMIN role */
-//       if (user?.info?.roles && user?.info?.roles?.length > 0 && user?.info?.roles?.every((e) => e.code === "STADMIN")) {
-//         redirectPath = "/digit-ui/employee/dss/landing/home";
-//       }
-
-//       // Small delay to ensure all state is updated
-//       setTimeout(() => {
-//         history.replace(redirectPath);
-//       }, 100);
-      
-//     } catch (error) {
-//       console.error("Error setting up user:", error);
-//       setShowToast({ error: true, message: "Failed to set up user session" });
-//     }
-//   }, [user, history]);
-
-//   if (!ready) {
-//     return (
-//       <div style={{ padding: 20, textAlign: "center" }}>
-//         <p>Authenticating with Keycloak...</p>
-//       </div>
-//     );
-//   }
-
-//   if (!authenticated) {
-//     return (
-//       <div style={{ padding: 20, textAlign: "center" }}>
-//         <p>Authentication failed. Please try again.</p>
-//       </div>
-//     );
-//   }
-
-//   if (!user) {
-//     return (
-//       <div style={{ padding: 20, textAlign: "center" }}>
-//         <p>Loading user details...</p>
-//       </div>
-//     );
-//   }
-
-//   // This shouldn't render since we redirect, but just in case
-//   return <h1>satyam</h1>;
-// };
-
-// export default Login;
