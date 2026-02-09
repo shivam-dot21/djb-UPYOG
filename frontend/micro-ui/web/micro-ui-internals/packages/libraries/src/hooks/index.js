@@ -69,7 +69,6 @@ import useFSMInbox from "./fsm/useInbox";
 import useApplicationUpdate from "./fsm/useApplicationUpdate";
 import useWorkflowData from "./fsm/useWorkflowData";
 import useRouteSubscription from "./useRouteSubscription";
-import useFSMRouteSubscription from "./fsm/useRouteSubscription";
 import useDsoSearch from "./fsm/useDsoSearch";
 import usePropertySearch from "./pt/usePropertySearch";
 import usePropertySearchNew from "./pt/usePropertySearchNew";
@@ -437,7 +436,6 @@ const fsm = {
   useVendorSearch,
   useAdvanceBalanceCalulation,
   useWorkerSearch,
-  useRouteSubscription: useFSMRouteSubscription,
 };
 const ptr = {
   usePetMDMS,

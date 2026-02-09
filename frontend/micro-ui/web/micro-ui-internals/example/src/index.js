@@ -24,7 +24,7 @@ import { initBillsComponents, BillsModule } from "@upyog/digit-ui-module-bills";
 
 // import { PGRModule, PGRLinks } from "@upyog/digit-ui-module-pgr";
 // import { Body, TopBar } from "@upyog/digit-ui-react-components";
-import "@satyamgupta14333/digit-ui-css";
+import "@djb25/digit-ui-css";
 
 import { PTRModule, PTRLinks, PTRComponents } from "@upyog/upyog-ui-module-ptr";
 import { ASSETComponents, ASSETLinks, ASSETModule } from "@djb25/digit-ui-module-asset";
@@ -134,7 +134,7 @@ const initDigitUI = () => {
     PGRAILinks,
     ...PGRAIComponents,
     // WSLinks,
-    WSModule,
+    // WSModule,
   });
 
   initFSMComponents();

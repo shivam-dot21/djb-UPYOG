@@ -4,6 +4,7 @@ import TopBar from "./TopBar";
 import { useHistory } from "react-router-dom";
 import SideBar from "./SideBar";
 import LogoutDialog from "../Dialog/LogoutDialog";
+import { getKeycloak } from "../../pages/employee/Login/keyCloak";
 const TopBarSideBar = ({
   t,
   stateInfo,
@@ -26,8 +27,28 @@ const TopBarSideBar = ({
     toggleSidebar(false);
     setShowDialog(true);
   };
-  const handleOnSubmit = () => {
-    Digit.UserService.logout();
+  const handleOnSubmit = async () => {
+    if (!CITIZEN) {
+      try {
+        await Digit.UserService.logoutUser();
+        const kc = getKeycloak();
+        if (kc?.authenticated) {
+          window.sessionStorage.clear();
+          window.localStorage.clear();
+          kc.logout({
+            redirectUri: window.location.origin + "/digit-ui/employee/user/language-selection"
+          });
+          return;
+        }
+      } catch (e) {
+        console.error("Logout failed", e);
+      }
+      window.sessionStorage.clear();
+      window.localStorage.clear();
+      window.location.replace("/digit-ui/employee/user/language-selection");
+    } else {
+      Digit.UserService.logout();
+    }
     setShowDialog(false);
   }
   const handleOnCancel = () => {

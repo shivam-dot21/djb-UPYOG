@@ -20,7 +20,7 @@
   },
   "dependencies": {
     "@upyog/digit-ui-libraries": "3.0.0",
-    "@upyog/digit-ui-react-components": "3.0.0",
+    "@upyog/digit-ui-react-components": "3.0.2",
     "leaflet": "^1.9.4",
     "lodash.merge": "^4.6.2",
     "microbundle-crl": "^0.13.11",
