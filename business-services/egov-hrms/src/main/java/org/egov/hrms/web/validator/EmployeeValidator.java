@@ -125,6 +125,11 @@ public class EmployeeValidator {
 	public void validateSearchRequest(RequestInfo requestInfo, EmployeeSearchCriteria criteria) {
 		Map<String, String> errorMap = new HashMap<>();
 
+		log.info("validateSearchRequest logs requestInfo={}, userInfo={}, criteria={}",
+				requestInfo,
+				requestInfo != null ? requestInfo.getUserInfo() : null,
+				criteria);
+
 		if(requestInfo.getUserInfo() != null && requestInfo.getUserInfo().getType().equalsIgnoreCase(CITIZEN_TYPE_CODE) && !CollectionUtils.isEmpty(criteria.getIds()))
 			errorMap.put(ErrorConstants.HRMS_INVALID_SEARCH_CITIZEN_CODE, ErrorConstants.HRMS_INVALID_SEARCH_CITIZEN_MSG);
 
