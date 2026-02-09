@@ -1,6 +1,6 @@
 {
-  "name": "@satyamgupta14333/digit-ui-css",
-  "version": "1.0.2",
+  "name": "@djb25/digit-ui-css",
+  "version": "1.0.1",
   "license": "MIT",
   "main": "dist/index.css",
   "author": "satyam",
