@@ -17,9 +17,9 @@
   },
   "dependencies": {
     "@djb25/digit-ui-css": "1.0.3",
-    "@djb25/digit-ui-module-asset": "1.0.2",
+    "@djb25/digit-ui-module-asset": "1.0.3",
     "@djb25/digit-ui-module-hrms": "1.0.0",
-    "@djb25/digit-ui-module-ws": "1.0.0",
+    "@djb25/digit-ui-module-ws": "1.0.2",
     "@djb25/digit-ui-module-wt": "1.0.0",
     "@nudmcdgnpm/upyog-ui-module-pgrai": "1.0.0",
     "@nudmcdgnpm/upyog-ui-module-vendor": "1.2.2",
