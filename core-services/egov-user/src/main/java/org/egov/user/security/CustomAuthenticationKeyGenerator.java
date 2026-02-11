@@ -7,63 +7,90 @@ import java.security.NoSuchAlgorithmException;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.oauth2.common.util.OAuth2Utils;
-import org.springframework.security.oauth2.provider.OAuth2Authentication;
-import org.springframework.security.oauth2.provider.OAuth2Request;
-import org.springframework.security.oauth2.provider.token.AuthenticationKeyGenerator;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.oauth2.server.authorization.OAuth2Authorization;
 import org.springframework.stereotype.Component;
 
-@Slf4j
+// REMOVE THESE DEPRECATED IMPORTS:
+// import org.springframework.security.oauth2.common.util.OAuth2Utils;
+// import org.springframework.security.oauth2.provider.OAuth2Authentication;
+// import org.springframework.security.oauth2.provider.OAuth2Request;
+// import org.springframework.security.oauth2.provider.token.AuthenticationKeyGenerator;
+
 @Component
-public class CustomAuthenticationKeyGenerator implements AuthenticationKeyGenerator {
+public class CustomAuthenticationKeyGenerator {
+    
     private static final String CLIENT_ID = "client_id";
-
     private static final String SCOPE = "scope";
-
     private static final String USERNAME = "username";
 
     @Value("${key.generator.hash.algorithm}")
     private String hashAlgorithm;
 
-    @Override
-    public String extractKey(OAuth2Authentication authentication) {
-        Map<String, String> values = new LinkedHashMap<String, String>();
-        OAuth2Request authorizationRequest = authentication.getOAuth2Request();
-        log.info("DEBUG: authorizationRequest = {}", authorizationRequest);
-        if (!authentication.isClientOnly()) {
-            log.info("Client Name value put {}", authentication.getName());
-            values.put(USERNAME, authentication.getName());
+    // NEW METHOD: For modern OAuth2Authorization
+    public String extractKey(OAuth2Authorization authorization) {
+        Map<String, String> values = new LinkedHashMap<>();
+        
+        // Extract client ID
+        values.put(CLIENT_ID, authorization.getRegisteredClientId());
+        
+        // Extract username from principal
+        if (authorization.getPrincipalName() != null) {
+            values.put(USERNAME, authorization.getPrincipalName());
         }
-        log.info("Client ID value put");
-        values.put(CLIENT_ID, authorizationRequest.getClientId());
-        if (authorizationRequest.getScope() != null) {
-            log.info("Client Scope value put");
-            values.put(SCOPE, OAuth2Utils.formatParameterList(authorizationRequest.getScope()));
+        
+        // Extract scopes
+        if (authorization.getAuthorizedScopes() != null && !authorization.getAuthorizedScopes().isEmpty()) {
+            values.put(SCOPE, String.join(" ", authorization.getAuthorizedScopes()));
         }
-        log.info("DEBUG: requestParameters = {}", authorizationRequest.getRequestParameters());
-        String tenantId = authorizationRequest.getRequestParameters().get("tenantId");
-        if (tenantId != null && !tenantId.isEmpty()) {
-            log.info("Client tenantID value put");
-            values.put("tenantId", tenantId);
+        
+        // Extract tenantId from attributes if available
+        Map<String, Object> attributes = authorization.getAttributes();
+        if (attributes != null && attributes.containsKey("tenantId")) {
+            Object tenantId = attributes.get("tenantId");
+            if (tenantId != null && !tenantId.toString().isEmpty()) {
+                values.put("tenantId", tenantId.toString());
+            }
         }
 
+        return generateHash(values);
+    }
+
+    // LEGACY METHOD: For backward compatibility (if still needed elsewhere)
+    // You can remove this if not used by other parts of your application
+    public String extractKeyFromAuthentication(Authentication authentication, String clientId, java.util.Set<String> scopes) {
+        Map<String, String> values = new LinkedHashMap<>();
+        
+        if (authentication != null && authentication.getName() != null) {
+            values.put(USERNAME, authentication.getName());
+        }
+        
+        if (clientId != null) {
+            values.put(CLIENT_ID, clientId);
+        }
+        
+        if (scopes != null && !scopes.isEmpty()) {
+            values.put(SCOPE, String.join(" ", scopes));
+        }
+
+        return generateHash(values);
+    }
+
+    // UTILITY METHOD: Generate hash from values map
+    private String generateHash(Map<String, String> values) {
         MessageDigest digest;
         try {
             digest = MessageDigest.getInstance(hashAlgorithm);
-            log.info("DEBUG: digest = {}", digest);
         } catch (NoSuchAlgorithmException e) {
-            throw new IllegalStateException(hashAlgorithm+" algorithm not available.  Fatal (should be in the JDK).");
+            throw new IllegalStateException(hashAlgorithm + " algorithm not available. Fatal (should be in the JDK).");
         }
 
         try {
-            log.info("before digest bytes");
             byte[] bytes = digest.digest(values.toString().getBytes("UTF-8"));
-            log.info("after digest bytes: bytes = {}", bytes.length);
             return String.format("%032x", new BigInteger(1, bytes));
         } catch (UnsupportedEncodingException e) {
-            throw new IllegalStateException("UTF-8 encoding not available.  Fatal (should be in the JDK).");
+            throw new IllegalStateException("UTF-8 encoding not available. Fatal (should be in the JDK).");
         }
     }
 }
