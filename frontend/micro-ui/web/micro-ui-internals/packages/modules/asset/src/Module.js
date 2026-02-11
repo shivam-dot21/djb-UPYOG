@@ -25,7 +25,7 @@ import ASSETCreate from "./pages/employee/TestApplication/Create";
 import NewAssetClassification from "./pageComponents/NewAssetClassification";
 import NewAsset from "./pageComponents/NewAsset";
 import NewDocument from "./pageComponents/NewDocument";
-import ASTCheckPage from "./pages/employee/TestApplication/Create/CheckPage"
+import ASTCheckPage from "./pages/employee/TestApplication/Create/CheckPage";
 import NewResponse from "./pages/employee/TestApplication/Create/NewResponse";
 import AssetAssign from "./pageComponents/AssetAssign";
 import AssetDispose from "./pageComponents/AssetDispose";
@@ -40,8 +40,48 @@ import EditAssetDetails from "./pageComponents/EditAssetDetails";
 import EditResponse from "./pages/employee/EditResponse";
 import EditAssetMaintenance from "./pages/employee/EditAssetMaintenance";
 
+export const ASSETModule = ({ stateCode, userType, tenants }) => {
+  const { path, url } = useRouteMatch();
 
+  const moduleCode = "ASSET";
+  const language = Digit.StoreData.getCurrentLanguage();
+  const { isLoading, data: store } = Digit.Services.useStore({ stateCode, moduleCode, language });
 
+  Digit.SessionStorage.set("ASSET_TENANTS", tenants);
+
+  // if (!Digit.Utils.assetAccess()) {
+  //   return null;
+  // }
+  if (userType === "employee") {
+    return <EmployeeApp path={path} url={url} userType={userType} />;
+  } else return <CitizenApp />;
+
+  // if (userType === "employee") {
+  //   return <EmployeeApp path={path} url={url} userType={userType} />;
+  // } else return
+};
+
+export const ASSETLinks = ({ matchPath, userType }) => {
+  const { t } = useTranslation();
+  const [params, setParams, clearParams] = Digit.Hooks.useSessionStorage("ASSET", {});
+
+  useEffect(() => {
+    clearParams();
+  }, []);
+
+  const links = [];
+
+  return null;
+};
+
+export const ASSETComponents = {
+  ASSETCard,
+  ASSETModule,
+  ASSETLinks,
+  AST_INBOX_FILTER: (props) => <InboxFilter {...props} />,
+  ASTInboxTableConfig: TableConfig,
+
+};
 
 const componentsToRegister = {
   AssignAssetApplication: NewAssetApplication,
@@ -60,81 +100,31 @@ const componentsToRegister = {
   NewResponse,
   EditAssetMaintenancePage,
   ApplicationDetails,
-  AssetResponse: Response, 
-  Maintenance, 
+  AssetResponse: Response,
+  Maintenance,
   EditMaintenance,
-  DisposeResponse, 
+  DisposeResponse,
   ProcessDepreciationResponse,
-  returnResponse:ReturnResponse,
+  returnResponse: ReturnResponse,
   AssetAssign,
   AssetDispose,
   AssetMaintenance,
   EditAssetMaintenance,
-  returnAssets:ReturnAsset,
+  returnAssets: ReturnAsset,
   ReturnAssignedAsset,
-  editAsset:EditAsset,
+  editAsset: EditAsset,
   EditGeneralDetails,
   EditAssetDetails,
-  editResponse:EditResponse
-  
-  
-};
-
-const addComponentsToRegistry = () => {
-  Object.entries(componentsToRegister).forEach(([key, value]) => {
-    Digit.ComponentRegistryService.setComponent(key, value);
-  });
-};
-
-
-export const ASSETModule = ({ stateCode, userType, tenants }) => {
-  const { path, url } = useRouteMatch();
-
-  const moduleCode = "ASSET";
-  const language = Digit.StoreData.getCurrentLanguage();
-  const { isLoading, data: store } = Digit.Services.useStore({ stateCode, moduleCode, language });
-
-  addComponentsToRegistry();
-
-  Digit.SessionStorage.set("ASSET_TENANTS", tenants);
-
-  useEffect(
-    () =>
-      userType === "employee" &&
-      Digit.LocalizationService.getLocale({
-        modules: [`rainmaker-${Digit.ULBService.getCurrentTenantId()}`],
-        locale: Digit.StoreData.getCurrentLanguage(),
-        tenantId: Digit.ULBService.getCurrentTenantId(),
-      }),
-    []
-  );
-
-  if (userType === "employee") {
-    return <EmployeeApp path={path} url={url} userType={userType} />;
-  } else return <CitizenApp />;
-};
-
-export const ASSETLinks = ({ matchPath, userType }) => {
-  const { t } = useTranslation();
-  const [params, setParams, clearParams] = Digit.Hooks.useSessionStorage("ASSET", {});
-
-  useEffect(() => {
-    clearParams();
-  }, []);
-
-  const links = [
-    
-  ];
-
-  return null;
-  
-};
-
-export const ASSETComponents = {
+  editResponse: EditResponse,
   ASSETCard,
   ASSETModule,
   ASSETLinks,
   AST_INBOX_FILTER: (props) => <InboxFilter {...props} />,
   ASTInboxTableConfig: TableConfig,
-  
+};
+
+export const initAssetComponents = () => {
+  Object.entries(componentsToRegister).forEach(([key, value]) => {
+    Digit.ComponentRegistryService.setComponent(key, value);
+  });
 };

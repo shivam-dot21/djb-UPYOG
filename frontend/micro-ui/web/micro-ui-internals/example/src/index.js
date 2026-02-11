@@ -15,7 +15,7 @@ import { initMCollectComponents } from "@upyog/digit-ui-module-mcollect";
 import { PaymentModule, PaymentLinks, paymentConfigs } from "@upyog/digit-ui-module-common";
 import { HRMSModule } from "@djb25/digit-ui-module-hrms";
 import { initEngagementComponents } from "@upyog/digit-ui-module-engagement";
-import { initWSComponents, WSModule } from "@djb25/digit-ui-module-ws";
+import { initWSComponents, WSModule , WSLinks} from "@djb25/digit-ui-module-ws";
 import { DigitUI } from "@upyog/digit-ui-module-core";
 import { initCommonPTComponents } from "@upyog/digit-ui-module-commonpt";
 import { initBillsComponents, BillsModule } from "@upyog/digit-ui-module-bills";
@@ -27,9 +27,10 @@ import { initBillsComponents, BillsModule } from "@upyog/digit-ui-module-bills";
 import "@djb25/digit-ui-css";
 
 import { PTRModule, PTRLinks, PTRComponents } from "@upyog/upyog-ui-module-ptr";
-import { ASSETComponents, ASSETLinks, ASSETModule } from "@djb25/digit-ui-module-asset";
+import { ASSETModule, initAssetComponents ,ASSETLinks, ASSETComponents} from "@djb25/digit-ui-module-asset";
+import "@djb25/digit-ui-css/dist/index.css";
 
-import { WTModule, WTLinks, WTComponents } from "@djb25/digit-ui-module-wt";
+import { WTModule, WTLinks, WTComponents, initWTComponents } from "@djb25/digit-ui-module-wt";
 import { VENDORComponents, VENDORLinks, VENDORModule } from "@nudmcdgnpm/upyog-ui-module-vendor";
 import { PGRAIComponents, PGRAILinks, PGRAIModule } from "@nudmcdgnpm/upyog-ui-module-pgrai";
 // import * as comps from "@upyog/digit-ui-react-components";
@@ -133,8 +134,8 @@ const initDigitUI = () => {
     PGRAIModule,
     PGRAILinks,
     ...PGRAIComponents,
-    // WSLinks,
-    // WSModule,
+    WSLinks,
+    WSModule,
   });
 
   initFSMComponents();
@@ -148,7 +149,8 @@ const initDigitUI = () => {
   initWSComponents();
   initCommonPTComponents();
   initBillsComponents();
-
+  initAssetComponents();
+  initWTComponents();
   // initCustomisationComponents();
 
   const moduleReducers = (initData) => ({
