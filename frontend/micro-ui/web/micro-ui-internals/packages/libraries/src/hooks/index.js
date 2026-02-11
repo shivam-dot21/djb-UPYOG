@@ -436,6 +436,7 @@ const fsm = {
   useVendorSearch,
   useAdvanceBalanceCalulation,
   useWorkerSearch,
+  useRouteSubscription,
 };
 const ptr = {
   usePetMDMS,

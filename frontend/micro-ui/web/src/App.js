@@ -21,16 +21,12 @@ import {
   ReceiptsModule,
 } from "@upyog/digit-ui-module-receipts";
 import { initEngagementComponents } from "@upyog/digit-ui-module-engagement";
-import { initWSComponents } from "@djb25/digit-ui-module-ws";
+import { initWSComponents , WSModule, WSLinks} from "@djb25/digit-ui-module-ws";
 // import { initCustomisationComponents } from "./Customisations";
 import { initCommonPTComponents } from "@upyog/digit-ui-module-commonpt";
 import { initBillsComponents } from "@upyog/digit-ui-module-bills";
 import { PTRModule, PTRLinks, PTRComponents } from "@upyog/upyog-ui-module-ptr";
-import {
-  ASSETComponents,
-  ASSETLinks,
-  ASSETModule,
-} from "@djb25/digit-ui-module-asset";
+import { ASSETModule, initAssetComponents , ASSETLinks, ASSETComponents} from "@djb25/digit-ui-module-asset";
 
 import { WTModule, WTLinks, WTComponents } from "@djb25/digit-ui-module-wt";
 import {
@@ -100,8 +96,8 @@ window.Digit.ComponentRegistryService.setupRegistry({
   PGRAIModule,
   PGRAILinks,
   ...PGRAIComponents,
-  // WSModule,
-  // WSLinks,
+  WSModule,
+  WSLinks,
 });
 
 initPGRComponents();
@@ -114,6 +110,7 @@ initEngagementComponents();
 initWSComponents();
 initCommonPTComponents();
 initBillsComponents();
+initAssetComponents();
 // initReportsComponents();
 // initCustomisationComponents();
 

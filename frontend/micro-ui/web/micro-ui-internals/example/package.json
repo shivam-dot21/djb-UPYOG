@@ -18,7 +18,7 @@
     "@upyog/digit-ui-module-receipts": "3.0.0",
     "@djb25/digit-ui-module-ws": "1.0.0",
     "@upyog/digit-ui-module-commonpt": "3.0.2",
-    "@djb25/digit-ui-module-asset": "1.0.0",
+    "@djb25/digit-ui-module-asset": "1.0.2",
     "@upyog/upyog-ui-module-ptr": "3.0.0",
     "@nudmcdgnpm/upyog-ui-module-cm": "1.2.2",
     "@nudmcdgnpm/upyog-ui-module-vendor": "1.2.2",
