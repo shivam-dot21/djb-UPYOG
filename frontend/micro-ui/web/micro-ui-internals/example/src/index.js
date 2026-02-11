@@ -30,7 +30,7 @@ import { PTRModule, PTRLinks, PTRComponents } from "@upyog/upyog-ui-module-ptr";
 import { ASSETModule, initAssetComponents ,ASSETLinks, ASSETComponents} from "@djb25/digit-ui-module-asset";
 import "@djb25/digit-ui-css/dist/index.css";
 
-import { WTModule, WTLinks, WTComponents } from "@djb25/digit-ui-module-wt";
+import { WTModule, WTLinks, WTComponents, initWTComponents } from "@djb25/digit-ui-module-wt";
 import { VENDORComponents, VENDORLinks, VENDORModule } from "@nudmcdgnpm/upyog-ui-module-vendor";
 import { PGRAIComponents, PGRAILinks, PGRAIModule } from "@nudmcdgnpm/upyog-ui-module-pgrai";
 // import * as comps from "@upyog/digit-ui-react-components";
@@ -150,6 +150,7 @@ const initDigitUI = () => {
   initCommonPTComponents();
   initBillsComponents();
   initAssetComponents();
+  initWTComponents();
   // initCustomisationComponents();
 
   const moduleReducers = (initData) => ({

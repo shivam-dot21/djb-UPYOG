@@ -28,7 +28,7 @@ import { initBillsComponents } from "@upyog/digit-ui-module-bills";
 import { PTRModule, PTRLinks, PTRComponents } from "@upyog/upyog-ui-module-ptr";
 import { ASSETModule, initAssetComponents , ASSETLinks, ASSETComponents} from "@djb25/digit-ui-module-asset";
 
-import { WTModule, WTLinks, WTComponents } from "@djb25/digit-ui-module-wt";
+import { WTModule, WTLinks, WTComponents , initWTComponents} from "@djb25/digit-ui-module-wt";
 import {
   VENDORComponents,
   VENDORLinks,
@@ -111,6 +111,7 @@ initWSComponents();
 initCommonPTComponents();
 initBillsComponents();
 initAssetComponents();
+initWTComponents();
 // initReportsComponents();
 // initCustomisationComponents();
 
