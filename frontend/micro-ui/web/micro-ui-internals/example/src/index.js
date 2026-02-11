@@ -15,7 +15,7 @@ import { initMCollectComponents } from "@upyog/digit-ui-module-mcollect";
 import { PaymentModule, PaymentLinks, paymentConfigs } from "@upyog/digit-ui-module-common";
 import { HRMSModule } from "@djb25/digit-ui-module-hrms";
 import { initEngagementComponents } from "@upyog/digit-ui-module-engagement";
-import { initWSComponents, WSModule } from "@djb25/digit-ui-module-ws";
+import { initWSComponents, WSModule , WSLinks} from "@djb25/digit-ui-module-ws";
 import { DigitUI } from "@upyog/digit-ui-module-core";
 import { initCommonPTComponents } from "@upyog/digit-ui-module-commonpt";
 import { initBillsComponents, BillsModule } from "@upyog/digit-ui-module-bills";
@@ -134,8 +134,8 @@ const initDigitUI = () => {
     PGRAIModule,
     PGRAILinks,
     ...PGRAIComponents,
-    // WSLinks,
-    // WSModule,
+    WSLinks,
+    WSModule,
   });
 
   initFSMComponents();
