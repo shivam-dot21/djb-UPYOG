@@ -2,21 +2,22 @@ package org.egov.user.web.contract;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 import lombok.*;
 import org.egov.user.config.*;
 import org.egov.user.domain.model.Address;
 import org.egov.user.domain.model.Role;
 import org.egov.user.domain.model.User;
 import org.egov.user.domain.model.enums.*;
-import javax.validation.constraints.Email;
 
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
-
-import javax.validation.constraints.Pattern;
-import javax.validation.constraints.Size;
 
 @Setter
 @Getter
@@ -27,14 +28,12 @@ public class UserRequest {
 
     private Long id;
 
-    @Pattern(regexp = "^[A-Za-z0-9._-]{1,64}$", message = "Invalid username")
     @Size(max = 64)
     private String userName;
 
-    @Size(max = 2000)
+    @Size(max = 40)
     private String access_token;
 
-    @Pattern(regexp = "^[A-Za-z.]{1,5}$", message = "Invalid salutation")
     @Size(max = 5)
     private String salutation;
 
@@ -56,33 +55,26 @@ public class UserRequest {
     @Size(max = 128)
     private String emailId;
 
-    @Pattern(regexp = UserServiceConstants.PATTERN_MOBILE, message = "Invalid alternate contact")
     @Size(max = 50)
     private String altContactNumber;
 
-    @Pattern(regexp = "^[A-Z]{5}[0-9]{4}[A-Z]$", message = "Invalid PAN")
     @Size(max = 10)
     private String pan;
 
-    @Pattern(regexp = "^[0-9]{12}$", message = "Invalid Aadhaar")
     @Size(max = 20)
     private String aadhaarNumber;
 
-    @Pattern(regexp = "^[^<>]*$", message = "Invalid input")
     @Size(max = 300)
     private String permanentAddress;
-
 
     @Pattern(regexp = UserServiceConstants.PATTERN_CITY)
     @Size(max = 50)
     private String permanentCity;
 
-
     @Pattern(regexp = UserServiceConstants.PATTERN_PINCODE)
     @Size(max = 10)
     private String permanentPinCode;
 
-    @Pattern(regexp = "^[^<>]*$", message = "Invalid input")
     @Size(max = 300)
     private String correspondenceAddress;
 
@@ -95,7 +87,6 @@ public class UserRequest {
     private String correspondencePinCode;
     private Boolean active;
 
-    @Pattern(regexp = "^[a-zA-Z]{2}([_-][a-zA-Z]{2})?$", message = "Invalid locale")
     @Size(max = 16)
     private String locale;
 
@@ -108,19 +99,15 @@ public class UserRequest {
     private String fatherOrHusbandName;
     private GuardianRelation relationship;
 
-    @Pattern(regexp = "^[^<>]*$", message = "Invalid input")
     @Size(max = 36)
     private String signature;
 
-    @Pattern(regexp = "^[^<>]*$", message = "Invalid input")
     @Size(max = 32)
     private String bloodGroup;
 
-    @Pattern(regexp = "^[^<>]*$", message = "Invalid input")
     @Size(max = 36)
     private String photo;
 
-    @Pattern(regexp = "^[^<>]*$", message = "Invalid input")
     @Size(max = 300)
     private String identificationMark;
     private Long createdBy;
@@ -128,7 +115,6 @@ public class UserRequest {
     @Size(max = 64)
     private String password;
 
-    @Pattern(regexp = "^[^<>]*$", message = "Invalid input")
     private String otpReference;
     private Long lastModifiedBy;
 
@@ -138,11 +124,9 @@ public class UserRequest {
 
     private Set<RoleRequest> roles;
 
-    @Pattern(regexp = "^[0-9a-fA-F-]{36}$", message = "Invalid UUID")
     @Size(max = 36)
     private String uuid;
 
-    @Pattern(regexp = "^[^<>]*$", message = "Invalid input")
     @Size(max = 36)
     private String digilockerid;
 
@@ -297,11 +281,12 @@ public class UserRequest {
     }
 
     private Set<Role> toDomainRoles() {
+        // CRITICAL FIX: Return empty HashSet instead of null to prevent gateway authorization failures
         return this.roles != null
                 ? this.roles.stream()
                 .map(RoleRequest::toDomain)
                 .distinct()
                 .collect(Collectors.toSet())
-                : null;
+                : new HashSet<>();
     }
 }

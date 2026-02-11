@@ -1,18 +1,18 @@
 package org.egov.user.web.contract.auth;
 
 import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.io.Serializable;
 
 @AllArgsConstructor
+@NoArgsConstructor
 @Getter
 @Setter
 @EqualsAndHashCode(of = {"code", "tenantId"})
-@NoArgsConstructor
 //This class is serialized to Redis
 public class Role implements Serializable {
     private static final long serialVersionUID = 2090518436085399889L;

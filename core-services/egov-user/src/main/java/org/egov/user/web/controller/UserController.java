@@ -2,19 +2,18 @@ package org.egov.user.web.controller;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang.time.DateFormatUtils;
 import org.egov.common.contract.response.ResponseInfo;
 import org.egov.user.domain.model.*;
 
-import org.apache.commons.lang3.StringUtils;
-import org.egov.common.contract.response.ResponseInfo;
-import org.egov.tracer.model.CustomException;
 import org.egov.user.domain.model.User;
 import org.egov.user.domain.model.UserDetail;
 import org.egov.user.domain.model.UserSearchCriteria;
 import org.egov.user.domain.service.TokenService;
 import org.egov.user.domain.service.UserService;
+import org.egov.user.web.contract.UserDetailResponseV2;
 import org.egov.user.web.contract.*;
 import org.egov.user.web.contract.auth.CustomUserDetails;
 import org.json.JSONObject;
@@ -27,19 +26,10 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestTemplate;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
+import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
-
-import javax.validation.Valid;
 
 import static org.egov.tracer.http.HttpUtils.isInterServiceCall;
 import static org.springframework.util.CollectionUtils.isEmpty;
@@ -156,10 +146,57 @@ public class UserController {
      * @return
      */
     @PostMapping("/_details")
-    public CustomUserDetails getUser(@RequestParam(value = "access_token") String accessToken) {
-        log.info("Received User details Request in controller " + accessToken);
+    public org.egov.common.contract.request.User getUser(@RequestParam(value = "access_token") String accessToken) {
+        log.info("/_details endpoint called with token: {}...", accessToken.substring(0, Math.min(8, accessToken.length())));
+
         final UserDetail userDetail = tokenService.getUser(accessToken);
-        return new CustomUserDetails(userDetail);
+        log.info("TokenService returned userDetail: {}", userDetail != null ? "not null" : "NULL");
+
+        // CRITICAL FIX: Return common contract User instead of CustomUserDetails for proper gateway deserialization
+        org.egov.user.web.contract.auth.User authUser = userDetail.getSecureUser().getUser();
+        log.info("AuthUser extracted from userDetail - id: {}, uuid: {}, userName: {}",
+            authUser.getId(), authUser.getUuid(), authUser.getUserName());
+        log.info("AuthUser roles: {} (size: {})",
+            authUser.getRoles(), authUser.getRoles() != null ? authUser.getRoles().size() : "NULL");
+
+        if (authUser.getRoles() != null && !authUser.getRoles().isEmpty()) {
+            authUser.getRoles().forEach(role ->
+                log.info("  Role - code: {}, name: {}, tenantId: {}",
+                    role.getCode(), role.getName(), role.getTenantId())
+            );
+        }
+
+        org.egov.common.contract.request.User commonUser = org.egov.common.contract.request.User.builder()
+            .id(authUser.getId())
+            .uuid(authUser.getUuid())
+            .userName(authUser.getUserName())
+            .name(authUser.getName())
+            .mobileNumber(authUser.getMobileNumber())
+            .emailId(authUser.getEmailId())
+            .type(authUser.getType())
+            .tenantId(authUser.getTenantId())
+            .roles(authUser.getRoles() != null ?
+                authUser.getRoles().stream()
+                    .map(role -> org.egov.common.contract.request.Role.builder()
+                        .code(role.getCode())
+                        .name(role.getName())
+                        .tenantId(role.getTenantId())
+                        .build())
+                    .collect(Collectors.toList()) : Collections.emptyList())
+            .build();
+
+        // Debug logging for authorization troubleshooting
+        log.info("/_details endpoint returning commonUser {} with {} roles",
+            commonUser.getUuid(),
+            commonUser.getRoles().size());
+
+        if (commonUser.getRoles().isEmpty()) {
+            log.warn("WARNING: User {} has no roles - this will cause RBAC authorization failures!",
+                commonUser.getUuid());
+            log.warn("This means authUser.getRoles() was either null or empty");
+        }
+
+        return commonUser;
         //  no encrypt/decrypt
     }
 
@@ -190,7 +227,7 @@ public class UserController {
         log.info("Received Profile Update Request  " + createUserRequest);
         User user = createUserRequest.toDomain(false);
         final User updatedUser = userService.partialUpdate(user, createUserRequest.getRequestInfo());
-        return createResponseforUpdate(updatedUser);
+        return  createResponseforUpdate(updatedUser);
     }
 
     @PostMapping("/digilocker/oauth/token")
@@ -275,6 +312,8 @@ public class UserController {
     private UserSearchResponse searchUsers(@RequestBody UserSearchRequest request, HttpHeaders headers) {
 
         UserSearchCriteria searchCriteria = request.toDomain();
+        log.info("searchCriteria_in controller"+searchCriteria);
+        log.info("headers"+headers);
 
         if (!isInterServiceCall(headers)) {
             if ((isEmpty(searchCriteria.getId()) && isEmpty(searchCriteria.getUuid())) && (searchCriteria.getLimit() > defaultSearchSize
@@ -297,5 +336,151 @@ public class UserController {
         }
         return true;
     }
+/// Author - Abhijeet
 
+
+    /**
+     * Endpoint to create a new address for a user identified by their UUID.
+     *
+     * @param addressRequest The address details to be saved.
+     * @return AddressResponse containing the created address details and response info.
+     */
+    @PostMapping("/_createAddress")
+    public ResponseEntity<AddressResponse> createAddress(@RequestBody AddressRequest addressRequest) {
+
+        Address userAddress = userService.createAddress(addressRequest.getUserUuid(), addressRequest.getAddress());
+        List<Address> userAddressList = new ArrayList<>();
+        userAddressList.add(userAddress);
+        ResponseInfo responseInfo = ResponseInfo.builder().status(HttpStatus.CREATED.toString()).build();
+        return ResponseEntity.status(HttpStatus.CREATED).body(new AddressResponse(responseInfo, userAddressList));
+    }
+
+    /**
+     * Endpoint to retrieve address details for a user based on their UUID and tenant ID.
+     *
+     * @param uuid     The unique identifier of the user.
+     * @param tenantId The tenant ID associated with the user.
+     * @return AddressResponse containing the user's address details and response info.
+     */
+    @PostMapping("/_getAddress")
+    public AddressResponse getAddress(@RequestParam(value = "uuid") String uuid, @RequestParam(value = "tenantId") String tenantId) {
+
+        List<Address> userAddresses = userService.getAddress(uuid, tenantId);
+        ResponseInfo responseInfo = ResponseInfo.builder().status(String.valueOf(HttpStatus.OK.value())).build();
+        return new AddressResponse(responseInfo, userAddresses);
+    }
+
+    /**
+     * Endpoint to update an existing address for a user identified by their UUID.
+     *
+     * @param addressRequest The address details to be updated.
+     * @return AddressResponse containing the updated address details and response info.
+     */
+    @PostMapping("/_updateAddress")
+    public AddressResponse updateAddress(@RequestBody AddressRequest addressRequest) {
+
+        Address userAddress = userService.updateAddress(addressRequest.getAddress());
+        List<Address> userAddressList = new ArrayList<>();
+        userAddressList.add(userAddress);
+        ResponseInfo responseInfo = ResponseInfo.builder().status(String.valueOf(HttpStatus.OK.value())).build();
+        return new AddressResponse(responseInfo, userAddressList);
+    }
+
+    /**
+     * API endpoint to create a new user with address details (V2).
+     * <p>
+     * Process:
+     * - Converts the request DTO into a domain object.
+     * - Determines if mobile validation is required based on headers.
+     * - Calls the service layer to create a user.
+     * - Returns a response containing the newly created user.
+     *
+     * @param createUserRequest the request payload containing user details
+     * @param headers           HTTP headers for additional request context
+     * @return the response object containing the created user details
+     */
+    @PostMapping("/users/v2/_create")
+    public Object createUserWithAddress(@RequestBody @Valid CreateUserRequestV2 createUserRequest,
+                                        @RequestHeader HttpHeaders headers) {
+        log.info("Received User Registration Request " + createUserRequest);
+
+        User user = createUserRequest.toDomain(true);
+        user.setMobileValidationMandatory(isMobileValidationRequired(headers));
+        user.setOtpValidationMandatory(false);
+
+        final User newUser = userService.createUserWithAddressV2(user, createUserRequest.getRequestInfo());
+
+        return createResponseV2(newUser);
+    }
+
+    /**
+     * API endpoint to update user details along with address information (V2).
+     * <p>
+     * Process:
+     * - Converts the request DTO into a domain object.
+     * - Determines if mobile validation is required based on headers.
+     * - Calls the service layer to update user details.
+     * - Returns a response containing the updated user details.
+     * <p>
+     * Note: OTP validation is NOT required for this update process.
+     *
+     * @param createUserRequest the request payload containing updated user details
+     * @param headers           HTTP headers for additional request context
+     * @return the response object containing updated user details
+     */
+    @PostMapping("/users/v2/_update")
+    public UpdateResponse updateUserV2(@RequestBody @Valid CreateUserRequestV2 createUserRequest,
+                                                @RequestHeader HttpHeaders headers) {
+
+        User user = createUserRequest.toDomain(false);
+        user.setMobileValidationMandatory(isMobileValidationRequired(headers));
+
+        final User updatedUser = userService.updateUserV2(user, createUserRequest.getRequestInfo());
+
+        return createResponseforUpdate(updatedUser);
+    }
+
+    /**
+     * API endpoint to search users along with their address details (V2).
+     * <p>
+     * Process:
+     * - Converts the search request DTO into a domain object.
+     * - If the request is not an inter-service call:
+     * - Limits the search results if no specific user ID or UUID is provided.
+     * - Calls the service layer to fetch matching users based on search criteria.
+     * - Constructs the response with user details.
+     * <p>
+     * Note: If the `active` field is not specified in the request, both active
+     * and inactive users will be fetched.
+     *
+     * @param request the request payload containing search criteria
+     * @param headers HTTP headers for additional request context
+     * @return the response object containing matching user details
+     */
+    @PostMapping("/users/v2/_search")
+    public UserSearchResponse getUsersV2(@RequestBody UserSearchRequestV2 request, @RequestHeader HttpHeaders headers) {
+
+        UserSearchCriteria searchCriteria = request.toDomain();
+
+        if (!isInterServiceCall(headers)) {
+            if ((isEmpty(searchCriteria.getId()) && isEmpty(searchCriteria.getUuid())) &&
+                    (searchCriteria.getLimit() > defaultSearchSize || searchCriteria.getLimit() == 0)) {
+                searchCriteria.setLimit(defaultSearchSize);
+            }
+        }
+
+        List<User> userModels = userService.searchUsersV2(searchCriteria, isInterServiceCall(headers), request.getRequestInfo());
+        List<UserSearchResponseContent> userContracts = userModels.stream()
+                .map(UserSearchResponseContent::new)
+                .collect(Collectors.toList());
+        ResponseInfo responseInfo = ResponseInfo.builder().status(String.valueOf(HttpStatus.OK.value())).build();
+
+        return new UserSearchResponse(responseInfo, userContracts);
+    }
+
+    private UserDetailResponseV2 createResponseV2(User newUser) {
+        UserRequestV2 userRequestV2 = new UserRequestV2(newUser);
+        ResponseInfo responseInfo = ResponseInfo.builder().status(String.valueOf(HttpStatus.OK.value())).build();
+        return new UserDetailResponseV2(responseInfo, Collections.singletonList(userRequestV2));
+    }
 }

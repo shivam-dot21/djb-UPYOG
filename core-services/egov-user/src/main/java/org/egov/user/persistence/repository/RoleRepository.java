@@ -12,7 +12,6 @@ import org.egov.mdms.model.MdmsCriteriaReq;
 import org.egov.mdms.model.ModuleDetail;
 import org.egov.tracer.model.CustomException;
 import org.egov.user.domain.model.Role;
-import org.egov.user.domain.service.utils.EncryptionDecryptionUtil;
 import org.egov.user.persistence.dto.UserRoleDTO;
 import org.egov.user.repository.builder.RoleQueryBuilder;
 import org.egov.user.repository.rowmapper.RoleRowMapper;
@@ -34,7 +33,6 @@ public class RoleRepository {
     private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
     private RestTemplate restTemplate;
     private ObjectMapper objectMapper;
-    public EncryptionDecryptionUtil encryptionDecryptionUtil;
 
     @Value("${mdms.roles.filter}")
     private String roleFilter;
@@ -52,11 +50,10 @@ public class RoleRepository {
     private String path;
 
     public RoleRepository(NamedParameterJdbcTemplate namedParameterJdbcTemplate, RestTemplate restTemplate,
-                          ObjectMapper objectMapper, EncryptionDecryptionUtil encryptionDecryptionUtil) {
+                          ObjectMapper objectMapper) {
         this.namedParameterJdbcTemplate = namedParameterJdbcTemplate;
         this.restTemplate = restTemplate;
         this.objectMapper = objectMapper;
-        this.encryptionDecryptionUtil = encryptionDecryptionUtil;
     }
 
     /**
@@ -172,6 +169,7 @@ public class RoleRepository {
 
         return roleFilter.replaceAll("\\$code", filter.toString());
     }
+
 
     public List<UserRoleDTO> fetchUserRoles(
             Long userId,
