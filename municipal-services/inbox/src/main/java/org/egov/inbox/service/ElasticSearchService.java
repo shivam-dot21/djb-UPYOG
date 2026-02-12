@@ -82,9 +82,9 @@ public class ElasticSearchService {
             List<LinkedHashMap<String, Object>> users = (List<LinkedHashMap<String, Object>>) responseMap.get("user");
             log.info("initSystemUser 3: users={}", users);
             if(users.size()==0)
-                //createInternalMicroserviceUser(requestInfo);
-            //internalMicroserviceRoleUuid = (String) users.get(0).get("uuid");
-            internalMicroserviceRoleUuid = config.getEgovInternalMicroserviceUserUuid();
+                createInternalMicroserviceUser(requestInfo);
+            internalMicroserviceRoleUuid = (String) users.get(0).get("uuid");
+            //internalMicroserviceRoleUuid = config.getEgovInternalMicroserviceUserUuid();
 
         }catch (Exception e) {
             throw new CustomException("EG_USER_SEARCH_ERROR", "Service returned null while fetching user");
