@@ -16,16 +16,7 @@ import { Link } from "react-router-dom";
 import { APPLICATION_PATH } from "../utils";
 import CollapsibleCardPage from "./CollapseCard";
 
-const WTSearchApplication = ({
-  tenantId,
-  isLoading,
-  t,
-  onSubmit,
-  data,
-  count,
-  setShowToast,
-  moduleCode,
-}) => {
+const WTSearchApplication = ({ tenantId, isLoading, t, onSubmit, data, count, setShowToast, moduleCode }) => {
   const isMobile = window.Digit.Utils.browser.isMobile();
   const user = Digit.UserService.getUser().info;
 
@@ -42,16 +33,7 @@ const WTSearchApplication = ({
     toDate: "",
   };
 
-  const {
-    register,
-    control,
-    handleSubmit,
-    setValue,
-    getValues,
-    reset,
-    formState,
-    watch,
-  } = useForm({
+  const { register, control, handleSubmit, setValue, getValues, reset, formState, watch } = useForm({
     defaultValues,
   });
 
@@ -59,64 +41,73 @@ const WTSearchApplication = ({
 
   const GetCell = (value) => <span className="cell-text">{value}</span>;
 
-  const columns = useMemo(() => [
-    {
-      Header: t("WT_BOOKING_NO"),
-      accessor: "bookingNo",
-      disableSortBy: true,
-      Cell: ({ row }) => {
-        const bookingNo = row.original["bookingNo"];
-        const userTypePath = user.type === "EMPLOYEE" ? "employee" : "citizen";
-        return (
-          <div>
-            <span className="link">
-              <Link to={`${APPLICATION_PATH}/${userTypePath}/wt/bookingsearch/booking-details/${bookingNo}`}>
-                {bookingNo}
-              </Link>
-            </span>
-          </div>
-        );
+  const columns = useMemo(
+    () => [
+      {
+        Header: t("WT_BOOKING_NO"),
+        accessor: "bookingNo",
+        disableSortBy: true,
+        Cell: ({ row }) => {
+          const bookingNo = row.original["bookingNo"];
+          const userTypePath = user.type === "EMPLOYEE" ? "employee" : "citizen";
+          return (
+            <div>
+              <span className="link">
+                <Link to={`${APPLICATION_PATH}/${userTypePath}/wt/bookingsearch/booking-details/${bookingNo}`}>{bookingNo}</Link>
+              </span>
+            </div>
+          );
+        },
       },
-    },
-    {
-      Header: t("WT_APPLICANT_NAME"),
-      disableSortBy: true,
-      Cell: ({ row }) => GetCell(row.original?.applicantDetail?.["name"]),
-    },
-    {
-      Header: t("WT_MOBILE_NUMBER"),
-      disableSortBy: true,
-      Cell: ({ row }) => GetCell(row.original?.applicantDetail?.["mobileNumber"]),
-    },
-    {
-      Header: t("PT_COMMON_TABLE_COL_STATUS_LABEL"),
-      disableSortBy: true,
-      Cell: ({ row }) => GetCell(t(row.original["bookingStatus"])),
-    },
-  ],
+      {
+        Header: t("WT_APPLICANT_NAME"),
+        disableSortBy: true,
+        Cell: ({ row }) => GetCell(row.original?.applicantDetail?.["name"]),
+      },
+      {
+        Header: t("WT_MOBILE_NUMBER"),
+        disableSortBy: true,
+        Cell: ({ row }) => GetCell(row.original?.applicantDetail?.["mobileNumber"]),
+      },
+      {
+        Header: t("PT_COMMON_TABLE_COL_STATUS_LABEL"),
+        disableSortBy: true,
+        Cell: ({ row }) => GetCell(t(row.original["bookingStatus"])),
+      },
+    ],
     [t, user.type]
   );
 
-  const statusOptions = moduleCode === "TP" ? [
-    { i18nKey: "TP_BOOKING_CREATED", code: "BOOKING_CREATED", value: t("TP_BOOKING_CREATED") },
-    { i18nKey: "TP_PENDING_FOR_APPROVAL", code: "PENDING_FOR_APPROVAL", value: t("TP_PENDING_FOR_APPROVAL") },
-    { i18nKey: "TP_PAYMENT_PENDING", code: "PAYMENT_PENDING", value: t("TP_PAYMENT_PENDING") },
-    { i18nKey: "TP_TEAM_ASSIGNMENT_FOR_VERIFICATION", code: "TEAM_ASSIGNMENT_FOR_VERIFICATION", value: t("TP_TEAM_ASSIGNMENT_FOR_VERIFICATION") },
-    { i18nKey: "TP_TEAM_ASSIGNMENT_FOR_EXECUTION", code: "TEAM_ASSIGNMENT_FOR_EXECUTION", value: t("TP_TEAM_ASSIGNMENT_FOR_EXECUTION") },
-    { i18nKey: "TP_TREE_PRUNING_SERVICE_COMPLETED", code: "TREE_PRUNING_SERVICE_COMPLETED", value: t("TP_TREE_PRUNING_SERVICE_COMPLETED") }
-  ] : [
-    { i18nKey: "Booking Created", code: "BOOKING_CREATED", value: t("WT_BOOKING_CREATED") },
-    { i18nKey: "Booking Approved", code: "APPROVED", value: t("WT_BOOKING_APPROVED") },
-    { i18nKey: "Tanker Delivered", code: "TANKER_DELIVERED", value: t("WT_TANKER_DELIVERED") },
-    { i18nKey: "Vendor Assigned", code: "ASSIGN_VENDOR", value: t("WT_ASSIGN_VENDOR") },
-    { i18nKey: "Rejected", code: "REJECT", value: t("WT_BOOKING_REJECTED") },
-  ];
+  const statusOptions =
+    moduleCode === "TP"
+      ? [
+          { i18nKey: "TP_BOOKING_CREATED", code: "BOOKING_CREATED", value: t("TP_BOOKING_CREATED") },
+          { i18nKey: "TP_PENDING_FOR_APPROVAL", code: "PENDING_FOR_APPROVAL", value: t("TP_PENDING_FOR_APPROVAL") },
+          { i18nKey: "TP_PAYMENT_PENDING", code: "PAYMENT_PENDING", value: t("TP_PAYMENT_PENDING") },
+          {
+            i18nKey: "TP_TEAM_ASSIGNMENT_FOR_VERIFICATION",
+            code: "TEAM_ASSIGNMENT_FOR_VERIFICATION",
+            value: t("TP_TEAM_ASSIGNMENT_FOR_VERIFICATION"),
+          },
+          { i18nKey: "TP_TEAM_ASSIGNMENT_FOR_EXECUTION", code: "TEAM_ASSIGNMENT_FOR_EXECUTION", value: t("TP_TEAM_ASSIGNMENT_FOR_EXECUTION") },
+          { i18nKey: "TP_TREE_PRUNING_SERVICE_COMPLETED", code: "TREE_PRUNING_SERVICE_COMPLETED", value: t("TP_TREE_PRUNING_SERVICE_COMPLETED") },
+        ]
+      : [
+          { i18nKey: "Booking Created", code: "BOOKING_CREATED", value: t("WT_BOOKING_CREATED") },
+          { i18nKey: "Booking Approved", code: "APPROVED", value: t("WT_BOOKING_APPROVED") },
+          { i18nKey: "Tanker Delivered", code: "TANKER_DELIVERED", value: t("WT_TANKER_DELIVERED") },
+          { i18nKey: "Vendor Assigned", code: "ASSIGN_VENDOR", value: t("WT_ASSIGN_VENDOR") },
+          { i18nKey: "Rejected", code: "REJECT", value: t("WT_BOOKING_REJECTED") },
+        ];
 
-  const onSort = useCallback((args) => {
-    if (args.length === 0) return;
-    setValue("sortBy", args.id);
-    setValue("sortOrder", args.desc ? "DESC" : "ASC");
-  }, [setValue]);
+  const onSort = useCallback(
+    (args) => {
+      if (args.length === 0) return;
+      setValue("sortBy", args.id);
+      setValue("sortOrder", args.desc ? "DESC" : "ASC");
+    },
+    [setValue]
+  );
 
   const onPageSizeChange = (e) => {
     setValue("limit", Number(e.target.value));
@@ -146,8 +137,6 @@ const WTSearchApplication = ({
   return (
     <React.Fragment>
       <div className={user?.type === "CITIZEN" ? "citizen-wrapper" : "employee-wrapper"}>
-        <Header>{t("WT_SEARCH_BOOKINGS")}</Header>
-
         <CollapsibleCardPage
           title={t("WT_SEARCH_FILTERS_LABEL") || "Search Filters"}
           defaultOpen={true}
@@ -159,7 +148,6 @@ const WTSearchApplication = ({
           */}
           {(activeTab) => (
             <form onSubmit={handleSubmit(onSubmit)}>
-
               {/* --- SMART SEARCH --- */}
               {activeTab === t("WT_SMART_SEARCH") && (
                 <div className="wt-search-grid" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "24px" }}>
@@ -234,13 +222,7 @@ const WTSearchApplication = ({
                   <div className="search-field-wrapper">
                     <label>{t("FROM_DATE")}</label>
                     <Controller
-                      render={(props) => (
-                        <DatePicker
-                          date={props.value}
-                          onChange={props.onChange}
-                          max={new Date().toISOString().split("T")[0]}
-                        />
-                      )}
+                      render={(props) => <DatePicker date={props.value} onChange={props.onChange} max={new Date().toISOString().split("T")[0]} />}
                       name="fromDate"
                       control={control}
                     />
@@ -249,13 +231,7 @@ const WTSearchApplication = ({
                   <div className="search-field-wrapper">
                     <label>{t("TO_DATE")}</label>
                     <Controller
-                      render={(props) => (
-                        <DatePicker
-                          date={props.value}
-                          onChange={props.onChange}
-                          min={fromDateValue}
-                        />
-                      )}
+                      render={(props) => <DatePicker date={props.value} onChange={props.onChange} min={fromDateValue} />}
                       name="toDate"
                       control={control}
                     />
@@ -276,7 +252,6 @@ const WTSearchApplication = ({
                   <SubmitBar label={t("ES_COMMON_SEARCH")} submit />
                 </div>
               </div>
-
             </form>
           )}
         </CollapsibleCardPage>
@@ -284,9 +259,13 @@ const WTSearchApplication = ({
         {/* RESULTS TABLE */}
         {!isLoading && data?.display ? (
           <Card style={{ marginTop: 20 }}>
-            {t(data.display).split("\\n").map((text, index) => (
-              <p key={index} style={{ textAlign: "center" }}>{text}</p>
-            ))}
+            {t(data.display)
+              .split("\\n")
+              .map((text, index) => (
+                <p key={index} style={{ textAlign: "center" }}>
+                  {text}
+                </p>
+              ))}
           </Card>
         ) : !isLoading && data !== "" ? (
           <Table
