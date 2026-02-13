@@ -111,7 +111,7 @@ export const VendorData = (data) => {
   
     VendorAdditionalDetails: {
       //vendorAdditionalDetailsId: crypto.randomUUID(), // Generate unique ID
-      tenantId: "pg.citya",
+      tenantId: Digit.ULBService.getCurrentTenantId(),
       code: "VENDOR12345454",
       name: "kunal",
       vendorCompany: data?.vendordet?.Company,
