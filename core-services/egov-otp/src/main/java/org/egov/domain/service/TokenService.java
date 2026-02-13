@@ -39,8 +39,16 @@ public class TokenService {
     public Token create(TokenRequest tokenRequest) {
         tokenRequest.validate();
 
-        String originalOtp = randomNumeric(otpConfiguration.getOtpLength());
+//        String originalOtp = randomNumeric(otpConfiguration.getOtpLength());
+//        String encryptedOtp = originalOtp;
+        String originalOtp = otpConfiguration.isDefaultOtpEnabled()
+                ? otpConfiguration.getDefaultOtpValue()
+                : randomNumeric(otpConfiguration.getOtpLength());
+
         String encryptedOtp = originalOtp;
+
+        log.info("OTP_CREATE_MODE: defaultEnabled={}, otpLength={}",
+                otpConfiguration.isDefaultOtpEnabled(), otpConfiguration.getOtpLength());
 
         if (otpConfiguration.isEncryptOTP()){
             encryptedOtp = passwordEncoder.encode(originalOtp);

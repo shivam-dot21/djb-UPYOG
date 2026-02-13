@@ -25,4 +25,10 @@ public class OtpConfiguration {
     @Value("${egov.otp.encrypt}")
     private boolean encryptOTP;
 
+    @Value("${egov.otp.default.enabled:false}")
+    private boolean defaultOtpEnabled;
+
+    @Value("${egov.otp.default.value:123456}")
+    private String defaultOtpValue;
+
 }
