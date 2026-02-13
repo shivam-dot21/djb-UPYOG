@@ -896,7 +896,7 @@ const UserProfile = ({ stateCode, userType, cityDetails }) => {
             onClick={updateProfile}
             style={{
               marginTop: "24px",
-              backgroundColor: "#a82227",
+              backgroundColor: "#667eea",
               width: windowWidth < 768 ? "100%" : "248px",
               height: "40px",
               float: "right",
