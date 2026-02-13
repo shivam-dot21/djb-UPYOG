@@ -4,6 +4,7 @@
   "private": true,
   "homepage": "/digit-ui",
   "workspaces": [
+    "micro-ui-internals/packages/css",
     "micro-ui-internals/packages/libraries",
     "micro-ui-internals/packages/react-components",
     "micro-ui-internals/packages/modules/ptr",
@@ -19,7 +20,7 @@
     "node": ">=18"
   },
   "dependencies": {
-    "@djb25/digit-ui-css": "1.0.4",
+    "@djb25/digit-ui-css": "1.0.5",
     "@djb25/digit-ui-module-asset": "1.0.3",
     "@djb25/digit-ui-module-hrms": "1.0.0",
     "@djb25/digit-ui-module-ws": "1.0.2",
@@ -61,7 +62,9 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "GENERATE_SOURCEMAP=false SKIP_PREFLIGHT_CHECK=true INLINE_RUNTIME_CHUNK=false NODE_OPTIONS=--openssl-legacy-provider react-scripts build",
-    "build:prepare": "./build.sh"
+    "build:prepare": "./build.sh",
+    "build:css": "cd micro-ui-internals/packages/css && yarn start",
+    "watch:css": "cd micro-ui-internals/packages/css && yarn watch"
   },
   "eslintConfig": {
     "extends": [
