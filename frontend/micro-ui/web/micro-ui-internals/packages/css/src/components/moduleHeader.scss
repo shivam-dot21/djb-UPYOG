@@ -2,11 +2,13 @@
   display: flex;
   justify-content: center;
   align-items: center;
+
   .header-top-section {
     width: 100%;
     background: linear-gradient(98deg, rgba(110, 192, 221, 0.71) -24.44%, rgba(97, 119, 236, 0.9) 93.53%);
-    padding: 12px;
+    padding: 30px 50px;
     border-radius: 11px;
+    margin-inline: 42px;
 
     display: flex;
     align-items: center;
@@ -16,9 +18,9 @@
 
     .title {
       margin: 0;
-      font-size: 14px;
-      font-weight: 500;
-      color: #fff;
+      font-size: 25px;
+      font-weight: 700;
+      color: #000000;
     }
   }
 
@@ -35,16 +37,19 @@
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
     font-size: 14px;
     font-weight: 500;
+
     .icon {
       width: 35px;
       aspect-ratio: 1/1;
       fill: #fff;
     }
+
     .home-icon {
       width: 24px;
       aspect-ratio: 1/1;
       fill: #fff;
     }
+
     .iconn {
       font-feature-settings: "kern";
       font-size: 16px;

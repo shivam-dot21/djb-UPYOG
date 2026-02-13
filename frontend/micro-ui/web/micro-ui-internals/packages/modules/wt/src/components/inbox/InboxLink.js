@@ -36,7 +36,7 @@ const InboxLinks = ({ parentRoute, businessService }) => {
   return (
     // <Card style={{ paddingRight: 0, marginTop: 0 }} className="employeeCard filter inboxLinks">
     <Card className="employeeCard filter inboxLinks">
-      <div className="complaint-links-container">
+      <div className="complaint-links-container" style={{ padding: "10px" }}>
         {GetLogo()}
         {/* <div style={{ marginLeft: "unset", paddingLeft: "0px" }} className="body"> */}
         <div className="body">
