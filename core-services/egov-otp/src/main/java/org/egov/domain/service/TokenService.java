@@ -58,9 +58,15 @@ public class TokenService {
         validateRequest.validate();
 
         Tokens tokens = tokenRepository.findByIdentityAndTenantId(validateRequest);
+        log.info("OTP_VALIDATE: tenantId={}, identity={}, encryptOTP={}",
+                validateRequest.getTenantId(),
+                validateRequest.getIdentity(),
+                otpConfiguration.isEncryptOTP());
 
-        if (tokens == null || tokens.getTokens().isEmpty())
+        if (tokens == null || tokens.getTokens().isEmpty()) {
+            log.warn("OTP_VALIDATE: tokenRepository returned null/empty object");
             throw new TokenValidationFailureException();
+        }
 
         for (Token t: tokens.getTokens()) {
 
