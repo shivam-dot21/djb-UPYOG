@@ -204,11 +204,11 @@ const getDetailsRow = (estimateDetails) => {
               "businessService": "BPA-PAP",
               "applicationType": "BUILDING_PLAN_SCRUTINY",
               "serviceType": "NEW_CONSTRUCTION",
-              "tenantId": "pg.citya"
+              "tenantId": Digit.ULBService.getCurrentTenantId()
           },
           "applicationNo": "",
           "feeType": "ApplicationFee",
-          "tenantId": "pg.citya",
+          "tenantId": Digit.ULBService.getCurrentTenantId(),
           "applicationType": "BUILDING_PLAN_SCRUTINY",
           "serviceType": "NEW_CONSTRUCTION"
       }
