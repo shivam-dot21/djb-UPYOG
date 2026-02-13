@@ -11,10 +11,10 @@ import MobileInbox from "../../components/MobileInbox";
  * - Search, filter, and sort inbox items.
  * - Navigate through paginated results.
  * - Customize table view and filter options.
- * 
- * The component uses `useNewInboxGeneral` or `useInboxGeneral` hooks to fetch data, based on the `useNewInboxAPI` flag. 
+ *
+ * The component uses `useNewInboxGeneral` or `useInboxGeneral` hooks to fetch data, based on the `useNewInboxAPI` flag.
  * It handles empty states, pagination, and sorting, with configurable behavior through various props.
- * 
+ *
  * @returns {JSX.Element} A responsive inbox for water tanker service requests with search, filter, pagination, and sorting features.
  */
 const Inbox = ({
@@ -49,7 +49,14 @@ const Inbox = ({
     ? { limit: 100, offset: 0, sortBy: sortParams?.[0]?.id, sortOrder: sortParams?.[0]?.desc ? "DESC" : "ASC" }
     : { limit: pageSize, offset: pageOffset, sortBy: sortParams?.[0]?.id, sortOrder: sortParams?.[0]?.desc ? "DESC" : "ASC" };
 
-  const { isFetching, isLoading: hookLoading, searchResponseKey, data, searchFields, ...rest } = useNewInboxAPI
+  const {
+    isFetching,
+    isLoading: hookLoading,
+    searchResponseKey,
+    data,
+    searchFields,
+    ...rest
+  } = useNewInboxAPI
     ? Digit.Hooks.useNewInboxGeneral({
         tenantId,
         ModuleCode: moduleCode,
@@ -68,11 +75,6 @@ const Inbox = ({
         middlewaresWf,
         middlewareSearch,
       });
-
-
-     
-
-
 
   useEffect(() => {
     setPageOffset(0);
@@ -119,7 +121,7 @@ const Inbox = ({
           searchParams={searchParams}
           sortParams={sortParams}
           linkPrefix={`${parentRoute}/application-details/`}
-          tableConfig={rest?.tableConfig ? res?.tableConfig:TableConfig(t)[moduleCode]}
+          tableConfig={rest?.tableConfig ? res?.tableConfig : TableConfig(t)[moduleCode]}
           filterComponent={filterComponent}
           EmptyResultInboxComp={EmptyResultInboxComp}
           useNewInboxAPI={useNewInboxAPI}
@@ -128,7 +130,6 @@ const Inbox = ({
     } else {
       return (
         <div style={{ padding: user?.type === "CITIZEN" ? "0 24px" : "" }}>
-          {isInbox && <Header>{t("ES_COMMON_INBOX")}</Header>}
           <WTDesktopInbox
             moduleCode={moduleCode}
             data={data}
@@ -161,4 +162,3 @@ const Inbox = ({
 };
 
 export default Inbox;
-
