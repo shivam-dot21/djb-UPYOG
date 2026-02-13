@@ -58,10 +58,11 @@ public class TokenService {
         validateRequest.validate();
 
         Tokens tokens = tokenRepository.findByIdentityAndTenantId(validateRequest);
-        log.info("OTP_VALIDATE: tenantId={}, identity={}, encryptOTP={}",
+        log.info("OTP_VALIDATE: tenantId={}, identity={}, encryptOTP={}, tokenCount={}",
                 validateRequest.getTenantId(),
                 validateRequest.getIdentity(),
-                otpConfiguration.isEncryptOTP());
+                otpConfiguration.isEncryptOTP(),
+                (tokens == null || tokens.getTokens() == null) ? 0 : tokens.getTokens().size());
 
         if (tokens == null || tokens.getTokens().isEmpty()) {
             log.warn("OTP_VALIDATE: tokenRepository returned null/empty object");
@@ -69,9 +70,10 @@ public class TokenService {
         }
 
         for (Token t: tokens.getTokens()) {
-
+            log.info("Token check : getNumber = {}, getTenantId = {}, getIdentity = {}, getIdentity ={}, getExpiryDateTime = {} ", t.getNumber(), t.getUuid(), t.getTenantId(), t.getIdentity(), t.getExpiryDateTime());
             if (!otpConfiguration.isEncryptOTP() && validateRequest.getOtp().equalsIgnoreCase(t.getNumber())
-             || (otpConfiguration.isEncryptOTP()  && passwordEncoder.matches(validateRequest.getOtp(), t.getNumber()))) {
+                    || (otpConfiguration.isEncryptOTP() && passwordEncoder.matches(validateRequest.getOtp(), t.getNumber()))) {
+                log.info("OTP_MATCHED: tokenId={} -> marking validated", t.getUuid());
                 tokenRepository.markAsValidated(t);
                 return t;
             }
