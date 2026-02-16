@@ -103,22 +103,39 @@ const TopBar = ({
       : ["/digit-ui/citizen/select-language", "/digit-ui/citizen/select-location"].includes(pathname);
 
   if (CITIZEN) {
+    const loggedIn = userDetails?.access_token ? true : false;
     return (
-      <div>
-        <TopBarComponent
-          img={stateInfo?.logoUrlWhite}
-          isMobile={true}
-          toggleSidebar={updateSidebar}
-          logoUrl={stateInfo?.logoUrlWhite}
-          onLogout={handleLogout}
-          userDetails={userDetails}
-          notificationCount={unreadNotificationCount < 99 ? unreadNotificationCount : 99}
-          notificationCountLoaded={notificationCountLoaded}
-          cityOfCitizenShownBesideLogo={t(CitizenHomePageTenantId)}
-          onNotificationIconClick={onNotificationIconClick}
-          hideNotificationIconOnSomeUrlsWhenNotLoggedIn={urlsToDisableNotificationIcon(pathname)}
-          changeLanguage={!mobileView ? <ChangeLanguage dropdown={true} /> : null}
-        />
+      <div className="topbar">
+        {mobileView ? <Hamburger handleClick={updateSidebar} color="#9E9E9E" /> : null}
+        <span style={{ display: "flex", alignItems: "center", justifyContent: "space-between", width: "100%" }}>
+          <img
+            className="city"
+            src="https://objectstorage.ap-hyderabad-1.oraclecloud.com/n/axn3czn1s06y/b/djb-dev-asset-bucket/o/DJB_integrated_logo_without_bg_dark.png"
+          />
+
+          {!mobileView && (
+            <div className="flex-right right w-80 column-gap-15">
+              <div className="left">{showLanguageChange && <ChangeLanguage dropdown={true} />}</div>
+              <div style={{ width: "2px", height: "28px", backgroundColor: "rgb(203, 213, 225" }}></div>
+
+              {loggedIn && (
+                <div className="left" style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+                  <CustomUserDropdown
+                    userOptions={userOptions}
+                    roleOptions={[]}
+                    selectedRole={null}
+                    handleRoleChange={() => { }}
+                    profilePic={profilePic}
+                    userName={userDetails?.info?.name || userDetails?.info?.userInfo?.name || "Citizen"}
+                    t={t}
+                  />
+                </div>
+              )}
+
+              <img className="state" src="https://objectstorage.ap-hyderabad-1.oraclecloud.com/n/axn3czn1s06y/b/djb-dev-asset-bucket/o/SBM_IMG.png" />
+            </div>
+          )}
+        </span>
       </div>
     );
   }
