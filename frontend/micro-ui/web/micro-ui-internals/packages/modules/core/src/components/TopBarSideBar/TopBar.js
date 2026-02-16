@@ -126,7 +126,7 @@ const TopBar = ({
   return (
     <div className="topbar">
       {mobileView ? <Hamburger handleClick={toggleSidebar} color="#9E9E9E" /> : null}
-      <span style={{ display: "flex", alignItems: "center", justifyContent: "space-between", width: "100%" }}>
+      <span style={{ display: "flex", alignItems: "center", justifyContent: "space-between", width: "100%", marginRight:"40px", marginLeft:"-20px" }}>
         <img
           className="city"
           src="https://objectstorage.ap-hyderabad-1.oraclecloud.com/n/axn3czn1s06y/b/djb-dev-asset-bucket/o/DJB_integrated_logo_without_bg_dark.png"
@@ -138,7 +138,7 @@ const TopBar = ({
           </p>
         )}
         {!mobileView && (
-          <div className={mobileView ? "right" : "flex-right right w-80 column-gap-15"} style={!loggedin ? { width: "80%" } : {}}>
+          <div className={mobileView ? "right" : "flex-right right w-80 mx-4 column-gap-15"} style={!loggedin ? { width: "80%" } : {}}>
             <div className="left">
               {!window.location.href.includes("employee/user/login") && !window.location.href.includes("employee/user/language-selection") && (
                 <ChangeCity dropdown={true} t={t} />
