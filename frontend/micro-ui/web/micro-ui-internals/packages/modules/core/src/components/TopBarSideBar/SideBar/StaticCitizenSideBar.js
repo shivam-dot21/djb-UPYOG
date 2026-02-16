@@ -98,7 +98,7 @@ const IconsObject = {
   FSMIcon: <FSMIcon className="icon" />,
   WSIcon: <WSICon className="icon" />,
   MCollectIcon: <MCollectIcon className="icon" />,
-  CHBIcon:<CHBIcon className="icon" />,
+  CHBIcon: <CHBIcon className="icon" />,
   BillsIcon: <CollectionIcon className="icon" />,
   BirthIcon: <BirthIcon className="icon" />,
   DeathIcon: <DeathIcon className="icon" />,
@@ -199,20 +199,20 @@ const StaticCitizenSideBar = ({ linkData, islinkDataLoading }) => {
     menuItems = menuItems.filter((item) => item?.id !== "login-btn" && item?.id !== "help-line");
     menuItems = [
       ...menuItems,
-      {
-        text: t("EDIT_PROFILE"),
-        element: "PROFILE",
-        icon: "EditPencilIcon",
-        populators: {
-          onClick: showProfilePage,
-        },
-      },
-      {
-        text: t("CORE_COMMON_LOGOUT"),
-        element: "LOGOUT",
-        icon: "LogoutIcon",
-        populators: { onClick: handleLogout },
-      },
+      // {
+      //   text: t("EDIT_PROFILE"),
+      //   element: "PROFILE",
+      //   icon: "EditPencilIcon",
+      //   populators: {
+      //     onClick: showProfilePage,
+      //   },
+      // },
+      // {
+      //   text: t("CORE_COMMON_LOGOUT"),
+      //   element: "LOGOUT",
+      //   icon: "LogoutIcon",
+      //   populators: { onClick: handleLogout },
+      // },
       {
         text: (
           <React.Fragment>
@@ -264,7 +264,7 @@ const StaticCitizenSideBar = ({ linkData, islinkDataLoading }) => {
           }}
         >
           {profileItem}
-          <div className="drawer-desktop" style={{"backgroundColor":"white"}}>
+          <div className="drawer-desktop" style={{ "backgroundColor": "white" }}>
             {menuItems?.map((item, index) => (
               <div className={`sidebar-list ${pathname === item?.link || pathname === item?.sidebarURL ? "active" : ""}`} key={index}>
                 <MenuItem item={item} />
