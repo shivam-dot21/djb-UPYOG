@@ -4,7 +4,7 @@ RUN apk update && apk upgrade
 RUN apk add --no-cache git>2.30.0
 RUN yarn add @upyog/digit-ui-libraries@3.0.0
 RUN yarn add @upyog/digit-ui-module-fsm@3.0.1
-RUN yarn add @djb25/digit-ui-module-ws@1.0.2
+RUN yarn add @djb25/digit-ui-module-ws@1.0.0
 RUN yarn add @upyog/digit-ui-module-dss@3.0.2
 RUN yarn add @upyog/digit-ui-module-mcollect@3.0.2
 RUN yarn add @upyog/digit-ui-module-pgr@3.0.0
@@ -15,10 +15,10 @@ RUN yarn add @upyog/digit-ui-module-common@3.0.4
 RUN yarn add @upyog/digit-ui-module-commonpt@3.0.2
 RUN yarn add @upyog/digit-ui-module-bills@3.0.0
 RUN yarn add @upyog/upyog-ui-module-ptr@3.0.0
-RUN yarn add @djb25/digit-ui-module-asset@1.0.3
+RUN yarn add @djb25/digit-ui-module-asset@1.0.0
 RUN yarn add @nudmcdgnpm/digit-ui-react-components@1.2.6
 RUN yarn add @nudmcdgnpm/upyog-ui-module-vendor
-RUN yarn add @djb25/digit-ui-module-wt@1.0.1
+RUN yarn add @djb25/digit-ui-module-wt@1.0.0
 RUN yarn add @nudmcdgnpm/upyog-ui-module-pgrai
 
 ARG WORK_DIR
