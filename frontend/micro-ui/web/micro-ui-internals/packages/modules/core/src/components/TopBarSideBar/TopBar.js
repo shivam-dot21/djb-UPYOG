@@ -143,19 +143,23 @@ const TopBar = ({
   return (
     <div className="topbar">
       {mobileView ? <Hamburger handleClick={toggleSidebar} color="#9E9E9E" /> : null}
-      <span style={{ display: "flex", alignItems: "center", justifyContent: "space-between", width: "100%", marginRight:"40px", marginLeft:"-20px" }}>
-        <img
-          className="city"
-          src="https://objectstorage.ap-hyderabad-1.oraclecloud.com/n/axn3czn1s06y/b/djb-dev-asset-bucket/o/DJB_integrated_logo_without_bg_dark.png"
-        />
-
+      <img
+        className="city"
+        src="https://objectstorage.ap-hyderabad-1.oraclecloud.com/n/axn3czn1s06y/b/djb-dev-asset-bucket/o/DJB_integrated_logo_without_bg_dark.png"
+        alt="DJB Logo"
+      />
+      <span style={{ display: "flex", alignItems: "center", justifyContent: "space-between", width: "100%" }}>
+        {loggedin &&
+          (cityDetails?.city?.ulbGrade ? null : ( // </p> //   {t(`ULBGRADE_${cityDetails?.city?.ulbGrade.toUpperCase().replace(" ", "_").replace(".", "_")}`).toUpperCase()} //   {t(cityDetails?.i18nKey).toUpperCase()}{" "} // <p className="ulb" style={mobileView ? { fontSize: "14px", display: "inline-block" } : {}}>
+            <img className="state" src={logoUrl} alt="State Logo" />
+          ))}
         {!loggedin && (
           <p className="ulb" style={mobileView ? { fontSize: "14px", display: "inline-block" } : {}}>
             {t(`MYCITY_${stateInfo?.code?.toUpperCase()}_LABEL`)} {t(`MYCITY_STATECODE_LABEL`)}
           </p>
         )}
         {!mobileView && (
-          <div className={mobileView ? "right" : "flex-right right w-80 mx-4 column-gap-15"} style={!loggedin ? { width: "80%" } : {}}>
+          <div className={mobileView ? "right" : "flex-right right column-gap-15"} style={!loggedin ? { width: "80%" } : {}}>
             <div className="left">
               {!window.location.href.includes("employee/user/login") && !window.location.href.includes("employee/user/language-selection") && (
                 <ChangeCity dropdown={true} t={t} />
@@ -178,7 +182,11 @@ const TopBar = ({
                 />
               </div>
             )}
-            <img className="state" src="https://objectstorage.ap-hyderabad-1.oraclecloud.com/n/axn3czn1s06y/b/djb-dev-asset-bucket/o/SBM_IMG.png" />
+            <img
+              className="state"
+              src="https://png.pngtree.com/png-clipart/20220927/original/pngtree-swachh-bharat-logo-in-hindi-png-image_8634754.png"
+              alt="Swachh Bharat Logo"
+            />
           </div>
         )}
       </span>
