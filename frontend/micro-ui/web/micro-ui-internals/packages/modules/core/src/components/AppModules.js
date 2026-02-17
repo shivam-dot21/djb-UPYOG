@@ -7,7 +7,6 @@ import EmployeeLogin from "../pages/employee/Login/index";
 import ChangePassword from "../pages/employee/ChangePassword/index";
 import ForgotPassword from "../pages/employee/ForgotPassword/index";
 import LanguageSelection from "../pages/employee/LanguageSelection";
-import { ExpandedViewPage } from "@upyog/digit-ui-react-components";
 // import UserProfile from "./userProfile";
 
 const getTenants = (codes, tenants) => {
@@ -31,9 +30,9 @@ export const AppModules = ({ stateCode, userType, modules, appTenants }) => {
       <Route key={index} path={`${path}/${code.toLowerCase()}`}>
         <Module stateCode={stateCode} moduleCode={code} userType={userType} tenants={getTenants(tenants, appTenants)} />
       </Route>
-    ) : <Route key={index} path={`${path}/${code.toLowerCase()}`}>
-      <Redirect to={{ pathname: "/digit-ui/employee/user/error?type=notfound", state: { from: location.pathname + location.search } }} />
-    </Route>;
+    ) :   <Route key={index} path={`${path}/${code.toLowerCase()}`}>
+    <Redirect to={{ pathname: "/digit-ui/employee/user/error?type=notfound", state: { from: location.pathname + location.search } }} />
+  </Route>;
   });
 
   return (
@@ -48,9 +47,6 @@ export const AppModules = ({ stateCode, userType, modules, appTenants }) => {
         </Route>
         <Route path={`${path}/change-password`}>
           <ChangePassword />
-        </Route>
-        <Route path={`${path}/module/details`}>
-          <ExpandedViewPage modules={modules} />
         </Route>
         <Route>
           <AppHome userType={userType} modules={modules} />

@@ -1,115 +1,88 @@
-import React, { Fragment, useContext } from "react";
-import { useHistory } from "react-router-dom";
+import React, { Fragment } from "react";
 import { ArrowRightInbox } from "./svgindex";
-import ExpandedViewContext from "./ExpandedViewContext";
-import ModuleLinksView from "./ModuleLinksView";
+import { Link } from "react-router-dom";
 
-// const EmployeeModuleCard = ({ Icon, moduleName, kpis = [], links = [], isCitizen = false, className, styles, longModuleName=false, FsmHideCount }) => {
-//   return (
-//     <div className={className ? className : "employeeCard customEmployeeCard card-home home-action-cards"} style={styles ? styles : {}}>
-//       <div className="complaint-links-container">
-//         <div className="header" style={isCitizen ? { padding: "0px" } : longModuleName ? {alignItems:"flex-start"}:{}}>
-//           <span className="text removeHeight">{moduleName}</span>
-//           <span className="logo removeBorderRadiusLogo">{Icon}</span>
-//         </div>
-//         <div className="body" style={{ margin: "0px", padding: "0px" }}>
-//           {kpis.length !== 0 && (
-//             <div className="flex-fit" style={isCitizen ? { paddingLeft: "17px" } : {}}>
-//               {kpis.map(({ count, label, link }, index) => (
-//                 <div className="card-count" key={index}>
-//                   <div>
-//                     <span>{count ? count : count == 0 ? 0 : "-"}</span>
-//                   </div>
-//                   <div>
-//                     {link ? (
-//                       <Link to={link} className="employeeTotalLink">
-//                         {label}
-//                       </Link>
-//                     ) : null}
-//                   </div>
-//                 </div>
-//               ))}
-//             </div>
-//           )}
-//           <div className="links-wrapper" style={{ width: "80%" }}>
-//             {links.map(({ count, label, link }, index) => (
-//               <span className="link" key={index}>
-//                 {link ? <Link to={link}>{label}</Link> : null}
-//                 {count ? (
-//                   <>
-//                     {FsmHideCount ? null : <span className={"inbox-total"}>{count || "-"}</span>}
-//                     <Link to={link}>
-//                       <ArrowRightInbox />
-//                     </Link>
-//                   </>
-//                 ) : null}
-//               </span>
-//             ))}
-//           </div>
-//         </div>
-//       </div>
-//     </div>
-//   );
-// };
-const EmployeeModuleCard = ({ Icon, moduleName, kpis = [], links = [], isCitizen = false, className, styles, FsmHideCount }) => {
+const EmployeeModuleCard = ({ Icon, moduleName, kpis = [], links = [], className, styles }) => {
+  // Extract the first KPI for the massive number + label on the left
+  const mainKpi = kpis.length > 0 ? kpis[0] : null;
+  
+  // Extract the rest of the KPIs for the right-side list
+  const secondaryKpis = kpis.length > 1 ? kpis.slice(1) : [];
+
   return (
-    <div className={className ? "employeeCard card-home customEmployeeCard" : "employeeCard card-home customEmployeeCard"} style={className ? {} : styles}>
-      <div className="employeeCustomCard" style={{ width: "100%", height: "85%", position: "relative" }}>
-        <span className="text-employee-card">{moduleName}</span>
-        <span className="logo-removeBorderRadiusLogo" style={{ position: "absolute", right: "10%", top: "10%" }}>{Icon}</span>
-        <div className="employee-card-banner">
-          <div className="body" style={{ margin: "0px", padding: "0px" }}>
-            <div style={{display: "flex",flexDirection: "column"}}>
-              <div style={{display:"flex"}}>
-            <div style={{ width: "30%", height: "50px" }}><span className="icon-banner-employee" style={{ position: "absolute", left: "10%", top: "10%", borderRadius: "5px", boxShadow: "5px 5px 5px 0px #e3e4e3" }}>{Icon}</span></div>
-            
-            <div style={{width:"70%"}}>
-            {kpis.length !== 0 && (
-              <div className="flex-fit" style={isCitizen ? { paddingLeft: "17px" } : {}}>
+    <div className={`new-employee-card ${className || ''}`} style={styles}>
 
-                {kpis.map(({ count, label, link }, index) => (
-                  <div className="card-count" key={index} style={{ display: "flex", width: "100%",flexDirection: "column" }}>
-                    {/*  */}
-                    <div style={{ marginLeft: "auto", display: "flex", flexDirection: "column-reverse", width: "100%" }}>
-
-                      <div style={{textAlign:"center"}}>
-                        {link ? (
-                          <Link to={link} className="employeeTotalLink">
-                            {label}
-                          </Link>
-                        ) : null}
-                    </div>
-                      <div style={{ textAlign:"center"}}>
-                        <span style={{ color: "#ae1e28", fontSize: "18px", fontFamily: "sans-serif", fontWeight: "bold" }}>{count || "-"}</span>
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
-            </div>
-            </div>
-            <div>
-            <div className="links-wrapper" style={{ width: "100%", display: "flex", fontSize: "0.8rem", paddingLeft: "10px", flexWrap:"wrap",flexDirection:"row",paddingTop:"10px"}}>
-              {links.map(({ count, label, link }, index) => (
-                <div className="link" key={index} style={{ paddingLeft: "5px", color: "#a1a5b7",display:"flex" }}>
-                  {link ? <div style={{display:"flex"}}> <Link to={link}> {label} </Link>  <span>|</span> </div>: null}
-                </div>
-
-              ))}
-            </div>
-          </div>
-          </div>
-          </div>
+      {/* --- TOP HEADER --- */}
+      <div className="card-header-row">
+        <h2 className="module-title">{moduleName}</h2>
+        <div className="module-icon-wrap">
+          {Icon}
         </div>
       </div>
-      
-      <div>
+
+      {/* --- MIDDLE BODY --- */}
+      <div className="card-body-row">
+
+        {/* Left Side: Main Large KPI */}
+        <div className="main-kpi-section">
+          {mainKpi && (
+            <Fragment>
+              <span className="main-kpi-number">{mainKpi.count || "0"}</span>
+              <div className="main-kpi-label-wrap">
+                <div className="trend-icon">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+                    <line x1="12" y1="19" x2="12" y2="5"></line>
+                    <polyline points="5 12 12 5 19 12"></polyline>
+                  </svg>
+                </div>
+                <span className="main-kpi-label">{mainKpi.label}</span>
+              </div>
+            </Fragment>
+          )}
+        </div>
+
+        {/* Right Side: Secondary KPIs List */}
+        <div className="secondary-kpi-section">
+          {secondaryKpis.map((kpi, index) => {
+            // Check if it's a header row like "URGENT TASKS" (usually has no count and no link)
+            const isHeader = !kpi.count && kpi.label === kpi.label.toUpperCase();
+            
+            return (
+              <div key={index} className={`secondary-kpi-item ${isHeader ? 'sec-kpi-header' : ''}`}>
+                <span className="sec-kpi-label">{kpi.label}</span>
+                {!isHeader && (
+                  <span className="sec-kpi-value">
+                    {/* Render number if it exists, otherwise render the red dot */}
+                    {kpi.count ? kpi.count : <span className="sec-kpi-dot"></span>}
+                  </span>
+                )}
+              </div>
+            );
+          })}
+        </div>
       </div>
+
+      {/* --- BOTTOM FOOTER --- */}
+      <div className="card-footer-row">
+        <div className="footer-links">
+          {links.map((linkItem, index) => (
+            linkItem.link ? (
+              <Link key={index} to={linkItem.link} className="pill-link">
+                {linkItem.label}
+              </Link>
+            ) : (
+              <span key={index} className="pill-link">{linkItem.label}</span>
+            )
+          ))}
+        </div>
+        <button className="details-btn">Details</button>
+      </div>
+
     </div>
   );
 };
-const ModuleCardFullWidth = ({ moduleName,  links = [], isCitizen = false, className, styles, headerStyle, subHeader, subHeaderLink }) => {
+
+const ModuleCardFullWidth = ({ moduleName, links = [], isCitizen = false, className, styles, headerStyle, subHeader, subHeaderLink }) => {
   return (
     <div className={className ? className : "employeeCard card-home customEmployeeCard home-action-cards"} style={styles ? styles : {}}>
       <div className="complaint-links-container" style={{ padding: "10px" }}>
@@ -131,14 +104,13 @@ const ModuleCardFullWidth = ({ moduleName,  links = [], isCitizen = false, class
           <div className="links-wrapper" style={{ width: "100%", display: "flex", flexWrap: "wrap" }}>
             {links.map(({ count, label, link }, index) => (
               <span className="link full-employee-card-link" key={index}>
-                {link ? (link?.includes('digit-ui/')?<Link to={link}>{label}</Link>:<a href={link}>{label}</a>) : null}
+                {link ? (link?.includes('digit-ui/') ? <Link to={link}>{label}</Link> : <a href={link}>{label}</a>) : null}
               </span>
             ))}
           </div>
-
         </div>
       </div>
-    </Fragment>
+    </div>
   );
 };
 

@@ -32,7 +32,6 @@ import Dropdown from "./atoms/Dropdown";
 import EllipsisMenu from "./atoms/EllipsisMenu";
 import EmployeeAppContainer from "./atoms/EmployeeAppContainer";
 import { EmployeeModuleCard, ModuleCardFullWidth } from "./atoms/EmployeeModuleCard";
-import ExpandedViewPage from "./atoms/ExpandedViewPage";
 import GreyOutText from "./atoms/GreyOutText";
 import Hamburger from "./atoms/Hamburger";
 import Header from "./atoms/Header";
@@ -471,5 +470,6 @@ export {
   CHBIcon,
   AddressDetails,
   ApplicantDetails,
-  Timeline
+  Timeline,
+  ModuleHeader,
 };

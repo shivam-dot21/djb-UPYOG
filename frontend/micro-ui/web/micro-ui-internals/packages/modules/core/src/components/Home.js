@@ -152,8 +152,12 @@ const EmployeeHome = ({ modules }) => {
     );
   return (
     <div className="employee-app-container">
-      <br />
-      {(dashboardConfig && dashboardCemp)?<EmployeeDashboard modules={modules}/>:null}
+      {dashboardConfig && dashboardCemp ? <EmployeeDashboard modules={modules} /> : null}
+      <div className="module-header">
+        <div className="header-top-section">
+          <p className="title">Available Modules To Access</p>
+        </div>
+      </div>
       <div className="ground-container moduleCardWrapper gridModuleWrapper">
         {modules.map(({ code }, index) => {
           const Card = Digit.ComponentRegistryService.getComponent(`${code}Card`) || (() => <React.Fragment />);

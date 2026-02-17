@@ -8,8 +8,8 @@
 
   .ground-container {
     margin-bottom: 56px;
-    margin-left: 0;
-    margin-right: 0;
+    margin-left: 0px;
+    margin-right: 0px;
     /* @apply flex flex-col; */
   }
 
@@ -260,7 +260,8 @@
       &.active {
         border-left: 4px solid theme(colors.primary.main);
 
-        &.level-0 {}
+        &.level-0 {
+        }
 
         &.level-1 {
           border-left: 8.5px solid theme(colors.primary.main);
@@ -270,7 +271,8 @@
           border-left: 4px solid theme(colors.primary.main);
         }
 
-        &.level-3 {}
+        &.level-3 {
+        }
 
         color: theme(colors.primary.main) !important;
         border-right: none;
@@ -512,6 +514,10 @@
   .employee {
     .ground-container {
       /* @apply block; */
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: center;
     }
 
     .breadcrumb {
@@ -558,7 +564,8 @@
       justify-content: center;
     }
 
-    .center-container {}
+    .center-container {
+    }
   }
 }
 
