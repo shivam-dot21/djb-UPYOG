@@ -115,7 +115,7 @@ const ApplicationDetails = () => {
       <div style={{ display: "flex", flexDirection: "row", gap: "20px" }}>
         {/* Left Column: Workflow Timeline */}
         <div style={{ flex: "0 0 25%", minWidth: "250px" }}>
-          <div style={{   }}>
+          <div style={{ minHeight: "100vh" }}>
             <WorkflowTimeline workflowDetails={workflowDetails} />
           </div>
         </div>
