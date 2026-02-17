@@ -12,9 +12,9 @@
         @extend .light-text-color-primary;
         text-align: left;
       }
-
-      .field-container {}
-
+      .field-container {
+        max-width: 540px;
+      }
       button {
         @extend .light-primary-button;
         max-width: 240px;

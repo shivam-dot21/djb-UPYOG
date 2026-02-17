@@ -11,14 +11,13 @@
     display: inline;
 
     &.city {
-      margin-right: 8px;
-      height: 60px;
+    margin-right: 8px;
+    height: 60px;
     }
 
     &.state {
-      height: 50px;
-      width: auto;
-      object-fit: contain;
+    min-height: 50px;
+    width: 80px;
     }
   }
 
@@ -37,12 +36,10 @@
     }
 
     .user-img-txt {
-      background: #a82227;
+      background: theme(colors.primary.main);
       padding: 10px 15px;
-      border-radius: 20px;
+      border-radius: 50%;
       color: white;
-      height: 43px;
-      width: 43px;
       font-weight: 700;
     }
   }
@@ -152,5 +149,5 @@ video::-webkit-media-controls-panel {
 }
 
 .topbarOptionsClassName {
-  right: -3rem !important;
+  right: -3rem !important
 }

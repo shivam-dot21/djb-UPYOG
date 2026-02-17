@@ -17,6 +17,8 @@ export const fetchUserDetails = async (kc) => {
     },
   };
 
+  console.log(requestData, "eee");
+
   return Request({
     url: Urls.UserDetails,
     method: "POST",
