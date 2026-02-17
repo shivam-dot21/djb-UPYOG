@@ -1,4 +1,4 @@
-import React, { useEffect,useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   StandaloneSearchBar,
   Loader,
@@ -28,8 +28,8 @@ const Home = () => {
   const DEFAULT_REDIRECT_URL = "/digit-ui/citizen";
   const { data: { stateInfo, uiHomePage } = {}, isLoading } = Digit.Hooks.useStore.getInitData();
   let isMobile = window.Digit.Utils.browser.isMobile();
-  if(window.Digit.SessionStorage.get("TL_CREATE_TRADE")) window.Digit.SessionStorage.set("TL_CREATE_TRADE",{})
-   
+  if (window.Digit.SessionStorage.get("TL_CREATE_TRADE")) window.Digit.SessionStorage.set("TL_CREATE_TRADE", {})
+
   const conditionsToDisableNotificationCountTrigger = () => {
     if (Digit.UserService?.getUser()?.info?.type === "EMPLOYEE") return false;
     if (!Digit.UserService?.getUser()?.access_token) return false;
@@ -62,18 +62,18 @@ const Home = () => {
     window.open(obj?.navigationUrl);
   };
   /* set citizen details to enable backward compatiable */
-const setCitizenDetail = (userObject, token, tenantId) => {
-  let locale = JSON.parse(sessionStorage.getItem("Digit.initData"))?.value?.selectedLanguage;
-  localStorage.setItem("Citizen.tenant-id", tenantId);
-  localStorage.setItem("tenant-id", tenantId);
-  localStorage.setItem("citizen.userRequestObject", JSON.stringify(userObject));
-  localStorage.setItem("locale", locale);
-  localStorage.setItem("Citizen.locale", locale);
-  localStorage.setItem("token", token);
-  localStorage.setItem("Citizen.token", token);
-  localStorage.setItem("user-info", JSON.stringify(userObject));
-  localStorage.setItem("Citizen.user-info", JSON.stringify(userObject));
-};
+  const setCitizenDetail = (userObject, token, tenantId) => {
+    let locale = JSON.parse(sessionStorage.getItem("Digit.initData"))?.value?.selectedLanguage;
+    localStorage.setItem("Citizen.tenant-id", tenantId);
+    localStorage.setItem("tenant-id", tenantId);
+    localStorage.setItem("citizen.userRequestObject", JSON.stringify(userObject));
+    localStorage.setItem("locale", locale);
+    localStorage.setItem("Citizen.locale", locale);
+    localStorage.setItem("token", token);
+    localStorage.setItem("Citizen.token", token);
+    localStorage.setItem("user-info", JSON.stringify(userObject));
+    localStorage.setItem("Citizen.user-info", JSON.stringify(userObject));
+  };
 
   useEffect(async () => {
     //sessionStorage.setItem("DigiLocker.token1","cf87055822e4aa49b0ba74778518dc400a0277e5")
@@ -89,23 +89,23 @@ const setCitizenDetail = (userObject, token, tenantId) => {
       setCitizenDetail(info, tokens?.access_token, info?.tenantId)
     }
   }, [])
-useEffect(() => {
-  if (!user) {
-    return;
-  }
-  Digit.SessionStorage.set("citizen.userRequestObject", user);
-  Digit.UserService.setUser(user);
-  setCitizenDetail(user?.info, user?.access_token, "pg");
-  const redirectPath = location.state?.from || DEFAULT_REDIRECT_URL;
-  if (!Digit.ULBService.getCitizenCurrentTenant(true)) {
-    history.replace("/digit-ui/citizen/select-location", {
-      redirectBackTo: redirectPath,
-    });
-  } else {
-    history.replace(redirectPath);
-  }
-}, [user]);
-console.log("citizenServicesObjcitizenServicesObj",citizenServicesObj)
+  useEffect(() => {
+    if (!user) {
+      return;
+    }
+    Digit.SessionStorage.set("citizen.userRequestObject", user);
+    Digit.UserService.setUser(user);
+    setCitizenDetail(user?.info, user?.access_token, "pg");
+    const redirectPath = location.state?.from || DEFAULT_REDIRECT_URL;
+    if (!Digit.ULBService.getCitizenCurrentTenant(true)) {
+      history.replace("/digit-ui/citizen/select-location", {
+        redirectBackTo: redirectPath,
+      });
+    } else {
+      history.replace(redirectPath);
+    }
+  }, [user]);
+  console.log("citizenServicesObjcitizenServicesObj", citizenServicesObj)
   const allCitizenServicesProps = {
     header: t(citizenServicesObj?.headerLabel),
     sideOption: {
@@ -175,42 +175,44 @@ console.log("citizenServicesObjcitizenServicesObj",citizenServicesObj)
     ],
     styles: { display: "flex", flexWrap: "wrap", justifyContent: "flex-start", width: "100%" },
   };
-  sessionStorage.removeItem("type" );
+  sessionStorage.removeItem("type");
   sessionStorage.removeItem("pincode");
   sessionStorage.removeItem("tenantId");
   sessionStorage.removeItem("localityCode");
-  sessionStorage.removeItem("landmark"); 
+  sessionStorage.removeItem("landmark");
   sessionStorage.removeItem("propertyid");
 
   return isLoading ? (
     <Loader />
   ) : (
-    <div className="HomePageContainer" style={{width:"100%"}}>
+    <div className="HomePageContainer" style={{ width: "100%" }}>
       {/* <div className="SideBarStatic">
         <StaticCitizenSideBar />
       </div> */}
       <div className="HomePageWrapper">
-        {<div className="BannerWithSearch">
-          {isMobile ? <img src={"https://nugp-assets.s3.ap-south-1.amazonaws.com/nugp+asset/Banner+UPYOG+%281920x500%29B+%282%29.jpg"} /> : <img src={"https://nugp-assets.s3.ap-south-1.amazonaws.com/nugp+asset/Banner+UPYOG+%281920x500%29A.jpg"} />}
-          {/* <div className="Search">
-            <StandaloneSearchBar placeholder={t("CS_COMMON_SEARCH_PLACEHOLDER")} />
-          </div> */}
+        {
+          // <div className="BannerWithSearch">
+          //   {isMobile ? <img src={"https://nugp-assets.s3.ap-south-1.amazonaws.com/nugp+asset/Banner+UPYOG+%281920x500%29B+%282%29.jpg"} /> : <img src={"https://objectstorage.ap-hyderabad-1.oraclecloud.com/n/axn3czn1s06y/b/djb-dev-asset-bucket/o/Banner_img.png"} />}
+          //   <div className="Search">
+          //     <StandaloneSearchBar placeholder={t("CS_COMMON_SEARCH_PLACEHOLDER")} />
+          //   </div>
           <div className="ServicesSection">
-          <CardBasedOptions style={{marginTop:"-30px"}} {...allCitizenServicesProps} />
-          <CardBasedOptions style={isMobile ? {marginTop:"-30px"} : {marginTop:"-30px"}} {...allInfoAndUpdatesProps} />
-        </div>
-        </div>}
+            <CardBasedOptions style={{ marginTop: "-30px" }} {...allCitizenServicesProps} />
+            <CardBasedOptions style={isMobile ? { marginTop: "-30px" } : { marginTop: "-30px" }} {...allInfoAndUpdatesProps} />
+          </div>
+          // </div>
+        }
 
 
-        {(whatsAppBannerMobObj || whatsAppBannerWebObj) && (
+        {/* {(whatsAppBannerMobObj || whatsAppBannerWebObj) && (
           <div className="WhatsAppBanner">
             {isMobile ? (
-              <img src={"https://nugp-assets.s3.ap-south-1.amazonaws.com/nugp+asset/Banner+UPYOG+%281920x500%29B+%282%29.jpg"} onClick={() => handleClickOnWhatsAppBanner(whatsAppBannerMobObj)} style={{"width":"100%"}}/>
+              <img src={"https://nugp-assets.s3.ap-south-1.amazonaws.com/nugp+asset/Banner+UPYOG+%281920x500%29B+%282%29.jpg"} onClick={() => handleClickOnWhatsAppBanner(whatsAppBannerMobObj)} style={{ "width": "100%" }} />
             ) : (
-              <img src={"https://nugp-assets.s3.ap-south-1.amazonaws.com/nugp+asset/Banner+UPYOG+%281920x500%29B+%282%29.jpg"} onClick={() => handleClickOnWhatsAppBanner(whatsAppBannerWebObj)} style={{"width":"100%"}}/>
+              <img src={"https://nugp-assets.s3.ap-south-1.amazonaws.com/nugp+asset/Banner+UPYOG+%281920x500%29B+%282%29.jpg"} onClick={() => handleClickOnWhatsAppBanner(whatsAppBannerWebObj)} style={{ "width": "100%" }} />
             )}
           </div>
-        )}
+        )} */}
 
         {conditionsToDisableNotificationCountTrigger() ? (
           EventsDataLoading ? (
@@ -225,7 +227,7 @@ console.log("citizenServicesObjcitizenServicesObj",citizenServicesObj)
             </div>
           )
         ) : null}
-        <ChatBot/>
+        <ChatBot />
       </div>
     </div>
   );

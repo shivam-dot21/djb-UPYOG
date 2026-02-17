@@ -55,7 +55,11 @@ const TopBarSideBar = ({
     setShowDialog(false);
   }
   const userProfile = () => {
-    history.push("/digit-ui/employee/user/profile");
+    if (CITIZEN) {
+      history.push("/digit-ui/citizen/user/profile");
+    } else {
+      history.push("/digit-ui/employee/user/profile");
+    }
   };
   const userOptions = [
     { name: t("EDIT_PROFILE"), icon: <EditPencilIcon className="icon" />, func: userProfile },
