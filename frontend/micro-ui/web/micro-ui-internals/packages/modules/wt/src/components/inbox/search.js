@@ -85,7 +85,7 @@ const SearchApplication = ({ onSearch, type, onClose, searchFields, searchParams
       </LinkLabel>
     );
   };
-
+  
   return (
     <form onSubmit={handleSubmit(onSubmitInput)}>
       <React.Fragment>
@@ -99,7 +99,7 @@ const SearchApplication = ({ onSearch, type, onClose, searchFields, searchParams
                 </span>
               </div>
             )}
-            <div className={"complaint-input-container for-pt " + (!isInboxPage ? "for-search" : "")} style={{ width: "100%", display: "grid" }}>
+            <div className={"complaint-input-container for-pt " + (!isInboxPage ? "for-search" : "")} style={{ width: "100%", display:"grid" }}>
               {searchFields
                 ?.filter((e) => true)
                 ?.map((input, index) => (
@@ -140,7 +140,7 @@ const SearchApplication = ({ onSearch, type, onClose, searchFields, searchParams
                 ))}
 
               {isInboxPage && (
-                <div style={{ gridColumn: "2/3", textAlign: "right", paddingTop: "10px", padding: "10px" }} className="input-fields">
+                <div style={{ gridColumn: "2/3", textAlign: "right", paddingTop: "10px" }} className="input-fields">
                   <div>{clearAll()}</div>
                 </div>
               )}

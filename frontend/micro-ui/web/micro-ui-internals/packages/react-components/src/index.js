@@ -139,7 +139,6 @@ import {
   InfoBannerIcon,
   WSICon,
   ArrowForward,
-  ArrowBack,
   ArrowVectorDown,
   ArrowDirection,
   CameraIcon,
@@ -176,7 +175,7 @@ import {
   InfoIcon,
   LoginIcon,
   PTRIcon,
-  CHBIcon,
+  CHBIcon
 } from "./atoms/svgindex";
 import Table from "./atoms/Table";
 import TelePhone from "./atoms/TelePhone";
@@ -227,7 +226,6 @@ import OpenLinkContainer from "./atoms/OpenLinkContainer";
 import UploadPitPhoto from "./molecules/UploadPitPhoto";
 import { DownloadBtnCommon } from "./atoms/svgindex";
 import ToggleSwitch from "./atoms/ToggleSwitch";
-import ModuleHeader from "./atoms/ModuleHeader";
 
 import CitizenConsentForm from "./atoms/CitizenConsentForm";
 import AddressDetails from "./molecules/AddressDetails";
@@ -434,7 +432,6 @@ export {
   CheckSvg,
   ModuleCardFullWidth,
   ArrowForward,
-  ArrowBack,
   ArrowVectorDown,
   ArrowDirection,
   AddressBookIcon,

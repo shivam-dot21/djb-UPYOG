@@ -14,7 +14,8 @@
     "packages/modules/obps",
     "packages/modules/commonPt",
     "packages/modules/common",
-    "packages/modules/pt"
+    "packages/modules/pt",
+    "packages/modules/wt"
   ],
   "license": "MIT",
   "private": true,
@@ -26,7 +27,7 @@
     "sprint": "SKIP_PREFLIGHT_CHECK=true run-s start:script",
     "start:dev": "run-p dev:**",
     "start:script": "./scripts/create.sh",
-    "dev:css": "cd packages/css && yarn watch",
+    "dev:css": "cd packages/css && yarn start",
     "publish:css": "cd packages/css && yarn publish --access public",
     "dev:libraries": "cd packages/libraries && yarn start",
     "dev:fsm": "cd packages/modules/fsm && yarn start",

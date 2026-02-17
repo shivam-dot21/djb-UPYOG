@@ -97,7 +97,7 @@ const Login = () => {
           throw new Error("Keycloak token missing");
         }
 
-        const tenantId = Digit.ULBService.getCurrentTenantId();
+        const tenantId = "dl.djb";
 
         // API Call 1: Fetch user details using fetchUserDetails
         console.log("Fetching user details...");

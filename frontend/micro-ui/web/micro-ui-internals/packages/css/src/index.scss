@@ -133,6 +133,7 @@ h6 {
   font-weight: inherit;
 }
 
+
 .flex-one {
   @apply flex-1;
 }
@@ -350,6 +351,7 @@ input[type="number"]::-webkit-outer-spin-button {
 input[type="number"] {
   -moz-appearance: textfield;
 }
+
 
 .static {
   @apply flex flex-col;

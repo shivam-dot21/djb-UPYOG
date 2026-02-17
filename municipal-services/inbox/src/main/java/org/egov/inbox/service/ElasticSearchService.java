@@ -71,21 +71,12 @@ public class ElasticSearchService {
         userSearchRequest.put("RequestInfo", requestInfo);
         userSearchRequest.put("tenantId", config.getParentLevelTenantId());
         userSearchRequest.put("roleCodes", Collections.singletonList(INTERNALMICROSERVICEROLE_CODE));
-
-        log.info("initSystemUser 1: starting user search. uri={}, tenantId={}, roleCodes={}",
-                uri, config.getParentLevelTenantId(), Collections.singletonList(INTERNALMICROSERVICEROLE_CODE));
-
         try {
             LinkedHashMap<String, Object> responseMap = (LinkedHashMap<String, Object>) serviceRequestRepository.fetchResult(uri, userSearchRequest);
-            log.info("initSystemUser 2: responseMap={}", responseMap);
-
             List<LinkedHashMap<String, Object>> users = (List<LinkedHashMap<String, Object>>) responseMap.get("user");
-            log.info("initSystemUser 3: users={}", users);
             if(users.size()==0)
                 createInternalMicroserviceUser(requestInfo);
             internalMicroserviceRoleUuid = (String) users.get(0).get("uuid");
-            //internalMicroserviceRoleUuid = config.getEgovInternalMicroserviceUserUuid();
-
         }catch (Exception e) {
             throw new CustomException("EG_USER_SEARCH_ERROR", "Service returned null while fetching user");
         }

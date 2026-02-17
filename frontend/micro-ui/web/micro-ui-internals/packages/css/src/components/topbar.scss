@@ -2,7 +2,6 @@
   position: fixed;
   top: 0;
   width: 100%;
-  padding: 10px 24px;
   background: white;
   box-shadow: rgba(0, 0, 0, 0.24) 0 1px 4px;
   z-index: 9999999;
@@ -12,8 +11,8 @@
     display: inline;
 
     &.city {
-      margin-right: 8px;
-      height: 60px;
+    margin-right: 8px;
+    height: 60px;
     }
 
     &.state {
@@ -37,12 +36,10 @@
     }
 
     .user-img-txt {
-      background: #a82227;
+      background: theme(colors.primary.main);
       padding: 10px 15px;
-      border-radius: 2px;
+      border-radius: 50%;
       color: white;
-      height: 43px;
-      width: 43px;
       font-weight: 700;
     }
   }
@@ -149,5 +146,5 @@ video::-webkit-media-controls-panel {
 }
 
 .topbarOptionsClassName {
-  right: -3rem !important;
+  right: -3rem !important
 }

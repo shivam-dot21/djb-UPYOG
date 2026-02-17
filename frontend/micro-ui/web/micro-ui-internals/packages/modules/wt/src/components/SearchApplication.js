@@ -137,6 +137,8 @@ const WTSearchApplication = ({ tenantId, isLoading, t, onSubmit, data, count, se
   return (
     <React.Fragment>
       <div className={user?.type === "CITIZEN" ? "citizen-wrapper" : "employee-wrapper"}>
+        <Header>{t("WT_SEARCH_BOOKINGS")}</Header>
+
         <CollapsibleCardPage
           title={t("WT_SEARCH_FILTERS_LABEL") || "Search Filters"}
           defaultOpen={true}
