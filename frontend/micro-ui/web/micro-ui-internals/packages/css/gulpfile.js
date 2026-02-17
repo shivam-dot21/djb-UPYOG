@@ -39,7 +39,7 @@ function minify() {
 
 function livereloadStyles() {
   livereload.listen();
-  watch("src/**/*.scss", series(styles, minify));
+  watch("src/**/*.scss", series(styles));
 }
 
 exports.build = series(cleanStyles, styles, minify);

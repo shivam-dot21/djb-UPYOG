@@ -46,15 +46,17 @@ const EmployeeApp = ({ path }) => {
       services: ["watertanker"],
       applicationStatus: [],
       locality: [],
+
     },
   };
-
+// Initial state for mobileToilet inbox
   const inboxInitialStateMt = {
     searchParams: {
       uuid: { code: "ASSIGNED_TO_ALL", name: "ES_INBOX_ASSIGNED_TO_ALL" },
       services: ["mobileToilet"],
       applicationStatus: [],
       locality: [],
+
     },
   };
 
@@ -64,6 +66,7 @@ const EmployeeApp = ({ path }) => {
       services: ["treePruning"],
       applicationStatus: [],
       locality: [],
+
     },
   };
 
@@ -78,22 +81,11 @@ const EmployeeApp = ({ path }) => {
   return (
     <Switch>
       <AppContainer>
-        <div className="ground-container employee-app-container">
-          {/* -------------------------- MODULE HEADER -------------------------- */}
-          <ModuleHeader
-            leftContent={
-              <React.Fragment>
-                <ArrowLeft className="icon" />
-                Back
-              </React.Fragment>
-            }
-            onLeftClick={() => window.history.back()}
-            breadcrumbs={breadcrumbs}
-          />
-
-          {/* ----------------------------- ROUTES ----------------------------- */}
-
-          {/* WT Inbox */}
+      <React.Fragment>
+        <div className="ground-container">
+              <div style={isNewRegistration ? { marginLeft: "12px",display: "flex", alignItems: "center" } : { marginLeft: "-4px",display: "flex", alignItems: "center" }}>
+                  <BackButton location={location} />
+              </div>
           <PrivateRoute
             path={`${path}/inbox`}
             component={() => (
@@ -108,8 +100,6 @@ const EmployeeApp = ({ path }) => {
               />
             )}
           />
-
-          {/* MT Inbox */}
           <PrivateRoute
             path={`${path}/mt/inbox`}
             component={() => (
@@ -124,9 +114,7 @@ const EmployeeApp = ({ path }) => {
               />
             )}
           />
-
-          {/* TP Inbox */}
-          <PrivateRoute
+           <PrivateRoute
             path={`${path}/tp/inbox`}
             component={() => (
               <Inbox

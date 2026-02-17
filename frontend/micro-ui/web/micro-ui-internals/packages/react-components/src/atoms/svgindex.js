@@ -20,9 +20,8 @@ const PrivacyMaskIcon = ({ className, style = {} }) => (
   // </svg>
   <svg width="22" height="15" viewBox="0 0 22 15" fill="none" xmlns="http://www.w3.org/2000/svg" className={className} style={style}>
     <path
-      d="M11 0C6 0 1.73 3.11 0 7.5C1.73 11.89 6 15 11 15C16 15 20.27 11.89 22 7.5C20.27 3.11 16 0 11 0ZM11 12.5C8.24 12.5 6 10.26 6 7.5C6 4.74 8.24 2.5 11 2.5C13.76 2.5 16 4.74 16 7.5C16 10.26 13.76 12.5 11 12.5ZM11 4.5C9.34 4.5 8 5.84 8 7.5C8 9.16 9.34 10.5 11 10.5C12.66 10.5 14 9.16 14 7.5C14 5.84 12.66 4.5 11 4.5Z"
-      fill="#B1B4B6"
-    />
+     d="M11 0C6 0 1.73 3.11 0 7.5C1.73 11.89 6 15 11 15C16 15 20.27 11.89 22 7.5C20.27 3.11 16 0 11 0ZM11 12.5C8.24 12.5 6 10.26 6 7.5C6 4.74 8.24 2.5 11 2.5C13.76 2.5 16 4.74 16 7.5C16 10.26 13.76 12.5 11 12.5ZM11 4.5C9.34 4.5 8 5.84 8 7.5C8 9.16 9.34 10.5 11 10.5C12.66 10.5 14 9.16 14 7.5C14 5.84 12.66 4.5 11 4.5Z"
+     fill="#B1B4B6"/>
   </svg>
 );
 
@@ -193,8 +192,8 @@ const DocumentIcon = () => (
   </svg>
 );
 
-const DocumentIconSolid = ({ styles, className }) => (
-  <svg style={{ ...styles }} className={className} xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px" fill="#FFFFFF">
+const DocumentIconSolid = ({styles, className}) => (
+  <svg style={{...styles}} className={className} xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px" fill="#FFFFFF">
     <path d="M0 0h24v24H0V0z" fill="none" />
     <path d="M8 16h8v2H8zm0-4h8v2H8zm6-10H6c-1.1 0-2 .9-2 2v16c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm4 18H6V4h7v5h5v11z" />
   </svg>
@@ -373,12 +372,9 @@ export const LanguageIcon = ({ className, styles }) => (
 );
 
 export const LogoutIcon = ({ className, styles }) => (
-  <svg className={className} viewBox="0 0 20 18" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ ...styles }}>
-    <path
-      d="M15 4L13.59 5.41L16.17 8H6V10H16.17L13.59 12.58L15 14L20 9L15 4ZM2 2H10V0H2C0.9 0 0 0.9 0 2V16C0 17.1 0.9 18 2 18H10V16H2V2Z"
-      fill="#505A5F"
-    />
-  </svg>
+  <svg className={className}  viewBox="0 0 20 18" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ ...styles }}>
+<path d="M15 4L13.59 5.41L16.17 8H6V10H16.17L13.59 12.58L15 14L20 9L15 4ZM2 2H10V0H2C0.9 0 0 0.9 0 2V16C0 17.1 0.9 18 2 18H10V16H2V2Z" fill="#505A5F"/>
+</svg>
 );
 
 export const LoginIcon = ({ className, styles }) => (
@@ -589,11 +585,9 @@ const InfoBannerIcon = ({ fill = "#3498DB" }) => {
 const InfoIcon = () => {
   return (
     <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <path
-        d="M9 5H11V7H9V5ZM9 9H11V15H9V9ZM10 0C4.48 0 0 4.48 0 10C0 15.52 4.48 20 10 20C15.52 20 20 15.52 20 10C20 4.48 15.52 0 10 0ZM10 18C5.59 18 2 14.41 2 10C2 5.59 5.59 2 10 2C14.41 2 18 5.59 18 10C18 14.41 14.41 18 10 18Z"
-        fill="#505A5F"
-      />
+    <path d="M9 5H11V7H9V5ZM9 9H11V15H9V9ZM10 0C4.48 0 0 4.48 0 10C0 15.52 4.48 20 10 20C15.52 20 20 15.52 20 10C20 4.48 15.52 0 10 0ZM10 18C5.59 18 2 14.41 2 10C2 5.59 5.59 2 10 2C14.41 2 18 5.59 18 10C18 14.41 14.41 18 10 18Z" fill="#505A5F"/>
     </svg>
+
   );
 };
 
@@ -677,8 +671,8 @@ const PersonIcon = ({ className, styles }) => (
   </svg>
 );
 
-const ReceiptIcon = ({ styles, className }) => (
-  <svg style={{ ...styles }} className={className} xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
+const ReceiptIcon = ({styles, className}) => (
+  <svg style={{...styles}} className={className} xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
     <path d="M0 0h24v24H0z" fill="none"></path>
     <path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-7 9h-2V5h2v6zm0 4h-2v-2h2v2z"></path>
   </svg>
@@ -698,12 +692,12 @@ const PTIcon = ({ className, styles }) => (
     <path d="M16.9999 6.66667V0H0.333252V30H33.6666V6.66667H16.9999ZM6.99992 26.6667H3.66659V23.3333H6.99992V26.6667ZM6.99992 20H3.66659V16.6667H6.99992V20ZM6.99992 13.3333H3.66659V10H6.99992V13.3333ZM6.99992 6.66667H3.66659V3.33333H6.99992V6.66667ZM13.6666 26.6667H10.3333V23.3333H13.6666V26.6667ZM13.6666 20H10.3333V16.6667H13.6666V20ZM13.6666 13.3333H10.3333V10H13.6666V13.3333ZM13.6666 6.66667H10.3333V3.33333H13.6666V6.66667ZM30.3333 26.6667H16.9999V23.3333H20.3333V20H16.9999V16.6667H20.3333V13.3333H16.9999V10H30.3333V26.6667ZM26.9999 13.3333H23.6666V16.6667H26.9999V13.3333ZM26.9999 20H23.6666V23.3333H26.9999V20Z" />
   </svg>
 );
-const CHBIcon = ({ styles, className }) => (
+const CHBIcon=({styles, className})=>(
   <svg width="24" height="24" className={className} style={{ ...styles }} viewBox="0 0 24 24" fill="#ffffff" xmlns="http://www.w3.org/2000/svg">
-    <path d="M7 10H4V17H7V10Z" />
+    <path d="M7 10H4V17H7V10Z"/>
     <path d="M13.5 10H10.5V17H13.5V10Z" />
-    <path d="M22 19H2V22H22V19Z" />
-    <path d="M20 10H17V17H20V10Z" />
+    <path d="M22 19H2V22H22V19Z"/>
+    <path d="M20 10H17V17H20V10Z"/>
     <path d="M12 1L2 6V8H22V6L12 1Z" />
   </svg>
 );
@@ -713,6 +707,7 @@ const OBPSIcon = ({ className, styles }) => (
       fillRule="evenodd"
       clipRule="evenodd"
       d="M30.3333 0H3.66659C1.83325 0 0.333252 1.5 0.333252 3.33333V26.6667C0.333252 28.5 1.83325 30 3.66659 30H30.3333C32.1666 30 33.6666 28.5 33.6666 26.6667V3.33333C33.6666 1.5 32.1666 0 30.3333 0ZM13.6666 23.3333H5.33325V20H13.6666V23.3333ZM13.6666 16.6667H5.33325V13.3333H13.6666V16.6667ZM13.6666 10H5.33325V6.66667H13.6666V10ZM21.6999 20L16.9999 15.2667L19.3499 12.9167L21.6999 15.2833L26.9833 10L29.3499 12.3667L21.6999 20Z"
+      
     />
   </svg>
 );
@@ -1104,12 +1099,10 @@ const InboxIcon = () => (
 
 const PTRIcon = ({ className, styles }) => (
   <svg width="512" height="512" style={{ ...styles }} viewBox="0 0 512 512" fill="#ffffff" className={className} xmlns="http://www.w3.org/2000/svg">
-    <path
-      d="M256 224c-79.41 0-192 122.76-192 200.25 0 34.9 26.81 55.75 71.74 55.75 48.84 0 81.09-25.08 120.26-25.08 39.51 0 71.85 25.08 120.26 25.08 44.93 0 71.74-20.85 71.74-55.75C448 346.76 335.41 224 256 224zm-147.28-12.61c-10.4-34.65-42.44-57.09-71.56-50.13-29.12 6.96-44.29 40.69-33.89
+<path d="M256 224c-79.41 0-192 122.76-192 200.25 0 34.9 26.81 55.75 71.74 55.75 48.84 0 81.09-25.08 120.26-25.08 39.51 0 71.85 25.08 120.26 25.08 44.93 0 71.74-20.85 71.74-55.75C448 346.76 335.41 224 256 224zm-147.28-12.61c-10.4-34.65-42.44-57.09-71.56-50.13-29.12 6.96-44.29 40.69-33.89
 75.34 10.4 34.65 42.44 57.09 71.56 50.13 29.12-6.96 44.29-40.69 33.89-75.34zm84.72-20.78c30.94-8.14 46.42-49.94 34.58-93.36s-46.52-72.01-77.46-63.87-46.42 49.94-34.58 93.36c11.84 43.42 46.53 72.02 77.46 63.87zm281.39-29.34c-29.12-6.96-61.15 15.48-71.56
-50.13-10.4 34.65 4.77 68.38 33.89 75.34 29.12 6.96 61.15-15.48 71.56-50.13 10.4-34.65-4.77-68.38-33.89-75.34zm-156.27 29.34c30.94 8.14 65.62-20.45 77.46-63.87 11.84-43.42-3.64-85.21-34.58-93.36s-65.62 20.45-77.46 63.87c-11.84 43.42 3.64 85.22 34.58 93.36z"
-    />
-  </svg>
+50.13-10.4 34.65 4.77 68.38 33.89 75.34 29.12 6.96 61.15-15.48 71.56-50.13 10.4-34.65-4.77-68.38-33.89-75.34zm-156.27 29.34c30.94 8.14 65.62-20.45 77.46-63.87 11.84-43.42-3.64-85.21-34.58-93.36s-65.62 20.45-77.46 63.87c-11.84 43.42 3.64 85.22 34.58 93.36z"/>
+</svg>
 );
 
 export {
@@ -1235,5 +1228,5 @@ export {
   DeathIcon,
   InfoIcon,
   PTRIcon,
-  CHBIcon,
+  CHBIcon
 };
