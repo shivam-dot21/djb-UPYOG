@@ -16,8 +16,8 @@
     }
 
     &.state {
-    min-height: 50px;
-    width: 80px;
+      min-height: 50px;
+      width: 80px;
     }
   }
 
@@ -87,7 +87,6 @@
   .select-wrap,
   .employee-select-wrap {
     margin-bottom: 0px;
-
     .profile-dropdown--item {
       span {
         white-space: pre;
@@ -98,7 +97,6 @@
 
 .cp {
   cursor: pointer;
-
   .hamburger {
     display: none;
   }
@@ -141,7 +139,6 @@
   @apply flex items-center justify-end;
   min-width: 85px;
 }
-
 video::-webkit-media-controls-panel {
   top: 55%;
   position: absolute;
