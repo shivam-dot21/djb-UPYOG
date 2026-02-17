@@ -8,8 +8,13 @@
       rel="stylesheet"
       type="text/css"
     />
-    <!-- Digit UI CSS is imported from the local workspace package in src/index.js
-         so that changes in micro-ui-internals/packages/css are reflected. -->
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/@djb25/digit-ui-css@1.0.4/dist/index.css"
+    />
+
+    <!-- Using CDN here prevents local changes from taking effect during development.
+         Removed CDN stylesheet so local build/imported CSS is used instead. -->
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="theme-color" content="#00bcd1" />
     <script src="https://pgtest.atomtech.in/staticdata/ots/js/atomcheckout.js"></script>

@@ -12,7 +12,7 @@
         display: grid;
         grid-template-columns: 20% 1fr;
         .logo {
-            padding: 0px;
+            padding: 0px !important;
             display: flex;
             align-items: center;
             justify-content: flex-start;
