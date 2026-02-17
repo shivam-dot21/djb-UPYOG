@@ -30,7 +30,7 @@ const SearchWaterConnection = ({ tenantId, onSubmit, data, count, resultOk, busi
   useEffect(async () => {
     const payload = {
       "BulkBillCriteria": {
-        "tenantId": Digit.ULBService.getCurrentTenantId()
+        "tenantId": "pg.citya"
       }
     }
     let data = await Digit.WSService.WSSewsearchDemand(payload, window.location.href.includes("ws/sewerage/search-demand") ? "sw" : "ws")
@@ -243,11 +243,10 @@ const SearchWaterConnection = ({ tenantId, onSubmit, data, count, resultOk, busi
         </div>
     )
 };
-
   const generateDemand = async (row) => {
     const payload = {
       "BulkBillCriteria": {
-        "tenantId": Digit.UserService.getUser().info.tenantId,
+        "tenantId": "pg.citya",
         "consumerCode": row.original["connectionNo"]
       }
     }

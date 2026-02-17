@@ -39,7 +39,7 @@ const NewResponse = ({ data, onSuccess }) => {
   const { t } = useTranslation();
   
   const tenantId = Digit.ULBService.getCurrentTenantId();
-  const mutation = Digit.Hooks.vendor.useVendorAdditionaldetailsAPI(Digit.ULBService.getCurrentTenantId()); 
+  const mutation = Digit.Hooks.vendor.useVendorAdditionaldetailsAPI("pg.citya"); 
 
   const { data: storeData } = Digit.Hooks.useStore.getInitData();
   const match = useRouteMatch();

@@ -51,7 +51,7 @@ const BulkBillSearch = ({ tenantId, onSubmit, data, count, resultOk, businessSer
 
         const meterReadingListFilter = data.map((meter) => {
 
-          return { "billingPeriod": meter.billingPeriod, "currentReading": meter.currentReading, "currentReadingDate": meter.currentReadingDate, "lastReading": meter.lastReading, "lastReadingDate": meter.lastReadingDate, "connectionNo": meter.connectionNo, "meterStatus": meter.meterStatus, tenantId: Digit.ULBService.getCurrentTenantId() }
+          return { "billingPeriod": meter.billingPeriod, "currentReading": meter.currentReading, "currentReadingDate": meter.currentReadingDate, "lastReading": meter.lastReading, "lastReadingDate": meter.lastReadingDate, "connectionNo": meter.connectionNo, "meterStatus": meter.meterStatus, tenantId: "pg.citya" }
         })
         const meterReadingList = meterReadingListFilter.filter((item) => {
           return item.currentReading >= item.lastReading && ExcelDateToJSDate(item?.currentReadingDate) > item.lastReadingDate
