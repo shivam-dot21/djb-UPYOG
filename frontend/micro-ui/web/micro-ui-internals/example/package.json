@@ -9,22 +9,22 @@
     "start": "react-scripts start"
   },
   "devDependencies": {
+    "@djb25/digit-ui-module-asset": "1.0.3",
+    "@djb25/digit-ui-module-hrms": "1.0.0",
+    "@djb25/digit-ui-module-ws": "1.0.2",
+    "@djb25/digit-ui-module-wt": "1.0.1",
+    "@nudmcdgnpm/upyog-ui-module-cm": "1.2.2",
+    "@nudmcdgnpm/upyog-ui-module-pgrai": "1.0.0",
+    "@nudmcdgnpm/upyog-ui-module-vendor": "1.2.2",
     "@upyog/digit-ui-module-bills": "3.0.0",
     "@upyog/digit-ui-module-common": "3.0.4",
+    "@upyog/digit-ui-module-commonpt": "3.0.2",
     "@upyog/digit-ui-module-engagement": "3.0.1",
     "@upyog/digit-ui-module-fsm": "3.0.1",
     "@upyog/digit-ui-module-mcollect": "3.0.2",
     "@upyog/digit-ui-module-pgr": "3.0.0",
     "@upyog/digit-ui-module-receipts": "3.0.0",
-    "@djb25/digit-ui-module-ws": "1.0.2",
-    "@upyog/digit-ui-module-commonpt": "3.0.2",
-    "@djb25/digit-ui-module-asset": "1.0.3",
     "@upyog/upyog-ui-module-ptr": "3.0.0",
-    "@nudmcdgnpm/upyog-ui-module-cm": "1.2.2",
-    "@nudmcdgnpm/upyog-ui-module-vendor": "1.2.2",
-    "@djb25/digit-ui-module-hrms": "1.0.0",
-    "@djb25/digit-ui-module-wt": "1.0.1",
-    "@nudmcdgnpm/upyog-ui-module-pgrai": "1.0.0",
     "http-proxy-middleware": "1.0.5",
     "react": "17.0.2",
     "react-dom": "17.0.2",
@@ -36,5 +36,8 @@
     ">0.2%",
     "not dead",
     "not op_mini all"
-  ]
+  ],
+  "dependencies": {
+    "@djb25/digit-ui-css": "^1.0.5"
+  }
 }
