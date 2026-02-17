@@ -34,7 +34,7 @@ const CreateAnonymousEDCR = ({ parentRoute }) => {
     setIsSubmitBtnDisable(true);
   
     const loggedInuserInfo = Digit.UserService.getUser();
-    const userInfo = { uuid: "", tenantId: Digit.ULBService.getCurrentTenantId() };
+    const userInfo = { uuid: "", tenantId: "pg.citya" };
     const transactionNumber = generateTransactionNumber();
     const applicantName = data?.applicantName;
     const file = data?.file;
@@ -47,7 +47,7 @@ const CreateAnonymousEDCR = ({ parentRoute }) => {
       transactionNumber,
       edcrNumber: "",
       planFile: null,
-      tenantId: Digit.ULBService.getCurrentTenantId(),
+      tenantId: "pg.citya",
       coreArea: "NO",
       RequestInfo: {
         apiId: "",

@@ -49,10 +49,10 @@ const Response = (props) => {
   const { tenants } = storeData || {};
   const [enable, setEnable] = useState(false)
   let id= appState?.complaints?.response?.ServiceWrappers?.[0]?.service?.serviceRequestId
-  const { isLoading, error, isError, complaintDetails, revalidate } = Digit.Hooks.pgr.useComplaintDetails({ tenantId:Digit.ULBService.getCurrentTenantId(), id },{ enabled: enable ? true : false});
+  const { isLoading, error, isError, complaintDetails, revalidate } = Digit.Hooks.pgr.useComplaintDetails({ tenantId:"pg.citya", id },{ enabled: enable ? true : false});
 console.log("appStateappState",appState)
   const handleDownloadPdf = async (e) => {
-    const tenantInfo = tenants.find((tenant) => tenant.code === Digit.ULBService.getCurrentTenantId());
+    const tenantInfo = tenants.find((tenant) => tenant.code === "pg.citya");
     e.preventDefault()
     setEnable(true)
     const data = await getPGRcknowledgementData({ ...complaintDetails }, tenantInfo, t);

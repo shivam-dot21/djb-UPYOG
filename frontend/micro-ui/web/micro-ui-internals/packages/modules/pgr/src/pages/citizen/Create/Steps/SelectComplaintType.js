@@ -62,7 +62,7 @@ const SelectComplaintType = ({ t, config, onSelect, value }) => {
     (async()=>{
       if (pttype=="PT") {
         setComplaintType(valuenew);
-        setSubTypeMenu(await serviceDefinitions.getSubMenu(Digit.ULBService.getCurrentTenantId(), valuenew, t));
+        setSubTypeMenu(await serviceDefinitions.getSubMenu("pg.citya", valuenew, t));
       }
     })();   
   },[]) 
@@ -111,7 +111,7 @@ const SelectComplaintType = ({ t, config, onSelect, value }) => {
       } else {
         setSubType({ name: "" });
         setComplaintType(value);
-        setSubTypeMenu(await serviceDefinitions.getSubMenu(Digit.ULBService.getCurrentTenantId(), value, t));
+        setSubTypeMenu(await serviceDefinitions.getSubMenu("pg.citya", value, t));
       }
     }
   }
