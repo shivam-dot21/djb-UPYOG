@@ -1,4 +1,4 @@
-import { ActionBar, Card, CardSubHeader, DocumentSVG, Header, Loader, Menu, Row, StatusTable, SubmitBar } from "@nudmcdgnpm/digit-ui-react-components";
+import { ActionBar, Card, CardSubHeader, DocumentSVG, Header, Loader, Menu, Row, StatusTable, SubmitBar } from "@upyog/digit-ui-react-components";
 import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useHistory, useParams } from "react-router-dom";
@@ -64,7 +64,7 @@ const Details = () => {
 
   return (
     <React.Fragment>
-      <div style={isMobile ? { marginLeft: "-12px", fontFamily: "calibri", color: "#FF0000" } : { marginLeft: "15px", fontFamily: "calibri", color: "#FF0000" }}>
+      <div style={isMobile ? {marginLeft: "-12px", fontFamily: "calibri", color: "#FF0000"} :{ marginLeft: "15px", fontFamily: "calibri", color: "#FF0000" }}>
         <Header>{t("HR_NEW_EMPLOYEE_FORM_HEADER")}</Header>
       </div>
       {!isLoading && data?.Employees.length > 0 ? (
@@ -112,13 +112,13 @@ const Details = () => {
                       .reasonForDeactivation) || "NA"
                   }
                 />
-                <Row
+                  <Row
                   label={t("HR_REMARKS")}
                   text={
-                    data?.Employees?.[0]?.deactivationDetails?.sort((a, b) => new Date(a.effectiveFrom) - new Date(b.effectiveFrom))[0].remarks || "NA"
+                   data?.Employees?.[0]?.deactivationDetails?.sort((a, b) => new Date(a.effectiveFrom) - new Date(b.effectiveFrom))[0].remarks || "NA"
                   }
                 />
-
+                
                 <Row
                   label={t("HR_ORDER_NO")}
                   text={data?.Employees?.[0]?.deactivationDetails?.sort((a, b) => new Date(a.effectiveFrom) - new Date(b.effectiveFrom))[0]?.orderNo || "NA"}
@@ -165,7 +165,6 @@ const Details = () => {
                     <Row label={t("HR_HIERARCHY_LABEL")} text={t(element?.hierarchy ? `EGOV_LOCATION_TENANTBOUNDARY_${element?.hierarchy}` : "NA")} textStyle={{ whiteSpace: "pre" }} />
                     <Row label={t("HR_BOUNDARY_TYPE_LABEL")} text={t(Digit.Utils.locale.convertToLocale(element?.boundaryType, 'EGOV_LOCATION_BOUNDARYTYPE'))} textStyle={{ whiteSpace: "pre" }} />
                     <Row label={t("HR_BOUNDARY_LABEL")} text={t(element?.boundary)} />
-                    <Row label={t("HR_ZONE_LABEL")} text={t(`TENANT_${element?.zone}`)} />
                     <Row
                       label={t("HR_ROLE_LABEL")}
                       text={data?.Employees?.[0]?.user.roles.filter((ele) => ele.tenantId == element?.boundary).map((ele) => t(`ACCESSCONTROL_ROLES_ROLES_` + ele?.code))}
@@ -189,28 +188,9 @@ const Details = () => {
                   marginBottom: "2rem",
                 }}
               >
-                <div
-                  style={{
-                    paddingBottom: "2rem",
-                    display: "flex",
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                  }}
-                >
-                  <div>
-                    {t("HR_ASSIGNMENT")} {index + 1}
-                  </div>
-
-                  <div>
-                    {element?.isCurrentAssignment ? (
-                      <span style={{ color: "green", fontWeight: "bold" }}>Active</span>
-                    ) : (
-                      <span style={{ color: "red", fontWeight: "bold" }}>Inactive</span>
-                    )}
-                  </div>
+                <div style={{ paddingBottom: "2rem" }}>
+                  {t("HR_ASSIGNMENT")} {index + 1}
                 </div>
-
-
                 <Row label={t("HR_ASMT_FROM_DATE_LABEL")} text={convertEpochFormateToDate(element?.fromDate)} textStyle={{ whiteSpace: "pre" }} />
                 <Row
                   label={t("HR_ASMT_TO_DATE_LABEL")}
@@ -218,10 +198,6 @@ const Details = () => {
                   textStyle={{ whiteSpace: "pre" }}
                 />
                 <Row label={t("HR_DEPT_LABEL")} text={t("COMMON_MASTERS_DEPARTMENT_" + element?.department)} />
-                <Row
-                  label={t("HR_DIVS_LABEL")}
-                  text={element?.division ? t("COMMON_MASTERS_DIVISION_" + element?.division) : "NA"}
-                />
                 <Row label={t("HR_DESG_LABEL")} text={t("COMMON_MASTERS_DESIGNATION_" + element?.designation)} />
               </StatusTable>
             ))}

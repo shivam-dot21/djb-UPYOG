@@ -1,4 +1,4 @@
-import { PrivateRoute } from "@nudmcdgnpm/digit-ui-react-components";
+import { PrivateRoute } from "@upyog/digit-ui-react-components";
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { Link, Switch, useLocation } from "react-router-dom";
@@ -22,7 +22,7 @@ const EmployeeApp = ({ path, url, userType }) => {
   return (
     <Switch>
       <React.Fragment>
-        <div className="ground-container">
+        <div className="" style={{ width: "100%", padding: "20px" }}>
           <p className="breadcrumb" style={{ marginLeft: mobileView ? "1vw" : "15px" }}>
             <Link to="/digit-ui/employee" style={{ cursor: "pointer", color: "#666" }}>
               {t("HR_COMMON_BUTTON_HOME")}
