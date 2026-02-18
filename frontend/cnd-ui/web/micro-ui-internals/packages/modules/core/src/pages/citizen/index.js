@@ -49,7 +49,7 @@ const Home = ({
     [
       {
         name: "actions-test",
-        filter: "[?(@.url == 'digit-ui-card')]",
+        filter: "[?(@.url == 'cnd-ui-card')]",
       },
     ],
     {
@@ -64,7 +64,6 @@ const Home = ({
       },
     }
   );
-
   const isMobile = window.Digit.Utils.browser.isMobile();
   const classname = Digit.Hooks.useRouteSubscription(pathname);
   const { t } = useTranslation();

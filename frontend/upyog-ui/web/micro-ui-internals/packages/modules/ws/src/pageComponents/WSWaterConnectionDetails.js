@@ -1,4 +1,4 @@
-import { CardLabel, Dropdown, FormStep, Loader, RadioOrSelect, TextInput, Toast } from "@upyog/digit-ui-react-components";
+import { CardLabel, Dropdown, FormStep, Loader, RadioOrSelect, TextInput, Toast } from "@egovernments/digit-ui-react-components";
 import React, { useEffect, useState } from "react";
 import Timeline from "../components/Timeline";
 
@@ -53,8 +53,7 @@ const WSWaterConnectionDetails = ({ t, config, userType, onSelect, formData }) =
               "action": "INITIATE"
           },
           "channel": "CITIZEN"
-          },
-          reconnectRequest:false, disconnectRequest:false
+          }
         }
       }
       else{
@@ -73,7 +72,6 @@ const WSWaterConnectionDetails = ({ t, config, userType, onSelect, formData }) =
             gender: formData?.ConnectionHolderDetails?.gender?.code,
             mobileNumber: formData?.ConnectionHolderDetails?.mobileNumber,
             name: formData?.ConnectionHolderDetails?.name,
-            emailId: formData?.ConnectionHolderDetails?.emailId,
             ownerType: formData?.ConnectionHolderDetails?.specialCategoryType?.code || "NONE",
             relationship: formData?.ConnectionHolderDetails?.relationship?.code,
             sameAsPropertyAddress: false,
@@ -94,8 +92,7 @@ const WSWaterConnectionDetails = ({ t, config, userType, onSelect, formData }) =
               "action": "INITIATE"
           },
           "channel": "CITIZEN"
-      },
-      reconnectRequest:false, disconnectRequest:false
+      }
       }
     }
 
@@ -128,7 +125,7 @@ const WSWaterConnectionDetails = ({ t, config, userType, onSelect, formData }) =
       {userType === "citizen" && <Timeline currentStep={2} />}
       {!wsServiceCalculationLoading ? (
         <FormStep t={t} config={config} onSelect={handleSubmit} onSkip={onSkip} isDisabled={!proposedTaps || !proposedPipeSize || isDisableForNext} onAdd={onAdd}>
-          <CardLabel>{t("WS_NO_OF_TAPS_PROPOSED")}<span className="check-page-link-button"> *</span></CardLabel>
+          <CardLabel>{t("WS_NO_OF_TAPS_PROPOSED")}*</CardLabel>
           <TextInput
             isMandatory={false}
             optionKey="i18nKey"
@@ -143,7 +140,7 @@ const WSWaterConnectionDetails = ({ t, config, userType, onSelect, formData }) =
               type: "text",
             })}
           />
-          <CardLabel>{t("WS_PROPOSED_PIPE_SIZE")}<span className="check-page-link-button"> *</span></CardLabel>
+          <CardLabel>{t("WS_PROPOSED_PIPE_SIZE")}*</CardLabel>
           <RadioOrSelect
             name="proposedPipeSize"
             options={proposedPipeSizeList}

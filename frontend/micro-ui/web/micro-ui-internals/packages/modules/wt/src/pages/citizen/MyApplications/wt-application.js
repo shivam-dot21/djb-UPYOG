@@ -13,7 +13,6 @@ const WTApplication = ({ application, tenantId, buttonLabel }) => {
       <KeyNote keyValue={t("BOOKING_NO")} note={application?.bookingNo} />
       <KeyNote keyValue={t("APPLICANT_NAME")} note={application?.applicantDetail?.name} />
       <KeyNote keyValue={t("MOBILE_NUMBER")} note={t(`${application?.applicantDetail?.mobileNumber}`)} />
-      <KeyNote keyValue={t("LOCALITY")} note={t(`${application?.localityCode}`)} />
       <KeyNote keyValue={t("PT_COMMON_TABLE_COL_STATUS_LABEL")} note={t(`${application?.bookingStatus}`)} />
       <div>
       {bookingCode==="WT" &&(
@@ -25,11 +24,6 @@ const WTApplication = ({ application, tenantId, buttonLabel }) => {
         <Link to={`${APPLICATION_PATH}/citizen/wt/booking/mobileToilet/${application?.bookingNo}/${tenantId}`}>
           <SubmitBar label={buttonLabel} />
         </Link> 
-      )}
-      {bookingCode==="TP" &&(
-        <Link to={`${APPLICATION_PATH}/citizen/wt/booking/treePruning/${application?.bookingNo}/${tenantId}`}>
-          <SubmitBar label={buttonLabel} />
-        </Link>
       )}
       </div>
     </Card>

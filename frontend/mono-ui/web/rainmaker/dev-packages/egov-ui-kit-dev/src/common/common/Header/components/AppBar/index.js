@@ -1,17 +1,16 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { AppBar, Icon } from "components";
 import Label from "egov-ui-kit/utils/translationNode";
 import UserSettings from "../UserSettings";
 import Toolbar from "material-ui/Toolbar";
 import Badge from "@material-ui/core/Badge";
-import digitLogo from "egov-ui-kit/assets/images/Digit_logo.png";
-import pbLogo from "egov-ui-kit/assets/images/pblogo.png";
+import digitLogo from "egov-ui-kit/assets/images/sbm-logo.png";
+import pbLogo from "egov-ui-kit/assets/images/mcd-logo.png";
 import IconButton from "material-ui/IconButton";
 import { onNotificationClick } from "egov-ui-kit/utils/commons";
 import "./index.css";
 import { connect } from "react-redux";
 import get from "lodash/get";
-
 
 const styles = {
   titleStyle: { fontSize: "20px", fontWeight: 500 },
@@ -27,6 +26,7 @@ const iconButtonStyle = {
 const EgovAppBar = ({
   className,
   ulbName,
+  zone,
   defaultTitle,
   ulbLogo,
   title,
@@ -50,15 +50,32 @@ const EgovAppBar = ({
   logoImage,
   ...rest
 }) => {
+
+  useEffect(() => {
+    const header = document.querySelector(".rainmaker-header");
+    if (header) {
+      header.style.setProperty("padding-left", "0px", "important");
+    }
+  }, []);
+
   return (
     <div>
       <AppBar
         // className={isHomeScreen && role === "citizen" ? "home-screen-appbar" : className || "header-with-drawer"}
         className={className || "header-with-drawer"}
         title={
-          <div className="citizen-header-logo-label">
+          <div
+            className="citizen-header-logo-label"
+            style={{ display: "flex", alignItems: "center" }}
+          >
             <div className="citizen-header-logo">
-              <img src={ulbLogo ? ulbLogo : pbLogo} onError={(event) => event.target.setAttribute("src", pbLogo)} />
+              <img
+                src={pbLogo}
+                style={{ marginLeft: "27px", marginRight: "20px" }}
+                onError={(event) =>
+                  event.target.setAttribute("src", pbLogo)
+                }
+              />
             </div>
             <Label containerStyle={{ marginLeft: "0px" }} className="screenHeaderLabelStyle appbar-title-label" label={title} />
             {titleAddon && (
@@ -68,20 +85,35 @@ const EgovAppBar = ({
                 label={titleAddon}
               />
             )}
-            {isUserSetting && <div className="rainmaker-displayInline">
-              <Label
-                containerStyle={{ marginLeft: "10px" }}
-                className="screenHeaderLabelStyle appbar-municipal-label"
-                label={ulbName && `TENANT_TENANTS_${ulbName.toUpperCase().replace(/[.]/g, "_")}`}
-              />
-              <Label containerStyle={{ marginLeft: "4px" }} className="screenHeaderLabelStyle appbar-municipal-label" label={defaultTitle} />
-            </div>}
+            {/* {isUserSetting && (
+              <div className="rainmaker-displayInline">
+                <Label
+                  containerStyle={{ marginLeft: "10px" }}
+                  className="screenHeaderLabelStyle appbar-municipal-label"
+                  label={
+                    ulbName &&
+                    defaultTitle &&
+                    `ULBGRADE_${defaultTitle.replace("ULBGRADE_", "")}_TENANT_TENANTS_${ulbName.toUpperCase().replace(/[.]/g, "_")}`
+                  }
+                />
+                {zone && (
+                  <React.Fragment>
+                    <span style={{ margin: "0 4px" }}> - </span>
+                    <Label
+                      containerStyle={{ marginLeft: "0px" }}
+                      className="screenHeaderLabelStyle appbar-municipal-label"
+                      label={`TENANT_${zone.toUpperCase().replace(/[.]/g, "_")}`}
+                    />
+                  </React.Fragment>
+                )}
+              </div>
+            )} */}
           </div>
         }
         titleStyle={styles.titleStyle}
         {...rest}
       >
-        <Toolbar className="app-toolbar" style={{ padding: "0px", height: "64px", background: "#ffffff" }}>
+        <Toolbar className="app-toolbar" style={{ height: "74px", background: "#ffffff" }}>
           <UserSettings
             hasLocalisation={hasLocalisation}
             fetchLocalizationLabel={fetchLocalizationLabel}
@@ -106,7 +138,7 @@ const EgovAppBar = ({
         )}
 
         <div className="appbar-right-logo">
-          <img src={logoImage?logoImage:digitLogo} />
+          <img src={logoImage ? logoImage : digitLogo} />
         </div>
         <div className="icon-button">
           {refreshButton && (
@@ -155,10 +187,7 @@ const onSearchClick = (history) => {
 const mapStateToProps = ({ common }) => {
   const { stateInfoById } = common;
   let logoImage = get(stateInfoById, "0.logoUrl");
-  return {  logoImage };
+  return { logoImage };
 };
 
-export default connect(
-  mapStateToProps,
-  null
-)(EgovAppBar);
+export default connect(mapStateToProps, null)(EgovAppBar);

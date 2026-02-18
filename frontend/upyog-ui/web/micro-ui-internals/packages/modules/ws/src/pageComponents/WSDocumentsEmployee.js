@@ -8,7 +8,7 @@ import {
   Loader,
   CardHeader,
   CardSectionHeader,
-} from "@upyog/digit-ui-react-components";
+} from "@egovernments/digit-ui-react-components";
 import { useLocation } from "react-router-dom";
 
 const WSDocumentsEmployee = ({ t, config, onSelect, userType, formData, setError: setFormError, clearErrors: clearFormErrors, formState }) => {
@@ -225,16 +225,8 @@ function SelectDocument({
   return (
     <div style={{ marginBottom: "24px" }}>
       {doc?.hasDropdown ? (
-        <LabelFieldPair>         
-          <CardLabel style={{fontWeight: "700" }}>
-                {doc?.required ? (
-                    <React.Fragment>
-                    {t(doc?.i18nKey)}<span className="check-page-link-button"> *</span>
-                    </React.Fragment>
-                ) : (
-                    t(doc?.i18nKey)
-                )}
-            </CardLabel>
+        <LabelFieldPair>
+          <CardLabel style={{fontWeight: "700" }}>{doc?.required ? `${t(doc?.i18nKey)}*` : `${t(doc?.i18nKey)}`}</CardLabel>
           <Dropdown
             id={`doc-${doc?.code}`}
             key={`doc-${doc?.code}`}
@@ -263,7 +255,6 @@ function SelectDocument({
             error={!uploadedFile}
             accept= "image/*, .pdf, .png, .jpeg, .jpg"
           />
-          <div style={{marginTop:"10px", fontSize:'12px'}}>{t("CS_FILE_SIZE_RESTRICTIONS_WS")}</div>
         </div>
       </LabelFieldPair>
     </div>

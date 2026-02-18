@@ -1,11 +1,10 @@
 import React, { useState, useEffect } from "react";
-import { UploadFile, CardLabelDesc, Dropdown, CardLabel, FormStep } from "@upyog/digit-ui-react-components";
+import { FormStep, UploadFile, CardLabelDesc, Dropdown, CardLabel } from "@egovernments/digit-ui-react-components";
 import { stringReplaceAll } from "../utils";
 import { useLocation } from "react-router-dom";
 import Timeline from "../components/TLTimeline";
 
-
-const SelectProofIdentity = ({ t, config, onSelect, userType, formData, ownerIndex = 0, addNewOwner, isMandatory }) => {
+const SelectProofIdentity = ({ t, config, onSelect, userType, formData, ownerIndex = 0, addNewOwner }) => {
   const { pathname: url } = useLocation();
   // const editScreen = url.includes("/modify-application/");
   const isMutation = url.includes("property-mutation");
@@ -144,7 +143,6 @@ const SelectProofIdentity = ({ t, config, onSelect, userType, formData, ownerInd
         config={config}
         onSelect={handleSubmit}
         onSkip={onSkip}
-        isMandatory={isMandatory}
         forcedError={t(multipleownererror)}
         isDisabled={isUpdateProperty || isEditProperty ? false : multipleownererror || !uploadedFile || !dropdownValue || error}
         onAdd={onAdd}
@@ -152,7 +150,7 @@ const SelectProofIdentity = ({ t, config, onSelect, userType, formData, ownerInd
       >
         <CardLabelDesc>{t(`PT_UPLOAD_RESTRICTIONS_TYPES`)}</CardLabelDesc>
         <CardLabelDesc>{t(`PT_UPLOAD_RESTRICTIONS_SIZE`)}</CardLabelDesc>
-        <CardLabel>{`${t("PT_CATEGORY_DOCUMENT_TYPE")}`}<span className="check-page-link-button"> *</span></CardLabel>
+        <CardLabel>{`${t("PT_CATEGORY_DOCUMENT_TYPE")}`}</CardLabel>
         <Dropdown
           t={t}
           isMandatory={false}

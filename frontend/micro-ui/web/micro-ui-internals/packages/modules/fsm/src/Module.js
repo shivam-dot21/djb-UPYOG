@@ -1,4 +1,4 @@
-import { CitizenHomeCard, CitizenTruck, Loader } from "@upyog/digit-ui-react-components";
+import { CitizenHomeCard, CitizenTruck, Loader } from "@nudmcdgnpm/digit-ui-react-components";
 import React, { useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { Link, useRouteMatch } from "react-router-dom";
@@ -62,10 +62,6 @@ import SelectTrips from "./pageComponents/SelectTrips";
 import PlusMinusInput from "./pageComponents/PlusMinusInput";
 import ConfirmationBox from "./components/Confirmation";
 import SelectLocalityOrGramPanchayat from "./pageComponents/SelectLocalityOrGramPanchayat";
-import AddWorker from "./pages/employee/FSMRegistry/Worker/AddWorker"
-import EditWorker from "./pages/employee/FSMRegistry/Worker/EditWorker";
-import WorkerDetails from "./pages/employee/FSMRegistry/Worker/WorkerDetails";
-import TqmCard from "./components/TqmCard";
 
 const FSMModule = ({ stateCode, userType, tenants }) => {
   const moduleCode = "FSM";
@@ -223,10 +219,6 @@ const componentsToRegister = {
   PlusMinusInput,
   ConfirmationBox,
   SelectLocalityOrGramPanchayat,
-  AddWorker,
-  EditWorker,
-  WorkerDetails,
-  TqmCard,
 };
 
 export const initFSMComponents = () => {

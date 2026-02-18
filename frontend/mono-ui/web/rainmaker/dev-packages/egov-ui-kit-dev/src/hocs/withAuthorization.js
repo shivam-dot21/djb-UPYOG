@@ -179,11 +179,11 @@ const withAuthorization = (options = {}) => (Component) => {
               className={"rainmaker-header"}
             />
           ) : null}
-          <div className=" col-xs-12" style={{ padding: 0 }}>
+          <div className=" col-xs-12" style={{ padding: 0, marginTop:"10px" }}>
             {!hideActionMenu && authenticated && (
               <div>
                 <div className={`col-xs-2 action-menu-drawer show-action-menu ${drawerClsName}`} id="menu-container">
-                  <div className="rainmaker-action-menu">
+                  <div className="">
                     <ActionMenu
                       role={role}
                       toggleDrawer={(menuItmeClick = true) => {

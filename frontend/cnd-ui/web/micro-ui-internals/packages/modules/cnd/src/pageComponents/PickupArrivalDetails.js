@@ -4,7 +4,6 @@ import React, { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { useApplicationDetails } from "../pages/employee/Edit/ApplicationContext";
-import { cndStyles } from "../utils/cndStyles";
 /**
  * PickupArrivalDetails Component
  * 
@@ -14,7 +13,6 @@ import { cndStyles } from "../utils/cndStyles";
  * The component also displays key application details from the context for reference.
  */
 const pickupDetails = () => ({
-    disposeDate: "",
     vehicleNumber: "",
     vehicleDepoNumber: "",
     driverName: "",
@@ -26,7 +24,7 @@ const pickupDetails = () => ({
 
 const PickupArrivalDetails = ({ config, onSelect, formData, setError, clearErrors }) => {
   const { t } = useTranslation();
-  const isEmployee = window.location.href.includes("/employee/cnd/cnd-service");
+  const isEmployee =  window.location.href.includes("/employee");
   const tenantId = Digit.ULBService.getCurrentTenantId();
   const applicationDetails = isEmployee ? useApplicationDetails():null;
   const [pickup, setpickup] = useState(formData?.pickup || [pickupDetails()]);
@@ -103,10 +101,12 @@ const OwnerForm = (_props) => {
     else if (!Object.keys(errors).length && localFormState.errors[config.key]) clearErrors(config.key);
   }, [errors]);
 
+  const errorStyle = { width: "70%", marginLeft: "30%", fontSize: "12px", marginTop: "-21px" };
+
   return (
     <React.Fragment>
-      <div style={cndStyles.siteMediaPhotoEmployee}>
-        <div style={cndStyles.employeeSideContainer}>
+      <div style={{ marginBottom: "16px" }}>
+        <div style={{ border: "1px solid #E3E3E3", padding: "16px", marginTop: "8px" }}>
             <StatusTable>
                 <Row
                     className="border-none"
@@ -116,22 +116,22 @@ const OwnerForm = (_props) => {
                 <Row
                     className="border-none"
                     label={t("CND_APPLICATION_TYPE")}
-                    text={t(applicationDetails?.applicationType)} 
+                    text={applicationDetails?.applicationType} 
                 />
                 <Row
                     className="border-none"
                     label={t("CND_WASTE_QUANTITY")}
-                    text={applicationDetails?.totalWasteQuantity + " Tons"} 
+                    text={applicationDetails?.totalWasteQuantity} 
                 />
                 <Row
                     className="border-none"
                     label={t("CND_TYPE_CONSTRUCTION")}
-                    text={t(applicationDetails?.typeOfConstruction)} 
+                    text={applicationDetails?.typeOfConstruction} 
                 />
                 <Row
                     className="border-none"
                     label={t("CND_PROPERTY_USAGE")}
-                    text={t(applicationDetails?.propertyType)} 
+                    text={applicationDetails?.propertyType} 
                 />
                 <Row
                     className="border-none"
@@ -184,7 +184,7 @@ const OwnerForm = (_props) => {
               />
             </div>
           </LabelFieldPair>
-          <CardLabelError style={cndStyles.errorStyle}>{localFormState.touched.vehicleNumber ? errors?.vehicleNumber?.message : ""}</CardLabelError>
+          <CardLabelError style={errorStyle}>{localFormState.touched.vehicleNumber ? errors?.vehicleNumber?.message : ""}</CardLabelError>
  
           <LabelFieldPair>
             <CardLabel className="card-label-smaller">{t("CND_VEHICLE_DEPO")} <span className="astericColor">*</span></CardLabel>
@@ -215,7 +215,7 @@ const OwnerForm = (_props) => {
               />
             </div>
           </LabelFieldPair>
-          <CardLabelError style={cndStyles.errorStyle}>{localFormState.touched.vehicleDepoNumber ? errors?.vehicleDepoNumber?.message : ""}</CardLabelError>
+          <CardLabelError style={errorStyle}>{localFormState.touched.vehicleDepoNumber ? errors?.vehicleDepoNumber?.message : ""}</CardLabelError>
 
           <LabelFieldPair>
             <CardLabel className="card-label-smaller">{t("CND_DRIVER_NAME")} <span className="astericColor">*</span></CardLabel>
@@ -247,7 +247,7 @@ const OwnerForm = (_props) => {
               />
             </div>
           </LabelFieldPair>
-          <CardLabelError style={cndStyles.errorStyle}>{localFormState.touched.driverName ? errors?.driverName?.message : ""}</CardLabelError>
+          <CardLabelError style={errorStyle}>{localFormState.touched.driverName ? errors?.driverName?.message : ""}</CardLabelError>
 
           <LabelFieldPair>
             <CardLabel className="card-label-smaller">{t("CND_GROSS_WEIGHT")} <span className="astericColor">*</span></CardLabel>
@@ -279,7 +279,7 @@ const OwnerForm = (_props) => {
               />
             </div>
           </LabelFieldPair>
-          <CardLabelError style={cndStyles.errorStyle}>{localFormState.touched.grossWeight ? errors?.grossWeight?.message : ""}</CardLabelError>
+          <CardLabelError style={errorStyle}>{localFormState.touched.grossWeight ? errors?.grossWeight?.message : ""}</CardLabelError>
 
           <LabelFieldPair>
             <CardLabel className="card-label-smaller">{t("CND_NET_WEIGHT")} <span className="astericColor">*</span></CardLabel>
@@ -311,7 +311,7 @@ const OwnerForm = (_props) => {
               />
             </div>
           </LabelFieldPair>
-          <CardLabelError style={cndStyles.errorStyle}>{localFormState.touched.netWeight ? errors?.netWeight?.message : ""}</CardLabelError>
+          <CardLabelError style={errorStyle}>{localFormState.touched.netWeight ? errors?.netWeight?.message : ""}</CardLabelError>
 
           <LabelFieldPair>
             <CardLabel className="card-label-smaller">{t("CND_DUMPING_STATION")} <span className="astericColor">*</span></CardLabel>
@@ -343,38 +343,7 @@ const OwnerForm = (_props) => {
               />
             </div>
           </LabelFieldPair>
-          <CardLabelError style={cndStyles.errorStyle}>{localFormState.touched.dumpingStation ? errors?.dumpingStation?.message : ""}</CardLabelError>
-
-          <LabelFieldPair>
-            <CardLabel className="card-label-smaller">{t("CND_DISPOSE_DATE")} <span className="astericColor">*</span></CardLabel>
-            <div className="field">
-              <Controller
-                control={control}
-                name={"disposeDate"}
-                rules={{
-                    required: t("CORE_COMMON_REQUIRED_ERRMSG"),
-                    validDate: (val) => (/^\d{4}-\d{2}-\d{2}$/.test(val) ? true : t("ERR_DEFAULT_INPUT_FIELD_MSG")),
-                  }}
-                render={(props) => (
-                  <TextInput
-                    type={"date"}
-                    value={props.value}
-                    disable={false}
-                    autoFocus={focusIndex.index === pickup?.key && focusIndex.type === "disposeDate"}
-                    onChange={(e) => {
-                      props.onChange(e.target.value);
-                      setFocusIndex({ index: pickup.key, type: "disposeDate" });
-                    }}
-                    onBlur={(e) => {
-                      setFocusIndex({ index: -1 });
-                      props.onBlur(e);
-                    }}
-                  />
-                )}
-              />
-            </div>
-          </LabelFieldPair>
-          <CardLabelError style={cndStyles.errorStyle}>{localFormState.touched.disposeDate ? errors?.disposeDate?.message : ""}</CardLabelError>
+          <CardLabelError style={errorStyle}>{localFormState.touched.dumpingStation ? errors?.dumpingStation?.message : ""}</CardLabelError>
         </div>
       </div>
       {showToast?.label && (

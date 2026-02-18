@@ -1,4 +1,4 @@
-import { Card, CardHeader, CardSubHeader, CardText, Loader, SubmitBar } from "@upyog/digit-ui-react-components";
+import { Card, CardHeader, CardSubHeader, CardText, Loader, SubmitBar } from "@nudmcdgnpm/digit-ui-react-components";
 import React, { useEffect } from "react";
 import { cardBodyStyle, stringReplaceAll } from "../utils";
 //import { map } from "lodash-es";
@@ -61,7 +61,7 @@ const onConcent=async (e)=>{
   const data = await Digit.DigiLockerService.authorization({module:"PT"});
   e.preventDefault()
   console.log("data",data)
-  sessionStorage.setItem("code_verfier",data?.dlReqRef)
+  sessionStorage.setItem("code_verfier",data?.codeverifier)
   //let redirectURL=data?.redirectURL.replace("https://upyog-test.niua.org","http://localhost:3000")
   window.location.href=data?.redirectURL
     /* Number of Random Bytes to Use to Generate Code Verifier (min 32, max 96 bytes) */

@@ -155,7 +155,7 @@ const MutationCitizen = (props) => {
         owner.status === "INACTIVE" ? { ...owner, altContactNumber: ownersArray[0].altContactNumber } : owner
       );
     } else {
-      data.Property.institution=null;
+      delete data.Property.institution;
     }
     setFormData(data);
   };

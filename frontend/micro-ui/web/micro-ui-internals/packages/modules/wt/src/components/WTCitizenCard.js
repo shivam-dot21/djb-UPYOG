@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { EmployeeModuleCard, CHBIcon } from "@nudmcdgnpm/digit-ui-react-components";
+import { EmployeeModuleCard,CHBIcon } from "@nudmcdgnpm/digit-ui-react-components";
 import { APPLICATION_PATH } from "../utils";
 
 /**
@@ -13,24 +13,28 @@ const WTCitizenCard = () => {
   const { t } = useTranslation();
 
   const [total, setTotal] = useState("-");
-  const tenantId = Digit.ULBService.getCitizenCurrentTenant(true) || Digit.ULBService.getCurrentTenantId();
-  const { data, isLoading, isFetching, isSuccess } = Digit.Hooks.useNewInboxGeneral({
-    tenantId: tenantId,
-    ModuleCode: "WT",
-    filters: { limit: 10, offset: 0, services: ["watertanker"] },
-
-    config: {
-      select: (data) => {
-        return { totalCount: data?.totalCount, nearingSlaCount: data?.nearingSlaCount } || "-";
+    const tenantId = Digit.ULBService.getCitizenCurrentTenant(true) || Digit.ULBService.getCurrentTenantId();
+    const { data, isLoading, isFetching, isSuccess } = Digit.Hooks.useNewInboxGeneral({
+      tenantId: tenantId,
+      ModuleCode: "WT",
+      filters: { limit: 10, offset: 0, services: ["watertanker"] },
+  
+      config: {
+        select: (data) => {
+          return {totalCount:data?.totalCount,nearingSlaCount:data?.nearingSlaCount} || "-";
+        },
+        enabled: Digit.Utils.wtAccess(),
       },
-      enabled: Digit.Utils.wtAccess(),
-    },
-  });
+    });
   useEffect(() => {
-    if (!isFetching && isSuccess) setTotal(data);
-  }, [isFetching]);
+      if (!isFetching && isSuccess) setTotal(data);
+    }, [isFetching]);
+  
+    if (!Digit.Utils.wtAccess()) {
+      return null;
+    }
 
-  const links = [
+  const links=[
     {
       label: t("ES_COMMON_INBOX"),
       link: `${APPLICATION_PATH}/citizen/wt/inbox`,
@@ -38,17 +42,17 @@ const WTCitizenCard = () => {
     {
       label: t("ES_COMMON_APPLICATION_SEARCH"),
       link: `${APPLICATION_PATH}/citizen/wt/my-bookings`,
-    },
-  ];
+    }
+  ]
   const propsForModuleCard = {
-    Icon: <CHBIcon />,
+    Icon: <CHBIcon/>,
     moduleName: t("WT_MODULE_NAME"),
     kpis: [
       {
         count: total?.totalCount,
         label: t("ES_TITLE_INBOX"),
         link: `${APPLICATION_PATH}/employee/wt/inbox`,
-      },
+      }
     ],
     links,
   };
@@ -57,3 +61,4 @@ const WTCitizenCard = () => {
 };
 
 export default WTCitizenCard;
+

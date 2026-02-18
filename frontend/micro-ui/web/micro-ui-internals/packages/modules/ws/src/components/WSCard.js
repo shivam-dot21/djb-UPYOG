@@ -1,9 +1,12 @@
-import { EmployeeModuleCard, WSICon } from "@upyog/digit-ui-react-components";
+import { EmployeeModuleCard, WSICon } from "@nudmcdgnpm/digit-ui-react-components";
 import React, { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { checkForEmployee } from "../utils";
 
 const WSCard = () => {
+  if (!Digit.Utils.wsAccess()) {
+    return null;
+  }
   const { t } = useTranslation();
   const tenantId = Digit.ULBService.getCurrentTenantId();
   const [totalCount, setTotalCount] = useState(0);
@@ -68,7 +71,7 @@ const WSCard = () => {
         count: isWSInboxLoading ? "-" : wsData?.slaCount,
         label: t("TOTAL_NEARING_SLA"),
         link: `/digit-ui/employee/ws/water/inbox`,
-      },
+      }
     ],
     links: [
       {

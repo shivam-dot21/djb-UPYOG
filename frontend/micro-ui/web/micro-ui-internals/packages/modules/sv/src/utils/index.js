@@ -105,16 +105,16 @@ export const calculateAge = (birthDate) => {
 export const transformDocuments = (documents) => {
 
   if (!Array.isArray(documents)) return [];
-  
+
   // Retrieve and parse CategoryDocument from sessionStorage
   const categoryDocument = sessionStorage.getItem(UPYOG_CONSTANTS.DOCUMENT);
   const parsedCategoryDocument = categoryDocument ? JSON.parse(categoryDocument) : null;
   // Transform existing documents
   const transformedDocs = documents.map(doc => ({
     applicationId: "",  // Populate as required
-    documentType: doc?.documentType || doc?.documentType?.documentType,
-    fileStoreId: doc?.fileStoreId || doc?.fileStoreId?.fileStoreId,
-    documentDetailId: doc?.documentUid || doc?.documentUid?.documentUid, // Use documentUid as documentDetailId
+    documentType: doc.documentType,
+    fileStoreId: window.location.href.includes("edit")?doc?.fileStoreId?.fileStoreId:doc.fileStoreId,
+    documentDetailId: window.location.href.includes("edit")?doc?.fileStoreId?.fileStoreId:doc.documentUid, // Use documentUid as documentDetailId
     auditDetails: {
       createdBy: "",
       createdTime: 0,
@@ -122,7 +122,7 @@ export const transformDocuments = (documents) => {
       lastModifiedTime: 0
     }
   }));
-  
+
   // Add parsedCategoryDocument as an additional document object, if it exists
   if (parsedCategoryDocument) {
     transformedDocs.push({
@@ -138,7 +138,7 @@ export const transformDocuments = (documents) => {
       }
     });
   }
-  
+
   return transformedDocs;
 };
 /**
@@ -348,13 +348,8 @@ export const svPayloadData = (data) =>{
         lastModifiedTime: 0
       },
     },
-    benificiaryOfSocialSchemes: data?.specialCategoryData?.beneficiaryList,
-    applicationCreatedBy: data?.owner?.applicationCreatedBy,
-    locality: data?.businessDetails?.vendorLocality?.code,
-    localityValue: "",
-    vendingZoneValue: "",
-    vendorPaymentFrequency: data?.businessDetails?.vendingPayment?.code,
-    enrollmentId:"",
+    benificiaryOfSocialSchemes: data?.specialCategoryData?.beneficiary?.value,
+    enrollmentId:data?.specialCategoryData?.enrollmentId,
     cartLatitude: 0,
     cartLongitude: 0,
     certificateNo: null,
@@ -441,7 +436,7 @@ export const svUpdatePayload = (data) =>{
     isInvolved: data?.owner?.spouseDependentChecked,
     fatherName: "",
     specialCategory: data?.specialCategoryData?.ownerCategory?.code,
-    gender: "O",
+    gender: "N/A",
     id: sessionStorage.getItem("venId"),
     mobileNo: "",
     name: data?.owner?.units?.[0]?.spouseName,
@@ -580,13 +575,8 @@ export const svUpdatePayload = (data) =>{
         lastModifiedTime: 0
       },
     },
-    benificiaryOfSocialSchemes: data?.specialCategoryData?.beneficiaryList,
-    applicationCreatedBy: data?.owner?.applicationCreatedBy,
-    locality: data?.businessDetails?.vendorLocality?.code,
-    localityValue: "",
-    vendingZoneValue: "",
-    vendorPaymentFrequency: data?.businessDetails?.vendingPayment?.code,
-    enrollmentId: "",
+    benificiaryOfSocialSchemes: data?.specialCategoryData?.beneficiary?.value,
+    enrollmentId:data?.specialCategoryData?.enrollmentId,
     cartLatitude: 0,
     cartLongitude: 0,
     certificateNo: null,

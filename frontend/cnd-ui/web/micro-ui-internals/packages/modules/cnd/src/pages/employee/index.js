@@ -4,7 +4,6 @@ import { Route, Switch, useRouteMatch, useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import Inbox from "./Inbox";
 import SearchApp from "./SearchApp";
-import { cndStyles } from "../../utils/cndStyles";
 
 /** The Main routes component for the employee side
  * Contains routes for every page there is to redirect in the employee side
@@ -26,13 +25,12 @@ const EmployeeApp = () => {
   const EditResponse = Digit?.ComponentRegistryService?.getComponent("EditSubmissionResponse");
   const FacilityCentreCreationDetails = Digit?.ComponentRegistryService?.getComponent("FacilityCentreCreationDetails");
   const FacilitySubmissionResponse = Digit?.ComponentRegistryService?.getComponent("FacilitySubmissionResponse");
-  const CndCreate = Digit?.ComponentRegistryService?.getComponent("CndCreate");
 
   return (
-    <span className={"cnd-citizen"} style={cndStyles.wasteQuantityCitizen}>
+    <span className={"cnd-citizen"}style={{width:"100%"}}>
       <Switch>
         <AppContainer>
-          <BackButton style={cndStyles.backButton}>Back</BackButton>
+          <BackButton style={{marginTop:"15px"}}>Back</BackButton>
           <PrivateRoute
             path={`${path}/inbox`}
             component={() => (
@@ -46,7 +44,6 @@ const EmployeeApp = () => {
               />
             )}
           />
-          <PrivateRoute path={`${path}/apply`} component={CndCreate} />
           <PrivateRoute path={`${path}/application-details/:id`} component={() => <ApplicationDetails parentRoute={path} />} />
           <PrivateRoute path={`${path}/applicationsearch/application-details/:id`} component={() => <ApplicationDetails parentRoute={path} />} />
           <PrivateRoute path={`${path}/cnd-service/edit/:id`} component={() => <EditCreate parentUrl={url} />} />

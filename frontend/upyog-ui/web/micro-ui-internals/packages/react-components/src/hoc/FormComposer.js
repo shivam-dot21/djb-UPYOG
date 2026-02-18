@@ -20,7 +20,7 @@ import { useTranslation } from "react-i18next";
 import MobileNumber from "../atoms/MobileNumber";
 import _ from "lodash";
 
-const FormComposer = (props) => {
+export const FormComposer = (props) => {
   const {
     register,
     handleSubmit,
@@ -98,9 +98,7 @@ const FormComposer = (props) => {
       case "mobileNumber":
         return (
           <Controller
-          render={(props) => (
-            <MobileNumber className={populators?.className || "field"} onChange={props.onChange} value={props.value} disable={disable} />
-          )}
+            render={(props) => <MobileNumber className="field" onChange={props.onChange} value={props.value} disable={disable} />}
             defaultValue={populators.defaultValue}
             name={populators?.name}
             control={control}
@@ -346,4 +344,3 @@ const FormComposer = (props) => {
     </form>
   );
 };
-export default FormComposer;

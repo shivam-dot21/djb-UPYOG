@@ -17,7 +17,6 @@ import get from "lodash/get";
 import { size } from "lodash";
 import WFApplicationTimeline from "../../pageComponents/WFApplicationTimeline";
 import { convertTo12HourFormat, formatDate } from "../../utils";
-import getWTAcknowledgementData from "../../utils/getWTAcknowledgementData";
 
 /**
  * `WTApplicationDetails` is a React component that fetches and displays detailed information for a specific Water Tanker (WT) service application.
@@ -53,83 +52,27 @@ const WTApplicationDetails = () => {
   const application = wt_details;
 
   sessionStorage.setItem("wt", JSON.stringify(application));
-  let immediateRequired = (wt_details?.extraCharge==="N") ? "No":"Yes"
+  let immediateRequired = (wt_details?.extraCharge) ? "YES":"NO"
 
-  const mutation = Digit.Hooks.wt.useTankerCreateAPI(tenantId,false); 
-
-  const { data: reciept_data, isLoading: recieptDataLoading } = Digit.Hooks.useRecieptSearch(
+  
+  const { isLoading: auditDataLoading, isError: isAuditError, data: auditResponse } = Digit.Hooks.wt.useTankerSearchAPI(
     {
-      tenantId: tenantId,
-      businessService: "request-service.water_tanker",
-      consumerCodes: acknowledgementIds,
-      isEmployee: false,
+      tenantId,
+      filters: { bookingNo: wtId, audit: true },
     },
-    { enabled: acknowledgementIds ? true : false }
-  );
-
-/**
- * This function handles the receipt generation and updates the water tanker booking details
- * with the generated receipt's file store ID.
- * 
- * Steps:
- * 1. Retrieve the first application from `waterTankerBookingDetail`.
- * 2. Check if the `paymentReceiptFilestoreId` already exists in the application.
- *    - If it exists, no further action is taken.
- *    - If it does not exist:
- *      a. Generate a PDF receipt using the `Digit.PaymentService.generatePdf` method.
- *      b. Update the application with the generated `paymentReceiptFilestoreId`.
- *      c. Use the `mutation.mutateAsync` method to persist the updated application.
- *      d. Refetch the data to ensure the UI reflects the latest state.
- * 
- * Parameters:
- * - tenantId: The tenant ID for which the receipt is being generated.
- * - payments: Payment details used to generate the receipt.
- * - params: Additional parameters (not used in this function).
- * 
- * Returns:
- * - None (the function performs asynchronous updates and refetches data).
- */
-  async function getRecieptSearch({ tenantId, payments, ...params }) {
-    let application = waterTankerBookingDetail[0] || {};
-    let fileStoreId = application?.paymentReceiptFilestoreId
-    if (!fileStoreId) {
-    let response = { filestoreIds: [payments?.fileStoreId] };
-    response = await Digit.PaymentService.generatePdf(tenantId, { Payments: [{ ...payments }] }, "request-service.water_tanker-receipt");
-    const updatedApplication = {
-      ...application,
-      paymentReceiptFilestoreId: response?.filestoreIds[0]
-    };
-    await mutation.mutateAsync({
-      waterTankerBookingDetail: updatedApplication
-    });
-    fileStoreId = response?.filestoreIds[0];
-    refetch();
+    {
+      enabled: true,
     }
-    const fileStore = await Digit.PaymentService.printReciept(tenantId, { fileStoreIds: fileStoreId });
-    window.open(fileStore[fileStoreId], "_blank");
-  }
-
+  );
   let dowloadOptions=[];
-    dowloadOptions.push({
-      label: t("WT_DOWNLOAD_ACKNOWLEDGEMENT"),
-      onClick: () => getAcknowledgementData(),
-    });
-    
-    const getAcknowledgementData = async () => {
-      const applications = application || {};
-      const tenantInfo = tenants.find((tenant) => tenant.code === applications.tenantId);
-      const acknowldgementDataAPI = await getWTAcknowledgementData({ ...applications }, tenantInfo, t);
-      Digit.Utils.pdf.generate(acknowldgementDataAPI);
-    };
+  
+  let docs = [];
+  docs = application?.documents;
 
-  if (isLoading) {
+  if (isLoading || auditDataLoading) {
     return <Loader />;
   }
-  if (reciept_data && reciept_data?.Payments.length > 0 && recieptDataLoading == false)
-    dowloadOptions.push({
-      label: t("WT_FEE_RECEIPT"),
-      onClick: () => getRecieptSearch({ tenantId: reciept_data?.Payments[0]?.tenantId, payments: reciept_data?.Payments[0] }),
-    });
+
 
   return (
     <React.Fragment>
@@ -174,9 +117,8 @@ const WTApplicationDetails = () => {
             <CardSubHeader style={{ fontSize: "24px" }}>{t("ES_REQUEST_DETAILS")}</CardSubHeader>
             <StatusTable>
               <Row className="border-none" label={t("WT_TANKER_TYPE")} text={wt_details?.tankerType || t("CS_NA")} />
-              <Row className="border-none" label={t("WT_WATER_TYPE")} text={t(wt_details?.waterType) || t("CS_NA")} />
               <Row className="border-none" label={t("WT_TANKER_QUANTITY")} text={wt_details?.tankerQuantity|| t("CS_NA")}/>
-              <Row className="border-none" label={t("WT_WATER_QUANTITY")} text={wt_details?.waterQuantity + " Ltr"|| t("CS_NA")} />
+              <Row className="border-none" label={t("WT_WATER_QUANTITY")} text={wt_details?.waterQuantity|| t("CS_NA")} />
               <Row className="border-none" label={t("WT_DELIVERY_DATE")} text={formatDate(wt_details?.deliveryDate)|| t("CS_NA")} />
               <Row className="border-none" label={t("WT_DELIVERY_TIME")} text={convertTo12HourFormat(wt_details?.deliveryTime) || t("CS_NA")} />
               <Row className="border-none" label={t("WT_DESCRIPTION")} text={wt_details?.description || t("CS_NA")} />

@@ -118,19 +118,27 @@ class Header extends Component {
   };
 
   _handleItemClick = (item, toggleMenu) => {
-    const { route } = item;
-    // close the navigation bar
-    toggleMenu && this._handleToggleMenu();
-    //updating route poth in reducerxxxx
+    const route = item && (item.route || item.path || "");
+
+    // Close the navigation bar if needed
+    if (toggleMenu) {
+      this._handleToggleMenu();
+    }
+
+    // Update active route path in store (if exists)
     if (item.path) {
       this.props.updateActiveRoute(item.path, item.path);
     }
-    // this logic is a bit shaky!! might break in future
-    switch (route.slice(1)) {
+
+    if (!route) return;
+
+    // Normalize route (remove leading '/')
+    const normalizedRoute = route.startsWith("/") ? route.slice(1) : route;
+
+    // Handle routing actions
+    switch (normalizedRoute) {
       case "logout":
-        this.setState({
-          logoutPopupOpen: true,
-        });
+        this.setState({ logoutPopupOpen: true });
         break;
       case "language-selection":
         break;
@@ -171,14 +179,17 @@ class Header extends Component {
     } = this.props;
     const tenantId = role.toLowerCase() === "citizen" ? userInfo.permanentCity : getTenantId();
     const currentCity = cities.filter((item) => item.code === tenantId);
+    const localeData = JSON.parse(sessionStorage.getItem("Digit.Employee.zone") || "{}");
+    const zoneName = localeData && localeData.value ? localeData.value : "";
     const ulbLogo =
-      currentCity.length > 0 ? get(currentCity[0], "logoId") : "https://s3.ap-south-1.amazonaws.com/pb-egov-assets/pb.amritsar/logo.png";
+      currentCity.length > 0 ? get(currentCity[0], "logoId") : "https://mcd-asset.s3.ap-south-1.amazonaws.com/Logo.png";
     return (
       <div style={headerStyle}>
         <AppBar
           className={className}
           title={title ? title : headerTitle}
           ulbName={name}
+          zone={zoneName}
           defaultTitle={defaultTitle}
           titleAddon={titleAddon}
           role={role}

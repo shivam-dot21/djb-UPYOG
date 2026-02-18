@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
-import { FormComposer, Toast } from "@upyog/digit-ui-react-components";
+import { FormComposer, Toast } from "@nudmcdgnpm/digit-ui-react-components";
 import { newConfigMutate } from "../../../config/Mutate/config";
 import { useHistory } from "react-router-dom";
 
@@ -150,9 +150,7 @@ const MutationForm = ({ applicationData, tenantId }) => {
         type: data.owners[0].institution.type.code,
       };
     }
-    else {
-      submitData.Property.institution=null;
-    }
+
     history.replace("/digit-ui/employee/pt/response", { Property: submitData.Property, key: "UPDATE", action: "SUBMIT" });
   };
 

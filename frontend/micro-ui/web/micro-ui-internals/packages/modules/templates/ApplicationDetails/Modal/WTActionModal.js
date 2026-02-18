@@ -1,6 +1,5 @@
 import { Loader, Modal, FormComposer } from "@nudmcdgnpm/digit-ui-react-components";
 import React, { useState, useEffect } from "react";
-import { useHistory } from "react-router-dom";
 
 import { configWTApproverApplication } from "../config/WTApproverApplication";
 /*
@@ -65,8 +64,8 @@ const ActionModal = ({ t, action, tenantId, state, id, closeModal, submitAction,
   
   let vendorDescription = [];
   dsoData?.vendor?.map((item) => {
-    if (item?.additionalDetails?.serviceType === applicationData?.bookingNo.split("-")[0]) {
-      vendorDescription.push({ code: item?.name, name: item?.name, i18nKey: item?.name, vendorId: item?.id, uuid:item?.owner?.uuid });
+    if (item?.additionalDetails?.description === "WT") {
+      vendorDescription.push({ code: item?.name, name: item?.name, i18nKey: item?.name, vendorId: item?.id});
     }
   });
 
@@ -91,7 +90,6 @@ const ActionModal = ({ t, action, tenantId, state, id, closeModal, submitAction,
       i18nKey: item?.registrationNumber,
       tankerCapacity: item?.tankCapacity,
       vehicleId: item?.id,
-      uuid: item?.owner?.uuid,
     });
   });
 
@@ -103,8 +101,6 @@ const ActionModal = ({ t, action, tenantId, state, id, closeModal, submitAction,
   const [error, setError] = useState(null);
   const [selectedVendor, setSelectedVendor] = useState(null);
   const [selectVehicle, setSelectVehicle] = useState(null);
-  const [comment, setComment] = useState("");
-  const history = useHistory();
 
 
   useEffect(() => {
@@ -149,7 +145,6 @@ const ActionModal = ({ t, action, tenantId, state, id, closeModal, submitAction,
         },
       ];
     if (action?.state === "PENDING_FOR_VEHICLE_DRIVER_ASSIGN") {
-      workflow.assignes =[selectedVendor?.uuid];
       applicationData.vendorId = selectedVendor?.vendorId;
     };
 
@@ -163,39 +158,14 @@ const ActionModal = ({ t, action, tenantId, state, id, closeModal, submitAction,
  *  
  * The payload is then passed to `submitAction` for processing.  
  */
-   let requestPayload;
-   if (businessService === "watertanker") {
-     requestPayload = { waterTankerBookingDetail: { ...applicationData, workflow } };
-   } else if (businessService === "treePruning") {
-     requestPayload = { treePruningBookingDetail: { ...applicationData, workflow } };
-   } else {
-     requestPayload = { mobileToiletBookingDetail: { ...applicationData, workflow } };
-   }
+    let requestPayload = businessService === "watertanker"
+      ? { waterTankerBookingDetail: { ...applicationData, workflow } }
+      : { mobileToiletBookingDetail: { ...applicationData, workflow } };
      submitAction(requestPayload);
       }
 
   useEffect(() => {
     if (action) {
-      if (action.action === "PAY") {
-        const bookingPrefix = applicationData.bookingNo?.split("-")[0];
-        let servicePath = "";
-        switch (bookingPrefix) {
-          case "WT":
-            servicePath = "request-service.water_tanker";
-            break;
-          case "MT":
-            servicePath = "request-service.mobile_toilet";
-            break;
-          case "TP":
-            servicePath = "request-service.tree_pruning";
-            break;
-          default:
-            console.error("Unknown booking prefix:", bookingPrefix);
-            return; // Or handle as needed
-        }
-      
-        return history.push(`/digit-ui/employee/payment/collect/${servicePath}/${applicationData.bookingNo}`);
-      }
       setConfig(
         configWTApproverApplication({
           t,
@@ -224,12 +194,6 @@ const ActionModal = ({ t, action, tenantId, state, id, closeModal, submitAction,
       actionSaveLabel={t(config.label.submit)}
       actionSaveOnSubmit={() => {}}
       formId="modal-action"
-      isDisabled={
-        (action?.docUploadRequired && !uploadedFile && !comment) ||
-        (action?.state === "PENDING_FOR_VEHICLE_DRIVER_ASSIGN" && !selectedVendor && !comment) ||
-        (action?.state === "DELIVERY_PENDING" && !selectVehicle && !comment) ||
-        !comment
-      }
     >
        
       <FormComposer
@@ -240,9 +204,6 @@ const ActionModal = ({ t, action, tenantId, state, id, closeModal, submitAction,
         onSubmit={submit}
         defaultValues={defaultValues}
         formId="modal-action"
-        onFormValueChange={(setValue, values) => {
-          setComment(values?.comments);
-        }}
       />
       
     </Modal>

@@ -12,7 +12,7 @@ import {
     Header,
     Toast,
     Loader,
-} from "@upyog/digit-ui-react-components";
+} from "@nudmcdgnpm/digit-ui-react-components";
 
 /**
  * Description: VSearchCertificate component renders a form having certificate type, certificate number and a captcha for verification and display's a table as a result
@@ -27,7 +27,6 @@ import {
 const VSearchCertificate = () => {
     const { t } = useTranslation();
     const tenantId = Digit.ULBService.getCitizenCurrentTenant(true);
-    const user = Digit.UserService.getUser();
     const [showToast, setShowToast] = useState(null);
 
     const isMobile = window.Digit.Utils.browser.isMobile();
@@ -39,7 +38,7 @@ const VSearchCertificate = () => {
     const [istable, setistable] = useState(false);
     const [certificate_name, setCertificate_name] = useState("");
     const [certificate_No, setCertificate_No] = useState("");
-    const [selectedCity, setSelectedCity] = useState("");
+
 
     // function to reset captcha
     const resetCaptcha = () => {
@@ -75,21 +74,7 @@ const VSearchCertificate = () => {
             },
         });
 
-    // Hook to fetch city data
-    const { data: cityData } = Digit.Hooks.useCustomMDMS(
-        Digit.ULBService.getStateId(), 
-        "tenant", 
-        [{ name: "tenants" }],
-        {
-            select: (data) => {
-                return data?.tenant?.tenants?.map((city) => ({
-                    i18nKey: city.name,
-                    code: city.code,
-                    active: true
-                }));
-            },
-        }
-    );
+    
     // sets ishuman to be true based on token
     useEffect(() => {
         if (token) {
@@ -114,38 +99,31 @@ const VSearchCertificate = () => {
      * including name, mobileNumber, certificate number, issue date, validity date, and status.
      * If the application does not exist, it displays a warning toast notification.
      */
-    const mutation = Digit.Hooks.cm.useCMSearch();
     const ModuleData = async () => {
         if (certificate_name && certificate_No) {
-            const formdata = {
-                ModuleSearchCriteria: {
-                    tenantId:selectedCity?.code || tenantId,
-                    applicationNumber: certificate_No,
-                    moduleName: certificate_name.code
+            const Details = await Digit.CMServices.search(
+                {
+                    tenantId,
+                    filters: { moduleName: certificate_name.code, applicationNumber: certificate_No }
                 }
-            };
-            
-            mutation.mutate(formdata, {
-                onSuccess: (Details) => {
-                    const applicationData = Details?.CommonDetail;
+            );
+            applicationData = Details?.CommonDetail;
+
             if (applicationData?.applicationNumber) {
-                 setUpdatedData([{
+                setUpdatedData([
+                    {
                         name: applicationData?.name || "NA",
                         mobileNumber: applicationData?.mobileNumber || "NA",
                         certificateNumber: applicationData?.applicationNumber || "NA",
                         issueDate: applicationData?.fromDate || "NA",
                         validUpto: applicationData?.toDate || "NA",
                         certificateStatus: applicationData?.status || "NA",
-                        }]);
-                        setistable(true);
-                    } else {
-                        setShowToast({ label: t("VS_APPLICATION_DOESNOT_EXIST"), warning: true });
                     }
-                },
-                onError: (error) => {
-                    setShowToast({ label: t("VS_APPLICATION_DOESNOT_EXIST"), warning: true });
-                }
-            });
+                ])
+                setistable(true);
+            } else {
+                setShowToast({ label: t("VS_APPLICATION_DOESNOT_EXIST"), warning: true })
+            }
         }
     }
 
@@ -201,30 +179,6 @@ const VSearchCertificate = () => {
                             )}
                         />
                     </SearchField>
-                    {!user?.info && (
-                        <SearchField>
-                            <label className="astericColor" style={{ fontSize: "19px" }}>
-                                {t("CITY")}
-                            </label>
-                            <Controller
-                                control={control}
-                                name="city"
-                                render={(props) => (
-                                    <Dropdown
-                                        selected={selectedCity}
-                                        select={setSelectedCity}
-                                        onBlur={props.onBlur}
-                                        option={cityData}
-                                        optionKey="i18nKey"
-                                        optionCardStyles={{ overflowY: "auto", maxHeight: "300px" }}
-                                        t={t}
-                                        disable={false}
-                                        placeholder={"Please select city"}
-                                    />
-                                )}
-                            />
-                        </SearchField>
-                    )}
                     <SearchField>
                         <label className="astericColor" style={{ fontSize: "19px" }}>{t("CERTIFICATE_NUMBER")}</label>
                         <TextInput
@@ -249,7 +203,7 @@ const VSearchCertificate = () => {
                         <SubmitBar
                             label={t("ES_COMMON_SEARCH")}
                             submit
-                            disabled={!ishuman || !certificate_name || !certificate_No || (!user?.info && !selectedCity)}
+                            disabled={!ishuman || !certificate_name || !certificate_No}
                         />
                         <p
                             style={{ marginTop: "10px" }}
@@ -269,7 +223,6 @@ const VSearchCertificate = () => {
                                 setIshuman(false);
                                 setCertificate_name("");
                                 setCertificate_No("");
-                                setSelectedCity("");
                                 resetCaptcha();
                             }}
                         >

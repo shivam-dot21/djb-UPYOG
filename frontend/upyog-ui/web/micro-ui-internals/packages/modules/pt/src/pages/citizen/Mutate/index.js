@@ -89,9 +89,8 @@ const MutationCitizen = (props) => {
         creationReason: "MUTATION",
         owners: [
           ...originalProperty.owners?.map((e) => ({ ...e, status: "INACTIVE" })),
-          ...ownersArray.map((owner,index) => ({
+          ...ownersArray.map((owner) => ({
             ...owner,
-            additionalDetails:{ownerSequence:index, ownerName:owner?.name},
             documents: Object.keys(owner.documents).map((key) => {
               const { documentType, fileStoreId } = owner.documents[key];
               return { documentType: documentType.code, fileStoreId };
@@ -111,23 +110,6 @@ const MutationCitizen = (props) => {
           isPropertyUnderGovtPossession: additionalDetails.isPropertyUnderGovtPossession.code,
           documentDate: new Date(additionalDetails?.documentDate).getTime(),
           marketValue: Number(additionalDetails?.marketValue),
-          owners: [
-            ...originalProperty.owners?.map((e) => ({ ...e, status: "INACTIVE" })),
-            ...ownersArray.map((owner,index) => ({
-              ...owner,
-              additionalDetails:{ownerSequence:index, ownerName:owner?.name},
-              documents: Object.keys(owner.documents).map((key) => {
-                const { documentType, fileStoreId } = owner.documents[key];
-                return { documentType: documentType.code, fileStoreId };
-              }),
-              gender: owner.gender?.code,
-              ownerType: owner.ownerType?.code || "NONE",
-              relationship: owner.relationship?.code,
-              inistitutetype: owner?.inistitutetype?.value,
-              landlineNumber: owner?.altContactNumber,
-              status: "ACTIVE",
-            })),
-          ],
         },
         ownershipCategory: ownershipCategory.code,
         documents:  [
@@ -155,7 +137,7 @@ const MutationCitizen = (props) => {
         owner.status === "INACTIVE" ? { ...owner, altContactNumber: ownersArray[0].altContactNumber } : owner
       );
     } else {
-      data.Property.institution=null;
+      delete data.Property.institution;
     }
     setFormData(data);
   };

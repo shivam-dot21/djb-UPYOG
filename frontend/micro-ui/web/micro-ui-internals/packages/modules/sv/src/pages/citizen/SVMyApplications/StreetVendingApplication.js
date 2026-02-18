@@ -1,4 +1,4 @@
-import { Toast, Card, KeyNote, SubmitBar } from "@upyog/digit-ui-react-components";
+import { Toast, Card, KeyNote, SubmitBar } from "@nudmcdgnpm/digit-ui-react-components";
 import React,{ useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Link,useHistory } from "react-router-dom";
@@ -6,6 +6,7 @@ import RenewPopup from "../../../components/RenewPopup";
 import { RENEWAL_CONSTANTS } from "../../../utils";
 
 const StreetVendingApplication = ({ application, buttonLabel,previousDraftId,onDiscard }) => {
+  console.log("applicationapplication",application);
   const { t } = useTranslation();
   const history = useHistory();
   const [showToast, setShowToast] = useState(null);
@@ -62,7 +63,7 @@ const StreetVendingApplication = ({ application, buttonLabel,previousDraftId,onD
       <KeyNote keyValue={t("SV_APPLICATION_NUMBER")} note={application?.applicationNo} />
       <KeyNote keyValue={t("SV_VENDOR_NAME")} note={application?.vendorDetail?.[0]?.name} />
       <KeyNote keyValue={t("SV_VENDING_TYPE")} note={application?.vendingActivity} />
-      <KeyNote keyValue={t("SV_VENDING_ZONES")} note={t(application?.vendingZoneValue)} />
+      <KeyNote keyValue={t("SV_VENDING_ZONES")} note={t(application?.vendingZone)} />
       <KeyNote keyValue={t("SV_VALIDITY_DATE")} note={application?.validityDate} />
       <KeyNote keyValue={t("SV_APPLICATION_STATUS")} note={application?.applicationStatus} />
       {application?.vendingActivity==="STATIONARY"&&(

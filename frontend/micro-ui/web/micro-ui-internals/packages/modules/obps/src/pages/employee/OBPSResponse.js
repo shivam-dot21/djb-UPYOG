@@ -1,4 +1,4 @@
-import { Banner, Card, CardText, ActionBar, SubmitBar, Loader, LinkButton } from "@upyog/digit-ui-react-components";
+import { Banner, Card, CardText, ActionBar, SubmitBar, Loader, LinkButton } from "@nudmcdgnpm/digit-ui-react-components";
 import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { stringReplaceAll, getBusinessServices } from "../../utils";
@@ -10,12 +10,11 @@ const OBPSResponse = (props) => {
   const { t } = useTranslation();
   const tenantId = Digit.ULBService.getCurrentTenantId();
   let bpaData={}
-  let updateData=JSON.parse(sessionStorage.getItem("updateData"))
   if(state?.data?.response){
     bpaData = state?.data?.response?.BPA?.[0];
   }
   else{
-    bpaData = state?.data?.BPA?.[0]
+    bpaData = state?.data?.BPA?.[0];
   }
   const [applicationData, setApplicationData] = useState({});
   const [isLoader, setIsLoader] = useState(true);
@@ -49,7 +48,7 @@ const OBPSResponse = (props) => {
   }
 
   const getSubHeaderMessage = () => {
-    return bpaBusinessService==="BPA-PAP" ? t(`BPA_SUB_HEADER_${bpaBusinessService}_${bpaData?.workflow?.action}_${stringReplaceAll(bpaStatus, " ", "_").toUpperCase()}${isSanctionFee ? isSanctionFee : ""}`) : t(`BPA_SUB_HEADER_${bpaBusinessService}_${bpaData?.workflow?.action}_${bpaData?.additionalDetails?.typeOfArchitect ? bpaData?.additionalDetails?.typeOfArchitect : "ARCHITECT"}_${stringReplaceAll(bpaStatus, " ", "_").toUpperCase()}${isSanctionFee ? isSanctionFee : ""}`)
+    return t(`BPA_SUB_HEADER_${bpaBusinessService}_${bpaData?.workflow?.action}_${bpaData?.additionalDetails?.typeOfArchitect ? bpaData?.additionalDetails?.typeOfArchitect : "ARCHITECT"}_${stringReplaceAll(bpaStatus, " ", "_").toUpperCase()}${isSanctionFee ? isSanctionFee : ""}`)
   }
 
   const printReciept = async () => {
@@ -63,7 +62,7 @@ const OBPSResponse = (props) => {
   }
 
   const getApplicationNoLabel = () => {
-    return bpaBusinessService == "BPA"||bpaBusinessService=="BPA-PAP" ? t("BPA_PERMIT_APPLICATION_NUMBER_LABEL") : t("BPA_OCCUPANCY_CERTIFICATE_APPLICATION_NUMBER_LABEL")
+    return bpaBusinessService == "BPA" ? t("BPA_PERMIT_APPLICATION_NUMBER_LABEL") : t("BPA_OCCUPANCY_CERTIFICATE_APPLICATION_NUMBER_LABEL")
   }
 
   const getPaymentURL = (isCitizen) => {

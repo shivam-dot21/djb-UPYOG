@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { EmployeeModuleCard, CHBIcon } from "@nudmcdgnpm/digit-ui-react-components";
+import { EmployeeModuleCard,CHBIcon } from "@nudmcdgnpm/digit-ui-react-components";
 import { APPLICATION_PATH } from "../utils";
 
 /**
@@ -13,24 +13,28 @@ const MTCitizenCard = () => {
   const { t } = useTranslation();
 
   const [total, setTotal] = useState("-");
-  const tenantId = Digit.ULBService.getCitizenCurrentTenant(true) || Digit.ULBService.getCurrentTenantId();
-  const { data, isLoading, isFetching, isSuccess } = Digit.Hooks.useNewInboxGeneral({
-    tenantId: tenantId,
-    ModuleCode: "WT",
-    filters: { limit: 10, offset: 0, services: ["mobileToilet"] },
-
-    config: {
-      select: (data) => {
-        return { totalCount: data?.totalCount, nearingSlaCount: data?.nearingSlaCount } || "-";
+    const tenantId = Digit.ULBService.getCitizenCurrentTenant(true) || Digit.ULBService.getCurrentTenantId();
+    const { data, isLoading, isFetching, isSuccess } = Digit.Hooks.useNewInboxGeneral({
+      tenantId: tenantId,
+      ModuleCode: "WT",
+      filters: { limit: 10, offset: 0, services: ["mobileToilet"] },
+  
+      config: {
+        select: (data) => {
+          return {totalCount:data?.totalCount,nearingSlaCount:data?.nearingSlaCount} || "-";
+        },
+        enabled: Digit.Utils.mtAccess(),
       },
-      enabled: Digit.Utils.mtAccess(),
-    },
-  });
+    });
   useEffect(() => {
-    if (!isFetching && isSuccess) setTotal(data);
-  }, [isFetching]);
+      if (!isFetching && isSuccess) setTotal(data);
+    }, [isFetching]);
+  
+    if (!Digit.Utils.mtAccess()) {
+      return null;
+    }
 
-  const links = [
+  const links=[
     {
       label: t("ES_COMMON_INBOX"),
       link: `${APPLICATION_PATH}/citizen/wt/mt/inbox`,
@@ -38,17 +42,17 @@ const MTCitizenCard = () => {
     {
       label: t("ES_COMMON_APPLICATION_SEARCH"),
       link: `${APPLICATION_PATH}/citizen/wt/mt/my-bookings`,
-    },
-  ];
+    }
+  ]
   const propsForModuleCard = {
-    Icon: <CHBIcon />,
+    Icon: <CHBIcon/>,
     moduleName: t("ACTION_TEST_MT"),
     kpis: [
       {
         count: total?.totalCount,
         label: t("ES_TITLE_INBOX"),
         link: `${APPLICATION_PATH}/employee/wt/mt/inbox`,
-      },
+      }
     ],
     links,
   };
@@ -57,3 +61,4 @@ const MTCitizenCard = () => {
 };
 
 export default MTCitizenCard;
+

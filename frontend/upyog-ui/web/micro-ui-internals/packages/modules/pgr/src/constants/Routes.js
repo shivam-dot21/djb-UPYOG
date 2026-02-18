@@ -24,7 +24,6 @@ export const PgrRoutes = {
   UploadPhotos: `/upload-photos`,
   Details: `/details`,
   CreateComplaintResponse: `/response`,
-  EditApplication: "/modify-application"
 };
 
 export const Employee = {
@@ -33,7 +32,6 @@ export const Employee = {
   CreateComplaint: PGR_EMPLOYEE_CREATE_COMPLAINT,
   Response: "/response",
   Home: "/upyog-ui/employee",
-  EditApplication: "/modify-application"
 };
 
 export const getRoute = (match, route) => `${match.path}${route}`;

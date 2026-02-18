@@ -1,4 +1,4 @@
-import { Card, CardSubHeader, Header, KeyNote, Loader, RadioButtons, SubmitBar, TextInput } from "@upyog/digit-ui-react-components";
+import { Card, CardSubHeader, Header, KeyNote, Loader, RadioButtons, SubmitBar, TextInput } from "@nudmcdgnpm/digit-ui-react-components";
 import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useHistory, useLocation, useParams, Redirect } from "react-router-dom";
@@ -20,7 +20,6 @@ const BillDetails = ({ paymentRules, businessService }) => {
   const propertyId = state?.propertyId;
   const applicationNumber = state?.applicationNumber;
   const [Time, setTime ] = useState(0);
-  const skipBillingAndArrears = ["adv-services", "chb-services","request-service.mobile_toilet", "request-service.water_tanker", "request-service.tree_pruning"];
 
   if (wrkflow === "WNS" && consumerCode.includes("?")) consumerCode = consumerCode.substring(0, consumerCode.indexOf("?"));
   const { data, isLoading } = state?.bill
@@ -219,7 +218,7 @@ const BillDetails = ({ paymentRules, businessService }) => {
             </CardSubHeader>
           )}
           </div>
-          {businessService !== "PT.MUTATION" && businessService !== "FSM.TRIP_CHARGES" && !skipBillingAndArrears.includes(businessService) && (
+          {businessService !== "PT.MUTATION" && businessService !== "FSM.TRIP_CHARGES" && (
             <KeyNote keyValue={t("CS_PAYMENT_BILLING_PERIOD")} note={getBillingPeriod()} />
           )}
           {businessService?.includes("PT") ||
@@ -237,7 +236,7 @@ const BillDetails = ({ paymentRules, businessService }) => {
               ) : null}
             </div>
           ) : (
-            <BillSumary billAccountDetails={getBillBreakDown()} total={getTotal()} businessService={businessService} arrears={Arrears} skipArrears={skipBillingAndArrears}/>
+            <BillSumary billAccountDetails={getBillBreakDown()} total={getTotal()} businessService={businessService} arrears={Arrears} />
           )}
           <ArrearSummary bill={bill} />
         </div>

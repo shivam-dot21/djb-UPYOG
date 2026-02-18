@@ -9,7 +9,7 @@ import {
   TextInput,
   CardLabelError,
   KeyNote,
-} from "@upyog/digit-ui-react-components";
+} from "@egovernments/digit-ui-react-components";
 import Timeline from "../components/TLTimelineInFSM";
 
 const SelectPaymentPreference = ({ config, formData, t, onSelect, userType }) => {
@@ -29,7 +29,7 @@ const SelectPaymentPreference = ({ config, formData, t, onSelect, userType }) =>
       validation: {
         isRequired: true,
       },
-      disable: true,
+      disable: MinAmount === totalAmount ? true : false,
       default: formData?.selectPaymentPreference?.advanceAmount,
       isMandatory: true,
     },
@@ -49,41 +49,31 @@ const SelectPaymentPreference = ({ config, formData, t, onSelect, userType }) =>
 
   useEffect(() => {
     (async () => {
-      if (formData?.propertyType && formData?.subtype && formData?.address && formData?.selectTripNo?.vehicleCapacity.capacity &&
-        formData?.address?.propertyLocation?.code === "WITHIN_ULB_LIMITS") {
+      if (formData?.propertyType && formData?.subtype && formData?.address && formData?.selectTripNo?.vehicleCapacity.capacity) {
         const capacity = formData?.selectTripNo?.vehicleCapacity.capacity;
         const { slum: slumDetails } = formData.address;
         const slum = slumDetails ? "YES" : "NO";
-        const billingDetails = await Digit.FSMService.billingSlabSearch(
-          tenantId === formData?.address?.city?.code
-            ? tenantId
-            : formData?.address?.city?.code,
-          {
-            propertyType: formData?.subtype?.code,
-            capacity,
-            slum,
-          });
+        const billingDetails = await Digit.FSMService.billingSlabSearch(tenantId, {
+          propertyType: formData?.subtype?.code,
+          capacity,
+          slum,
+        });
 
         const billSlab = billingDetails?.billingSlab?.length && billingDetails?.billingSlab[0];
         Digit.SessionStorage.set("amount_per_trip", billSlab.price);
 
         if (billSlab?.price) {
           let totaltripAmount = billSlab.price * formData?.selectTripNo?.tripNo?.code;
-          const { advanceAmount: advanceBalanceAmount } =
-            await Digit.FSMService.advanceBalanceCalculate(
-              tenantId === formData?.address?.city?.code
-                ? tenantId
-                : formData?.address?.city?.code,
-              {
-                totalTripAmount: totaltripAmount,
-              });
+          const { advanceAmount: advanceBalanceAmount } = await Digit.FSMService.advanceBalanceCalculate(tenantId, {
+            totalTripAmount: totaltripAmount,
+          });
           setMinAmount(advanceBalanceAmount);
           setTotalAmount(totaltripAmount);
           Digit.SessionStorage.set("total_amount", totaltripAmount);
           Digit.SessionStorage.set("advance_amount", advanceBalanceAmount);
           formData?.selectPaymentPreference?.advanceAmount
-            ? setAdvanceAmount(Math.ceil(formData?.selectPaymentPreference?.advanceAmount))
-            : setAdvanceAmount(Math.ceil(advanceBalanceAmount));
+            ? setAdvanceAmount(formData?.selectPaymentPreference?.advanceAmount)
+            : setAdvanceAmount(advanceBalanceAmount);
 
           setError(false);
         } else if (billSlab?.price === 0) {
@@ -94,10 +84,6 @@ const SelectPaymentPreference = ({ config, formData, t, onSelect, userType }) =>
           sessionStorage.removeItem("Digit.advance_amount");
           setError(true);
         }
-      } else {
-        setAdvanceAmount(0);
-        Digit.SessionStorage.set("advance_amount", 0);
-        Digit.SessionStorage.set("amount_per_trip", null);
       }
     })();
   }, [
@@ -118,10 +104,10 @@ const SelectPaymentPreference = ({ config, formData, t, onSelect, userType }) =>
   if (advanceAmount === null) {
     return <Loader />;
   }
-console.log("advance",advanceAmount,totalAmount,MinAmount)
+
   return (
     <React.Fragment>
-      <Timeline currentStep={2} flow="APPLY" />
+      <Timeline currentStep={3} flow="APPLY" />
       <FormStep
         config={config}
         onSelect={onSubmit}
@@ -129,31 +115,8 @@ console.log("advance",advanceAmount,totalAmount,MinAmount)
         isDisabled={currentValue > max ? true : false || currentValue < min ? true : false}
         t={t}
       >
-        <KeyNote
-          keyValue={t("ADV_TOTAL_AMOUNT") + " (₹)"}
-          note={
-            formData?.address?.propertyLocation?.code === "FROM_GRAM_PANCHAYAT"
-              ? "N/A"
-              : max
-          }
-        />
-        {formData?.address?.propertyLocation?.code ===
-          "FROM_GRAM_PANCHAYAT" && (
-          <CardLabelError
-            style={{
-              width: "100%",
-              marginTop: "-15px",
-              fontSize: "14px",
-              marginBottom: "0px",
-            }}
-          >
-            {t("FSM_TOTAL_AMOUNT_NOTE")}
-          </CardLabelError>
-        )}
-
-        {/* <KeyNote keyValue={t("FSM_ADV_MIN_PAY") + " (₹)"} note={min} /> */}
-        {/* <KeyNote keyValue={t("ADV_TOTAL_AMOUNT") + " (₹)"} note={max} /> */}
-        <KeyNote keyValue={t("FSM_ADV_MIN_PAY") + " (₹)"} note={Math.ceil(min)} />
+        <KeyNote keyValue={t("ADV_TOTAL_AMOUNT") + " (₹)"} note={max} />
+        <KeyNote keyValue={t("FSM_ADV_MIN_PAY") + " (₹)"} note={min} />
         {inputs?.map((input, index) => {
           return (
             <React.Fragment key={index}>
@@ -166,7 +129,7 @@ console.log("advance",advanceAmount,totalAmount,MinAmount)
                   <TextInput
                     type={input.type}
                     key={input.name}
-                    disable={true}
+                    disable={input.disable}
                     onChange={(e) => setAdvanceAmountValue(e.target.value)}
                     value={advanceAmount}
                     {...input.validation}

@@ -5,7 +5,6 @@ import { Link, useRouteMatch } from "react-router-dom";
 import { cndPayload } from "../../../utils";
 import { CND_VARIABLES } from "../../../utils";
 import cndAcknowledgementData from "../../../utils/cndAcknowledgementData";
-import { cndStyles } from "../../../utils/cndStyles";
 
 /**
  * Acknowledgement page which will render when form is submitted, it will show
@@ -23,6 +22,11 @@ const GetActionMessage = (props) => {
   }
 };
 
+const rowContainerStyle = {
+  padding: "4px 0px",
+  justifyContent: "space-between",
+};
+
 const BannerPicker = (props) => {
   return (
     <Banner
@@ -30,14 +34,14 @@ const BannerPicker = (props) => {
       applicationNumber={props.data?.cndApplicationDetails?.applicationNumber}
       info={props.isSuccess ? props.t("CND_APPLICATION_NO") : ""}
       successful={props.isSuccess}
-      style={cndStyles.successBar}
+      style={{width: "100%"}}
     />
   );
 };
 
 const CndAcknowledgement = ({ data, onSuccess }) => {
   const { t } = useTranslation();
-  const tenantId = Digit.ULBService.getCitizenCurrentTenant(true) || Digit.ULBService.getCurrentTenantId();
+  const tenantId = Digit.ULBService.getCitizenCurrentTenant(true);
   const user = Digit.UserService.getUser().info;
   const mutation = Digit.Hooks.cnd.useCndCreateApi(tenantId); 
   const { data: storeData } = Digit.Hooks.useStore.getInitData();
@@ -76,16 +80,21 @@ const CndAcknowledgement = ({ data, onSuccess }) => {
       <StatusTable>
         {mutation.isSuccess && (
           <Row
-            rowContainerStyle={cndStyles.rowContainerStyle}
+            rowContainerStyle={rowContainerStyle}
             last       
-            textStyle={cndStyles.textStyle}
+            textStyle={{ whiteSpace: "pre", width: "60%" }}
           />
         )}
       </StatusTable>
       {mutation.isSuccess && <SubmitBar label={t("CND_ACKNOWLEDGEMENT")} onSubmit={handleDownloadPdf} />}
-      <Link to={`/cnd-ui/${user?.type === "CITIZEN" ? "citizen" : "employee"}`}>
-          <LinkButton label={t("CORE_COMMON_GO_TO_HOME")} />
+      {user?.type==="CITIZEN"?
+      <Link to={`/digit-ui/citizen`}>
+        <LinkButton label={t("CORE_COMMON_GO_TO_HOME")} />
       </Link>
+      :
+      <Link to={`/digit-ui/employee`}>
+        <LinkButton label={t("CORE_COMMON_GO_TO_HOME")} />
+      </Link>}
     </Card>
   );
 };

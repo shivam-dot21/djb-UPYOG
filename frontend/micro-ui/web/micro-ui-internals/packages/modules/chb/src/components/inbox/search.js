@@ -10,8 +10,7 @@ import {
   DatePicker,
   MobileNumber,
   Dropdown,
-  Localities,
-} from "@upyog/digit-ui-react-components";
+} from "@nudmcdgnpm/digit-ui-react-components";
 
 import { useTranslation } from "react-i18next";
 

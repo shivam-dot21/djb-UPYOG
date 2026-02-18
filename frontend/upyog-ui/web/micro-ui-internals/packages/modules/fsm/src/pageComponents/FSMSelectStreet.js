@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { FormStep, TextInput, LabelFieldPair, CardLabel, WrapUnMaskComponent } from "@upyog/digit-ui-react-components";
+import { FormStep, TextInput, LabelFieldPair, CardLabel, WrapUnMaskComponent } from "@egovernments/digit-ui-react-components";
 import { useForm, Controller } from "react-hook-form";
 import _ from "lodash";
 import Timeline from "../components/TLTimelineInFSM";
@@ -8,12 +8,7 @@ const FSMSelectStreet = ({ t, config, onSelect, userType, formData, formState, s
   const onSkip = () => onSelect();
 
   const [focusIndex, setFocusIndex] = useState({ index: -1, type: "" });
-//const property = JSON.parse(sessionStorage.getItem("Digit_FSM_PT")|| "{}")
-let property = sessionStorage?.getItem("Digit_FSM_PT")
-if (property !== "undefined")
-{
-  property = JSON.parse(sessionStorage?.getItem("Digit_FSM_PT"))
-}
+
   const {
     control,
     formState: localFormState,
@@ -28,8 +23,8 @@ if (property !== "undefined")
   const { errors } = localFormState;
   const checkLocation = window.location.href.includes("tl/new-application") || window.location.href.includes("tl/renew-application-details") || window.location.href.includes("tl/edit-application-details/") || window.location.href.includes("/tl/tradelicence/new-application/street") || window.location.href.includes("/tl/tradelicence/renew-trade") || window.location.href.includes("/tl/tradelicence/edit-application") ;
   const isRenewal = window.location.href.includes("edit-application") || window.location.href.includes("tl/renew-application-details");
-  const [street, setStreet] = useState(property?.propertyDetails?.address?.street ||property?.address?.street );
-  const [doorNo, setDoorNo] = useState(property?.propertyDetails?.address?.doorNo ||property?.address?.doorNo);
+  const [street, setStreet] = useState();
+  const [doorNo, setDoorNo] = useState();
   let inputs;
   if (window.location.href.includes("tl")) {
     inputs = config.inputs;
@@ -43,7 +38,6 @@ if (property !== "undefined")
         label: "PT_PROPERTY_ADDRESS_STREET_NAME",
         type: "text",
         name: "street",
-        // isMandatory: true,
         validation: {
           pattern: "[a-zA-Z0-9 ]{1,255}",
           // maxlength: 256,
@@ -54,7 +48,6 @@ if (property !== "undefined")
         label: "PT_PROPERTY_ADDRESS_HOUSE_NO",
         type: "text",
         name: "doorNo",
-        // isMandatory: true,
         validation: {
           pattern: "[A-Za-z0-9#,/ -]{1,63}",
           // maxlength: 256,
@@ -85,7 +78,7 @@ if (property !== "undefined")
   };
 
   useEffect(() => {
-    if(window.location.href.includes("employee/fsm/") && formData?.cpt?.details)
+    if(window.location.href.includes("employee/tl/") && formData?.cpt?.details)
     {
       setValue("doorNo", formData?.cpt?.details?.address?.doorNo);
       setValue("street", formData?.cpt?.details?.address?.street);
@@ -96,12 +89,20 @@ if (property !== "undefined")
     trigger();
   }, []);
 
+  useEffect(()=>{
+    if(formData?.address?.doorNo) setDoorNo(formData?.address?.doorNo)
+    if(formData?.address?.street) setStreet(formData?.address?.street)
+  },[formData?.address])
+
   useEffect(() => {
-    if (formData?.address?.doorNo) setDoorNo(formData?.address?.doorNo)
-    if (formData?.address?.street) setStreet(formData?.address?.street)
-  }, [formData?.address])
+    if (formData?.address?.doorNo) setDoorNo(formData?.address?.doorNo);
+    if (formData?.address?.street) setStreet(formData?.address?.street);
+  }, [formData?.address]);
 
-
+  useEffect(() => {
+    if (formData?.address?.doorNo) setDoorNo(formData?.address?.doorNo);
+    if (formData?.address?.street) setStreet(formData?.address?.street);
+  }, [formData?.address]);
 
   useEffect(() => {
     if (userType === "employee") {
@@ -122,7 +123,7 @@ if (property !== "undefined")
   }, [formValue]);
 
   useEffect(() => {
-    if (formData?.cpt?.details && window.location.href.includes("fsm")) {
+    if (formData?.cpt?.details && window.location.href.includes("tl")) {
       inputs?.map((input) => {
         if (getValues(input.name) !== formData?.cpt?.details?.address?.[input.name]) {
           setValue(
@@ -150,7 +151,7 @@ if (property !== "undefined")
         <LabelFieldPair key={index}>
           <CardLabel className="card-label-smaller">
             {t(input.label)}
-            {input.isMandatory ? " * " : null}
+            {config.isMandatory ? " * " : null}
           </CardLabel>
           <div className="field">
             <Controller
@@ -209,11 +210,10 @@ if (property !== "undefined")
   }
   return (
     <React.Fragment>
-      {window.location.href.includes("/fsm") ? <Timeline currentStep={1}  flow="APPLY"/> : <Timeline currentStep={1} flow="APPLY" />}
+      {window.location.href.includes("/tl") ? <Timeline currentStep={2} /> : <Timeline currentStep={1} flow="APPLY" />}
       <FormStep
         config={{ ...config, inputs }}
-        isMandatory={true}
-        _defaultValues={{ street: property && property?.propertyDetails && property?.propertyDetails?.address?.street || property?.address?.street, doorNo: property && property?.propertyDetails && property?.propertyDetails?.address?.doorNo || property?.address?.doorNo}}
+        _defaultValues={{ street: formData?.address.street, doorNo: formData?.address.doorNo }}
         onChange={handleSkip}
         onSelect={(data) => onSelect(config.key, data)}
         onSkip={onSkip}

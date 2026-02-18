@@ -470,6 +470,5 @@ export {
   CHBIcon,
   AddressDetails,
   ApplicantDetails,
-  Timeline,
-  ModuleHeader,
+  Timeline
 };

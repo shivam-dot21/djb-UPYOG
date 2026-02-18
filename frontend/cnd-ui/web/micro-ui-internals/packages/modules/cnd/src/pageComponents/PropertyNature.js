@@ -5,7 +5,6 @@ import _ from "lodash";
 import { CND_VARIABLES } from "../utils";
 import { useApplicationDetails } from "../pages/employee/Edit/ApplicationContext";
 import { convertToObject } from "../utils";
-import { cndStyles } from "../utils/cndStyles";
 
 /**
 * PropertyNature component for collecting property details including house area,
@@ -14,11 +13,11 @@ import { cndStyles } from "../utils/cndStyles";
 */
 const PropertyNature = ({ t, config, onSelect, formData }) => {
   let validation = {};
-  const isEmployee = window.location.href.includes("/employee/cnd/cnd-service");
+  const isEmployee =  window.location.href.includes("/employee");
   const applicationDetails = isEmployee ? useApplicationDetails():null;
   const userType = Digit.UserService.getUser().info.type;
   const { control, watch, trigger } = useForm();
-  const inputStyles = userType === "EMPLOYEE" ? cndStyles.employeeFields:cndStyles.citizenWidth;
+  const inputStyles = { width: userType === "EMPLOYEE" ? "50%" : "85%" };
   const [houseArea, sethouseArea] = useState(formData?.propertyNature?.houseArea || applicationDetails?.houseArea || "");
   const [constructionType, setconstructionType] = useState(formData?.propertyNature?.constructionType || convertToObject(applicationDetails?.typeOfConstruction) || "");
   const [propertyUsage, setpropertyUsage] = useState(formData?.propertyNature?.propertyUsage || convertToObject(applicationDetails?.propertyType) || "");
@@ -133,8 +132,8 @@ const PropertyNature = ({ t, config, onSelect, formData }) => {
               title: "",
             })}
           />
-          <CardLabel>{t("CND_TIME_CONSTRUCTION")}<span className="astericColor">*</span></CardLabel>
-          <div style={cndStyles.constructionDatePicker}>
+          <CardLabel>{t("CND_TIME_CONSTRUCTION")}</CardLabel>
+          <div style={{ display: "flex", gap: "1rem", width: "50%" }}>
             <DatePicker
               date={constructionFrom}
               name="constructionFrom"

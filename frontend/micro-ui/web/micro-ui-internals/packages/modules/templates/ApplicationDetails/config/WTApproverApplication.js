@@ -35,11 +35,21 @@ export const configWTApproverApplication = ({
     form: [
       {
         body: [
+          {
+            label: t("ES_RS_ACTION_COMMENTS") + " *",
+            type: "textarea",
+            populators: {
+              name: "comments",
+              validation: {
+                required: true,
+              },
+            },
+          },
+
           action?.state === "PENDING_FOR_VEHICLE_DRIVER_ASSIGN" ? (
           {
             label: t("RS_ASSIGN"),
             type: "dropdown",
-            isMandatory: true,
             populators:( 
             <Dropdown 
             option={vendorDescription} // Pass the array of objects
@@ -55,7 +65,6 @@ export const configWTApproverApplication = ({
           action?.state === "DELIVERY_PENDING" ? (
           {
             label: t("RS_REGISTRATION_NUMBER"),
-            isMandatory: true,
             type: "dropdown",
             populators:( 
             <Dropdown 
@@ -67,17 +76,6 @@ export const configWTApproverApplication = ({
             />
           ),
           }  ) : "null",
-          
-          {
-            label: t("ES_RS_ACTION_COMMENTS") + " *",
-            type: "textarea",
-            populators: {
-              name: "comments",
-              validation: {
-                required: true,
-              },
-            },
-          },
           
           {
             label: `${t("ES_RS_ATTACH_FILE")}${action.docUploadRequired ? " *" : ""}`,

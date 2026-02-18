@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { ArrowDown } from "@upyog/digit-ui-react-components";
+import { ArrowDown } from "@nudmcdgnpm/digit-ui-react-components";
 
 const CollapsibleCardPage = ({
   number,

@@ -1,4 +1,4 @@
-import React, { Fragment, useState } from "react";
+import React, { Fragment } from "react";
 import { useTranslation } from "react-i18next";
 import { Link, useHistory, useParams } from "react-router-dom";
 import {
@@ -13,8 +13,7 @@ import {
   LinkButton,
   Loader,
   Rating,
-} from "@upyog/digit-ui-react-components";
-import _ from "lodash";
+} from "@egovernments/digit-ui-react-components";
 import TLCaption from "./TLCaption";
 
 export const ApplicationTimeline = (props) => {
@@ -24,7 +23,7 @@ export const ApplicationTimeline = (props) => {
     id: props.id,
     moduleCode: "FSM",
   });
-  const [showAllTimeline, setShowAllTimeline]=useState(false);
+
   const getTimelineCaptions = (checkpoint) => {
     const __comment = checkpoint?.comment?.split("~");
     const reason = __comment ? __comment[0] : null;
@@ -85,15 +84,7 @@ export const ApplicationTimeline = (props) => {
       if (checkpoint?.numberOfTrips) caption.comment = `${t("NUMBER_OF_TRIPS")}: ${checkpoint?.numberOfTrips}`;
       return <TLCaption data={caption} />;
     }
-    else if (checkpoint.status === "PENDING_PAYYY") {
-      const caption = {
-        name: checkpoint?.assigner,
-        mobileNumber: checkpoint?.assigner?.mobileNumber,
-        date: `${t("CS_FSM_EXPECTED_DATE")} ${Digit.DateUtils.ConvertTimestampToDate(props.application?.possibleServiceDate)}`,
-      };
-      return <TLCaption data={caption} />;
   };
-}
 
   const showNextActions = (nextAction) => {
     switch (nextAction?.action) {
@@ -106,7 +97,7 @@ export const ApplicationTimeline = (props) => {
                 state: { tenantId: props.application.tenantId },
               }}
             >
-              {window.location.href.includes("citizen/fsm/") && <SubmitBar label={t("CS_APPLICATION_DETAILS_MAKE_PAYMENT")} />}
+              {!window.location.href.includes("citizen/fsm/") && <SubmitBar label={t("CS_APPLICATION_DETAILS_MAKE_PAYMENT")} />}
             </Link>
           </div>
         );
@@ -124,22 +115,7 @@ export const ApplicationTimeline = (props) => {
   if (isLoading) {
     return <Loader />;
   }
-  const toggleTimeline=()=>{
-    setShowAllTimeline((prev)=>!prev);
-  }
 
-//   let deepCopy = _.cloneDeep( data )
-// let index1 =0
-// deepCopy?.timeline.map((check,index) => {
-//   if (check.status == "ASSING_DSO" && index1 ==0)
-//   {
-//       let obj= check
-//       obj.status = "PENDING_PAYYY"
-//       index1 +=1
-//       data.timeline[index].status ="ASSING_DSO_PAY"
-//       data.timeline.splice(index, 0, obj);
-//   }
-// })
   return (
     <React.Fragment>
       {!isLoading && (
@@ -150,27 +126,23 @@ export const ApplicationTimeline = (props) => {
             </CardSectionHeader>
           )}
           {data?.timeline && data?.timeline?.length === 1 ? (
-            <CheckPoint isCompleted={true} label={t("CS_COMMON_FSM_" + `${data?.timeline[0]?.performedAction === "UPDATE" ? "UPDATE_" : ""}` + data?.timeline[0]?.status)} customChild={getTimelineCaptions(data?.timeline[0])} />            
+            <CheckPoint isCompleted={true} label={t("CS_COMMON_" + data?.timeline[0]?.status)} customChild={getTimelineCaptions(data?.timeline[0])} />
           ) : (
             <ConnectingCheckPoints>
               {data?.timeline &&
-                data?.timeline.slice(0,showAllTimeline? data.timeline.length:2).map((checkpoint, index, arr) => {
+                data?.timeline.map((checkpoint, index, arr) => {
                   return (
                     <React.Fragment key={index}>
                       <CheckPoint
                         keyValue={index}
                         isCompleted={index === 0}
-                        label={t("CS_COMMON_" +  `${checkpoint?.performedAction === "UPDATE" ? "UPDATE_" : ""}` + checkpoint.status)}
+                        label={t("CS_COMMON_" + checkpoint.status)}
                         customChild={getTimelineCaptions(checkpoint)}
                       />
                     </React.Fragment>
                   );
                 })}
             </ConnectingCheckPoints>
-          )}
-          {data?.timeline?.length > 2 && (
-            <LinkButton label={showAllTimeline? t("COLLAPSE") : t("VIEW_TIMELINE")} onClick={toggleTimeline}>
-            </LinkButton>
           )}
         </Fragment>
       )}

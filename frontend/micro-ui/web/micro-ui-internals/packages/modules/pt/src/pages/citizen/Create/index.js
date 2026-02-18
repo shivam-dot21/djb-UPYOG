@@ -1,4 +1,4 @@
-import { Loader,Modal ,Card , CardHeader, StatusTable,Row} from "@upyog/digit-ui-react-components";
+import { Loader,Modal ,Card , CardHeader, StatusTable,Row} from "@nudmcdgnpm/digit-ui-react-components";
 import React ,{Fragment,useState,useEffect}from "react";
 import { useTranslation } from "react-i18next";
 import { useQueryClient } from "react-query";
@@ -822,12 +822,12 @@ config.indexRoute = "info";
       <div>
     <Switch>
       {config.map((routeObj, index) => {
-        const { component, texts, inputs, key, isMandatory } = routeObj;
+        const { component, texts, inputs, key } = routeObj;
         
         const Component = typeof component === "string" ? Digit.ComponentRegistryService.getComponent(component) : component;
         return (
           <Route path={`${match.path}/${routeObj.route}`} key={index}>
-            <Component config={{ texts, inputs, key, isMandatory }} onSelect={handleSelect} onSkip={handleSkip} t={t} formData={params} onAdd={handleMultiple} />
+            <Component config={{ texts, inputs, key }} onSelect={handleSelect} onSkip={handleSkip} t={t} formData={params} onAdd={handleMultiple} />
           </Route>
         );
       })}

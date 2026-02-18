@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { Card, Banner, CardText, SubmitBar, LinkButton } from "@upyog/digit-ui-react-components";
+import { Card, Banner, CardText, SubmitBar, LinkButton } from "@egovernments/digit-ui-react-components";
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { Loader } from "@upyog/digit-ui-react-components";
+import { Loader } from "@egovernments/digit-ui-react-components";
 import getPDFData from "../../../getPDFData";
 
 const GetActionMessage = () => {
@@ -14,7 +14,7 @@ const BannerPicker = (props) => {
   return (
     <Banner
       message={GetActionMessage()}
-      applicationNumber={props?.data?.fsm && props?.data?.fsm[0]?.applicationNo}
+      applicationNumber={props.data?.fsm[0].applicationNo}
       info={props.t("CS_FILE_DESLUDGING_APPLICATION_NO")}
       successful={props.isSuccess}
     />
@@ -43,7 +43,6 @@ const Response = ({ data, onSuccess }) => {
   });
 
   const onError = (error, variables) => {
-    console.log("error",error)
     setErrorInfo(error?.response?.data?.Errors[0]?.code || "ERROR");
     setMutationHappened(true);
   };
@@ -56,23 +55,8 @@ const Response = ({ data, onSuccess }) => {
       try {
         const amount = Digit.SessionStorage.get("total_amount");
         const amountPerTrip = Digit.SessionStorage.get("amount_per_trip");
-        const { subtype, propertyID, pitDetail, address, pitType, source, selectGender, selectPaymentPreference, selectTripNo } = data;
-        const {
-          city,
-          locality,
-          geoLocation,
-          pincode,
-          street,
-          doorNo,
-          landmark,
-          slum,
-          gramPanchayat,
-          village,
-          propertyLocation,
-          newLocality,
-          newGramPanchayat,
-          newVillage,
-        } = address;
+        const { subtype, pitDetail, address, pitType, source, selectGender, selectPaymentPreference, selectTripNo } = data;
+        const { city, locality, geoLocation, pincode, street, doorNo, landmark, slum } = address;
         setPaymentPreference(selectPaymentPreference?.code);
         const advanceAmount = amount === 0 ? null : selectPaymentPreference?.advanceAmount;
         amount === 0 ? setZeroPay(true) : setZeroPay(false);
@@ -82,34 +66,21 @@ const Response = ({ data, onSuccess }) => {
             citizen: {
               gender: selectGender?.code,
             },
-            tenantId: city?.code,
-            propertyUsage: subtype?.code,
+            tenantId: city.code,
+            additionalDetails: {},
+            propertyUsage: subtype.code,
             address: {
-              tenantId: city?.code,
-              additionalDetails: {
-                boundaryType: propertyLocation?.code === "FROM_GRAM_PANCHAYAT" ? "GP" : "Locality",
-                gramPanchayat: {
-                  code: gramPanchayat?.code,
-                  name: gramPanchayat?.name,
-                },
-                village: village?.code
-                  ? {
-                      code: village?.code ? village?.code : "",
-                      name: village?.name ? village?.name : "",
-                    }
-                  : newVillage,
-                newLocality: newLocality,
-                newGramPanchayat: newGramPanchayat,
-              },
+              tenantId: city.code,
+              additionalDetails: null,
               street: street?.trim(),
               doorNo: doorNo?.trim(),
-              landmark: landmark,
+              landmark: landmark?.trim(),
               slumName: slum,
-              city: city?.name,
+              city: city.name,
               pincode,
               locality: {
-                code: propertyLocation?.code === "WITHIN_ULB_LIMITS" ? locality?.code : gramPanchayat?.code,
-                name: propertyLocation?.code === "WITHIN_ULB_LIMITS" ? locality?.name : gramPanchayat?.name,
+                code: locality.code,
+                name: locality.name,
               },
               geoLocation: {
                 latitude: geoLocation?.latitude,
@@ -131,17 +102,12 @@ const Response = ({ data, onSuccess }) => {
             vehicleCapacity: selectTripNo ? selectTripNo?.vehicleCapacity?.capacity : "",
             additionalDetails: {
               totalAmount: amount,
-              tripAmount: typeof amountPerTrip === "number" ? JSON.stringify(amountPerTrip) : amountPerTrip,
-              propertyID : propertyID?.propertyID,
-              distancefromroad : data?.roadWidth?.distancefromroad,
-              roadWidth: data?.roadWidth?.roadWidth,
-              propertyID : data?.cptId?.id
+              tripAmount: amountPerTrip,
             },
-            advanceAmount: typeof advanceAmount === "number" ? JSON.stringify(advanceAmount) : advanceAmount,
+            advanceAmount,
           },
           workflow: null,
         };
-        console.log("formdata212",formdata,address,data)
         mutation.mutate(formdata, {
           onError,
           onSuccess: () => {
@@ -150,7 +116,6 @@ const Response = ({ data, onSuccess }) => {
           },
         });
         sessionStorage.removeItem("Digit.total_amount");
-        sessionStorage.removeItem("Digit.fsm.file.address.city");
       } catch (err) {}
     }
   }, []);
@@ -171,13 +136,7 @@ const Response = ({ data, onSuccess }) => {
     <Card>
       <BannerPicker t={t} data={Data} isSuccess={isSuccess} isLoading={(mutation.isIdle && !mutationHappened) || mutation?.isLoading} />
       <CardText>
-        {t(
-          (paymentPreference && paymentPreference == "POST_PAY") || advancePay
-            ? "CS_FILE_PROPERTY_RESPONSE_POST_PAY"
-            : zeroPay
-            ? "CS_FSM_RESPONSE_CREATE_DISPLAY_ZERO_PAY"
-            : "CS_FILE_PROPERTY_RESPONSE"
-        )}
+        {t((paymentPreference && paymentPreference == "POST_PAY") || advancePay ? "CS_FILE_PROPERTY_RESPONSE_POST_PAY" : zeroPay ? "CS_FSM_RESPONSE_CREATE_DISPLAY_ZERO_PAY" : "CS_FILE_PROPERTY_RESPONSE")}
       </CardText>
       {isSuccess && (
         <LinkButton

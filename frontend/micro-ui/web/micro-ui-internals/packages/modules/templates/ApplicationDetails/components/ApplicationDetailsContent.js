@@ -13,7 +13,7 @@ import {
   EditIcon,
   ViewsIcon,
   DeleteIcon,
-} from "@upyog/digit-ui-react-components";
+} from "@nudmcdgnpm/digit-ui-react-components";
 import { values } from "lodash";
 import React, { Fragment, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -146,7 +146,7 @@ function ApplicationDetailsContent({
           },
         },
       };
-      const previousCheckpoint = timeline && timeline[index - 1] &&timeline?.[index - 1];
+      const previousCheckpoint = timeline[index - 1];
       const caption = {
         date: checkpoint?.auditDetails?.lastModified,
         name: checkpoint?.assignes?.[0]?.name,
@@ -155,8 +155,8 @@ function ApplicationDetailsContent({
           applicationData?.processInstance?.assignes?.[0]?.mobileNumber
             ? applicationData?.processInstance?.assignes?.[0]?.mobileNumber
             : checkpoint?.assignes?.[0]?.mobileNumber,
-          comment: t(checkpoint && checkpoint?.comment),
-          wfComment: previousCheckpoint ? previousCheckpoint && previousCheckpoint.wfComment : [],
+        comment: t(checkpoint?.comment),
+        wfComment: previousCheckpoint ? previousCheckpoint.wfComment : [],
         thumbnailsToShow: checkpoint?.thumbnailsToShow,
       };
 
@@ -223,21 +223,6 @@ function ApplicationDetailsContent({
   };
 
   const getTextValue = (value) => {
-     // Handle time values specially
-     if (value?.isTimeValue && value?.value) {
-      // Format time from "HH:MM" to "H:MM AM/PM"
-      const timeString = value.value;
-      const [hours, minutes] = timeString.split(':').map(part => parseInt(part, 10));
-      
-      if (!isNaN(hours) && !isNaN(minutes)) {
-        const period = hours >= 12 ? 'PM' : 'AM';
-        const hour12 = hours % 12 || 12; // Convert 0 to 12 for 12 AM
-        const paddedMinutes = String(minutes).padStart(2, '0'); // Ensures minutes are always two digits
-        return `${hour12}:${paddedMinutes} ${period}`;
-      }
-      return value.value; // Return original if parsing failed
-    }
-    // Handle other values as before
     if (value?.skip) return value.value;
     else if (value?.isUnit) return value?.value ? `${getTranslatedValues(value?.value, value?.isNotTranslated)} ${t(value?.isUnit)}` : t("N/A");
     else return value?.value ? getTranslatedValues(value?.value, value?.isNotTranslated) : t("N/A");

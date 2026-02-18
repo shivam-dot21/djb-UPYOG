@@ -10,19 +10,11 @@ import {
   BreadCrumb,
   BackButton,
   Loader,
-  DatePicker,
-  Card,
-  StatusTable,
-  Row,
-  EditIcon,
-  LinkButton
-} from "@upyog/digit-ui-react-components";
+} from "@egovernments/digit-ui-react-components";
 import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useHistory } from "react-router-dom";
 import UploadDrawer from "./ImageUpload/UploadDrawer";
-import { subYears, format, differenceInYears } from "date-fns";
-import Address from "./AddressDetails";
 
 const defaultImage =
   "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAO4AAADUCAMAAACs0e/bAAAAM1BMVEXK0eL" +
@@ -55,18 +47,12 @@ const UserProfile = ({ stateCode, userType, cityDetails }) => {
   const tenant = Digit.ULBService.getCurrentTenantId();
   const userInfo = Digit.UserService.getUser()?.info || {};
   const [userDetails, setUserDetails] = useState(null);
-  const [userAddresses, setUserAddresses] = useState([]); // Separate state for addresses
   const [name, setName] = useState(userInfo?.name ? userInfo.name : "");
-  const dateOfBirth= userDetails?.dob
-  const formattedDob=(dateOfBirth!==undefined) ?format(new Date(dateOfBirth), 'MM/dd/yyyy') : ""
-  //const dateOfBirth1= (dateOfBirth!==undefined) ?dateOfBirth.split("-").reverse().join("-") : ""
-  const [dob, setDob] = useState(dateOfBirth);
   const [email, setEmail] = useState(userInfo?.emailId ? userInfo.emailId : "");
   const [gender, setGender] = useState(userDetails?.gender);
   const [city, setCity] = useState(userInfo?.permanentCity ? userInfo.permanentCity : cityDetails.name);
   const [mobileNumber, setMobileNo] = useState(userInfo?.mobileNumber ? userInfo.mobileNumber : "");
-  const [altMobileNumber, setAltMobileNo] = useState(userInfo?.altContactNumber ? userInfo.altContactNumber : "");
-  const [profilePic, setProfilePic] = useState(userDetails?.photo ? userDetails?.photo : "");
+  const [profilePic, setProfilePic] = useState(null);
   const [profileImg, setProfileImg] = useState("");
   const [openUploadSlide, setOpenUploadSide] = useState(false);
   const [changepassword, setChangepassword] = useState(false);
@@ -78,41 +64,11 @@ const UserProfile = ({ stateCode, userType, cityDetails }) => {
   const [windowWidth, setWindowWidth] = React.useState(window.innerWidth);
   const [errors, setErrors] = React.useState({});
   const isMobile = window.Digit.Utils.browser.isMobile();
-  const [profilePhoto, setProfilePhoto] = useState(null);
-  const [activeTab, setActiveTab] = useState("profile");
-  const [showModal, setShowModal] = useState(false);
-  const [isEdit, setisEdit] = useState(false);
-  const [selectedAddress, setSelectedAddress] = useState(null);
-  /*
- * Fetches the user's address details using the `Digit.UserService.userSearchNewV2` API.
- * - Retrieves the user's UUID from `userInfo`.
- * - Calls the API with the tenant ID and UUID to fetch user data.
- * - Updates the `userAddresses` state with the fetched address list if available.
- */
-  const userSearchNewV2 = async () => {
-    const uuid = userInfo?.uuid;
-    if (uuid) {
-      const usersResponse = await Digit.UserService.userSearchNewV2(tenant, { uuid: [uuid] }, {});
-      if (usersResponse && usersResponse.user && usersResponse.user.length) {
-        setUserAddresses(usersResponse.user[0]?.addresses || []); // Set addresses separately
-      }
-    }
-  };
 
   const getUserInfo = async () => {
     const uuid = userInfo?.uuid;
     if (uuid) {
       const usersResponse = await Digit.UserService.userSearch(tenant, { uuid: [uuid] }, {});
-      if (usersResponse?.user?.[0]?.photo) {
-        try {
-          const file = await Digit.UploadServices.Filefetch([usersResponse?.user?.[0]?.photo], "pg");
-          if (file?.data?.fileStoreIds?.[0]?.url) {
-            setProfilePhoto(file?.data?.fileStoreIds?.[0]?.url.split(",")[0]);
-          }
-        } catch (err) {
-          console.error("Error fetching profile photo:", err);
-        }
-      }
       usersResponse && usersResponse.user && usersResponse.user.length && setUserDetails(usersResponse.user[0]);
     }
   };
@@ -126,7 +82,7 @@ const UserProfile = ({ stateCode, userType, cityDetails }) => {
 
   useEffect(() => {
     setLoading(true);
-    userSearchNewV2();
+
     getUserInfo();
 
     setGender({
@@ -135,8 +91,8 @@ const UserProfile = ({ stateCode, userType, cityDetails }) => {
       value: userDetails?.gender,
     });
 
-    //const thumbs = userDetails?.photo?.split(",");
-    setProfileImg(profilePhoto);
+    const thumbs = userDetails?.photo?.split(",");
+    setProfileImg(thumbs?.at(0));
 
     setLoading(false);
   }, [userDetails !== null]);
@@ -146,10 +102,6 @@ const UserProfile = ({ stateCode, userType, cityDetails }) => {
   const onClickAddPic = () => setOpenUploadSide(!openUploadSlide);
   const TogleforPassword = () => setChangepassword(!changepassword);
   const setGenderName = (value) => setGender(value);
-
-  const setUserDOB =(value)=> {
-      setDob(value);
-  }
   const closeFileUploadDrawer = () => setOpenUploadSide(false);
 
   const setUserName = (value) => {
@@ -161,20 +113,15 @@ const UserProfile = ({ stateCode, userType, cityDetails }) => {
       setErrors({...errors, userName : null})
     }
   }
-  
+
   const setUserEmailAddress = (value) => {
     setEmail(value);
-    const emailPattern=/^[a-zA-Z0-9._%+-]+@[a-z.-]+\.(com|org|in)$/
-    if(value.length && !emailPattern.test(value)){
+    if(value.length && /*!(value.includes("@") && value.includes("."))*/ !(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(value))){
       setErrors({...errors, emailAddress: {type: "pattern", message: t("CORE_COMMON_PROFILE_EMAIL_INVALID")}})
     }else{
-      setEmail(value);
-      setErrors({ ...errors, emailAddress: null });
+      setErrors({...errors, emailAddress : null})
     }
-  };
-  const SetActiveTab = (tab) => {
-    setActiveTab(tab);
-  };
+  }
 
   const setUserMobileNumber = (value) => {
     setMobileNo(value);
@@ -184,17 +131,7 @@ const UserProfile = ({ stateCode, userType, cityDetails }) => {
     }else{
       setErrors({...errors, mobileNumber: null});
     }
-  };
-
-  const setUserAltMobileNumber = (value) => {
-    setAltMobileNo(value);
-
-    if (!new RegExp(/^[6-9]{1}[0-9]{9}$/).test(value)) {
-      setErrors({ ...errors, altMobileNumber: { type: "pattern", message: t("CORE_COMMON_PROFILE_MOBILE_NUMBER_INVALID") } });
-    } else {
-      setErrors({ ...errors, altMobileNumber: null });
-    }
-  };
+  }
 
   const setUserCurrentPassword = (value) => {
     setCurrentPassword(value);
@@ -244,10 +181,8 @@ const UserProfile = ({ stateCode, userType, cityDetails }) => {
       const requestData = {
         ...userInfo,
         name,
-        dob: dob!== undefined ? dob.split("-").reverse().join("/") : "",
         gender: gender?.value,
         emailId: email,
-        altContactNumber: altMobileNumber,
         photo: profilePic,
       };
 
@@ -255,21 +190,13 @@ const UserProfile = ({ stateCode, userType, cityDetails }) => {
         throw JSON.stringify({ type: "error", message: t("CORE_COMMON_PROFILE_NAME_INVALID") });
       }
 
-      if (userType === "employee" && (!requestData.gender || requestData.gender.trim() === "")) {
-        throw JSON.stringify({ type: "error", message: "CORE_COMMON_PROFILE_GENDER_REQUIRED" });
-      }
-
       if (userType === "employee" && !new RegExp(/^[6-9]{1}[0-9]{9}$/).test(mobileNumber)) {
         throw JSON.stringify({ type: "error", message: t("CORE_COMMON_PROFILE_MOBILE_NUMBER_INVALID") });
       }
 
-      if (!new RegExp(/^[6-9]{1}[0-9]{9}$/).test(altMobileNumber)) {
-        throw JSON.stringify({ type: "error", message: t("CORE_COMMON_PROFILE_MOBILE_NUMBER_INVALID") });
-      }
-
-      if (email.length && !/^[a-zA-Z0-9._%+-]+@gmail\.com$/.test(email)) {
+      if (email.length && !(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email))) {
         throw JSON.stringify({ type: "error", message: t("CORE_COMMON_PROFILE_EMAIL_INVALID") });
-      }     
+      }
 
       if (currentPassword.length || newPassword.length || confirmPassword.length) {
         if (newPassword !== confirmPassword) {
@@ -296,12 +223,9 @@ const UserProfile = ({ stateCode, userType, cityDetails }) => {
             info: {
               ...user.info,
               name,
-              //DOB,
               mobileNumber,
-              altContactNumber: altMobileNumber,
               emailId: email,
               permanentCity: city,
-              photo: profileImg
             },
           });
         }
@@ -378,59 +302,11 @@ const UserProfile = ({ stateCode, userType, cityDetails }) => {
 
   if (loading) return <Loader></Loader>;
 
-  //function for edit button with edit icon and functioanality of redirecting to differnt URL's
-  const ActionButton = ({ onClick }) => {
-    return <LinkButton 
-    label={<EditIcon style={{  float: "right" }} />}
-    className="check-page-link-button" onClick={onClick} />;
-  };
-
   return (
-    <div>
-      <section style={{ margin: userType === "citizen" ? "8px" : "24px", position: "relative" }}>
+    <div className="user-profile">
+      <section style={{ margin: userType === "citizen" ? "8px" : "24px",position:"relative" }}>
         {userType === "citizen" ? (
-          <React.Fragment>
-            <BackButton />
-            <div style={{ display: "flex", gap: "20px", marginTop: "24px" }}>
-              <button
-                onClick={() => SetActiveTab("profile")}
-                style={{
-                  backgroundColor: activeTab === "profile" ? "#ac2c2c" : "#ffffff",
-                  width: "100%",
-                  height: "60px",
-                  color: activeTab === "profile" ? "white" : "#333333",
-                  maxWidth: isMobile ? "100%" : "240px",
-                  borderRadius: "24px",
-                  border: "none",
-                  fontWeight: "700",
-                  fontSize: "16px",
-                  boxShadow: "0px 2px 8px rgba(0, 0, 0, 0.1)",
-                  cursor: "pointer",
-                }}
-              >
-                {t("PROFILE")}
-              </button>
-
-              <button
-                onClick={() => SetActiveTab("address")}
-                style={{
-                  backgroundColor: activeTab === "address" ? "#ac2c2c" : "#ffffff",
-                  width: "100%",
-                  height: "60px",
-                  color: activeTab === "address" ? "white" : "#333333",
-                  maxWidth: isMobile ? "100%" : "240px",
-                  borderRadius: "24px",
-                  border: "none",
-                  fontWeight: "700",
-                  fontSize: "16px",
-                  boxShadow: "0px 2px 8px rgba(0, 0, 0, 0.1)",
-                  cursor: "pointer",
-                }}
-              >
-                {t("ADDRESS")}
-              </button>
-            </div>
-          </React.Fragment>
+          <BackButton></BackButton>
         ) : (
           <BreadCrumb
             crumbs={[
@@ -455,214 +331,147 @@ const UserProfile = ({ stateCode, userType, cityDetails }) => {
           flexDirection: windowWidth < 768 || userType === "citizen" ? "column" : "row",
           margin: userType === "citizen" ? "8px" : "16px",
           gap: userType === "citizen" ? "" : "0 24px",
-          boxShadow: userType === "citizen" ? (activeTab === "address" ? "" : "1px 1px 4px 0px rgba(0,0,0,0.2)") : "",
-          background: userType === "citizen" ? (activeTab === "address" ? "" : "white") : "",
-          borderRadius: userType === "citizen" ? (activeTab === "address" ? "" : "4px") : "",
-          minWidth: windowWidth < 768 ? "" : "500px",
-          alignSelf: "center",
+          boxShadow: userType === "citizen" ? "1px 1px 4px 0px rgba(0,0,0,0.2)" : "",
+          background: userType === "citizen" ? "white" : "",
+          borderRadius: userType === "citizen" ? "4px" : "",
           maxWidth: userType === "citizen" ? "960px" : "",
         }}
       >
-        {activeTab !== "address" ? (
-          <section
+        <section
+          style={{
+            position: "relative",
+            display: "flex",
+            flex: userType === "citizen" ? 1 : 2.5,
+            justifyContent: "center",
+            alignItems: "center",
+            maxWidth: "100%",
+            height: "320px",
+            borderRadius: "4px",
+            boxShadow: userType === "citizen" ? "" : "1px 1px 4px 0px rgba(0,0,0,0.2)",
+            border: `${userType === "citizen" ? "8px" : "24px"} solid #fff`,
+            background: "#EEEEEE",
+            padding: userType === "citizen" ? "8px" : "16px",
+          }}
+        >
+          <div
             style={{
               position: "relative",
-              display: "flex",
-              flex: userType === "citizen" ? 1 : 2.5,
-              justifyContent: "center",
-              alignItems: "center",
-              maxWidth: "100%",
-              height: "320px",
-              borderRadius: "4px",
-              boxShadow: userType === "citizen" ? "" : "1px 1px 4px 0px rgba(0,0,0,0.2)",
-              border: `${userType === "citizen" ? "8px" : "24px"} solid #fff`,
-              background: "#EEEEEE",
-              padding: userType === "citizen" ? "8px" : "16px",
+              height: userType === "citizen" ? "114px" : "150px",
+              width: userType === "citizen" ? "114px" : "150px",
+              margin: "16px",
             }}
           >
-            <div
+            <img
               style={{
-                position: "relative",
-                height: userType === "citizen" ? "114px" : "150px",
-                width: userType === "citizen" ? "114px" : "150px",
-                margin: "16px",
+                margin: "auto",
+                borderRadius: "300px",
+                justifyContent: "center",
+                height: "100%",
+                width: "100%",
               }}
-            >
-              <img
-                style={{
-                  margin: "auto",
-                  borderRadius: "300px",
-                  justifyContent: "center",
-                  height: "100%",
-                  width: "100%",
-                }}
-                src={!profileImg || profileImg === "" ? defaultImage : profileImg}
-              />
-              <button style={{ position: "absolute", left: "50%", bottom: "-24px", transform: "translateX(-50%)" }} onClick={onClickAddPic}>
-                <CameraIcon />
-              </button>
-            </div>
-          </section>
-        ) : null}
+              src={!profileImg || profileImg === "" ? defaultImage : profileImg}
+            />
+            <button style={{ position: "absolute", left: "50%", bottom: "-24px", transform: "translateX(-50%)" }} onClick={onClickAddPic}>
+              <CameraIcon />
+            </button>
+          </div>
+        </section>
         <section
           style={{
             display: "flex",
             flexDirection: "column",
             flex: userType === "citizen" ? 1 : 7.5,
             width: "100%",
-            borderRadius: activeTab === "address" ? "" : "4px",
+            borderRadius: "4px",
             height: "fit-content",
             boxShadow: userType === "citizen" ? "" : "1px 1px 4px 0px rgba(0,0,0,0.2)",
-            background: activeTab === "address" ? "" : "white",
+            background: "white",
             padding: userType === "citizen" ? "8px" : "24px",
-            paddingBottom: "20px",
+            paddingBottom : "20px",
           }}
         >
           {userType === "citizen" ? (
-            activeTab === "profile" ? (
-              <React.Fragment>
-                <LabelFieldPair>
-                  <CardLabel style={editScreen ? { color: "#B1B4B6" } : {}}>{`${t("CORE_COMMON_PROFILE_NAME")}`}*</CardLabel>
-                  <div style={{ width: "100%", maxWidth: "960px" }}>
-                    <TextInput
-                      t={t}
-                      style={{ width: "100%" }}
-                      type={"text"}
-                      isMandatory={false}
-                      name="name"
-                      value={name}
-                      onChange={(e) => setUserName(e.target.value)}
-                      {...(validation = {
-                        isRequired: true,
-                        pattern: "^[a-zA-Z ]*$",
-                        type: "tel",
-                        title: t("CORE_COMMON_PROFILE_NAME_ERROR_MESSAGE"),
-                      })}
-                      disable={editScreen}
-                    />
-                    {errors?.userName && <CardLabelError> {errors?.userName?.message} </CardLabelError>}
-                  </div>
-                </LabelFieldPair>
-
-                <LabelFieldPair>
-                  <CardLabel style={editScreen ? { color: "#B1B4B6" } : {}}>{`${t("CORE_COMMON_PROFILE_GENDER")}`}</CardLabel>
-                  <Dropdown
-                    style={{ width: "100%" }}
-                    className="form-field"
-                    selected={gender?.length === 1 ? gender[0] : gender}
-                    disable={gender?.length === 1 || editScreen}
-                    option={menu}
-                    select={setGenderName}
-                    value={gender}
-                    optionKey="code"
+            <React.Fragment>
+              <LabelFieldPair>
+                <CardLabel style={editScreen ? { color: "#B1B4B6" } : {}}>{`${t("CORE_COMMON_PROFILE_NAME")}`}*</CardLabel>
+                <div style={{ width: "100%", maxWidth:"960px" }}>
+                  <TextInput
                     t={t}
-                    name="gender"
+                    style={{ width: "100%" }}
+                    type={"text"}
+                    isMandatory={false}
+                    name="name"
+                    value={name}
+                    onChange={(e)=>setUserName(e.target.value)}
+                    {...(validation = {
+                      isRequired: true,
+                      pattern: "^[a-zA-Z-.`' ]*$",
+                      type: "tel",
+                      title: t("CORE_COMMON_PROFILE_NAME_ERROR_MESSAGE"),
+                    })}
+                    disable={editScreen}
                   />
-                </LabelFieldPair>
-                <LabelFieldPair>
-                  <CardLabel style={editScreen ? { color: "#B1B4B6" } : {}}>{`${t("CORE_COMMON_PROFILE_DOB")}`}*</CardLabel>
-                  <div style={{ width: "100%", maxWidth: "960px" }}>
-                    <DatePicker date={dob || dateOfBirth} onChange={setUserDOB} disable={true} />
-                    {errors?.userName && <CardLabelError> {errors?.userName?.message} </CardLabelError>}
-                  </div>
-                </LabelFieldPair>
-                <LabelFieldPair>
-                  <CardLabel style={editScreen ? { color: "#B1B4B6" } : {}}>{`${t("CORE_COMMON_PROFILE_MOBILE_NUMBER")}*`}</CardLabel>
-                  <div style={{ width: "100%" }}>
-                    <MobileNumber
-                      value={mobileNumber}
-                      style={{ width: "100%" }}
-                      name="mobileNumber"
-                      placeholder="Enter a valid Mobile No."
-                      onChange={(value) => setUserMobileNumber(value)}
-                      disable={true}
-                      {...{ required: true, pattern: "[6-9]{1}[0-9]{9}", type: "tel", title: t("CORE_COMMON_PROFILE_MOBILE_NUMBER_INVALID") }}
-                    />
-                    {errors?.mobileNumber && <CardLabelError style={{ margin: 0, padding: 0 }}> {errors?.mobileNumber?.message} </CardLabelError>}
-                  </div>
-                </LabelFieldPair>
-                <LabelFieldPair>
-                  <CardLabel style={editScreen ? { color: "#B1B4B6" } : {}}>{`${t("CORE_COMMON_PROFILE_ALT_MOBILE_NUMBER")}*`}</CardLabel>
-                  <div style={{ width: "100%" }}>
-                    <MobileNumber
-                      value={altMobileNumber}
-                      style={{ width: "100%" }}
-                      name="altMobileNumber"
-                      placeholder="Enter a valid Mobile No."
-                      onChange={(value) => setUserAltMobileNumber(value)}
-                      {...{ required: true, pattern: "[6-9]{1}[0-9]{9}", type: "tel", title: t("CORE_COMMON_PROFILE_MOBILE_NUMBER_INVALID") }}
-                    />
-                    {errors?.altMobileNumber && (
-                      <CardLabelError style={{ margin: 0, padding: 0 }}> {errors?.altMobileNumber?.message} </CardLabelError>
-                    )}
-                  </div>
-                </LabelFieldPair>
-                <LabelFieldPair>
-                  <CardLabel style={editScreen ? { color: "#B1B4B6" } : {}}>{`${t("CORE_COMMON_PROFILE_EMAIL")}`}</CardLabel>
-                  <div style={{ width: "100%" }}>
-                    <TextInput
-                      t={t}
-                      style={{ width: "100%" }}
-                      type={"email"}
-                      isMandatory={false}
-                      optionKey="i18nKey"
-                      name="email"
-                      value={email}
-                      onChange={(e) => setUserEmailAddress(e.target.value)}
-                      disable={editScreen}
-                    />
-                    {errors?.emailAddress && <CardLabelError> {errors?.emailAddress?.message} </CardLabelError>}
-                  </div>
-                </LabelFieldPair>
-
-                <button
-                  onClick={updateProfile}
-                  style={{
-                    marginTop: "24px",
-                    backgroundColor: "#a82227",
-                    width: "100%",
-                    height: "40px",
-                    color: "white",
-                    maxWidth: isMobile ? "100%" : "240px",
-                    borderBottom: "1px solid black",
-                  }}
-                >
-                  {t("CORE_COMMON_SAVE")}
-                </button>
-              </React.Fragment>
-            ) : activeTab === "address" ? (
-              <React.Fragment>
-                <div style={{ display: "flex", justifyContent: "space-between", gap: "15px" }}>
-                  <button
-                    onClick={() => setShowModal(true)}
-                    style={{
-                      backgroundColor: "#ffffff",
-                      width: "100%",
-                      height: "60px",
-                      color: "#333333",
-                      maxWidth: isMobile ? "100%" : "240px",
-                      borderRadius: "14px",
-                      border: "none",
-                      fontWeight: "700",
-                      fontSize: "16px",
-                      boxShadow: "0px 2px 8px rgba(0, 0, 0, 0.1)",
-                      cursor: "pointer",
-                    }}
-                  >
-                    {t("ADD_NEW_ADDRESS")}
-                  </button>
+                  {errors?.userName && <CardLabelError> {errors?.userName?.message} </CardLabelError>}
                 </div>
+              </LabelFieldPair>
 
-                {showModal && <Address actionCancelOnSubmit={() => setShowModal(false)} />}
-              </React.Fragment>
-            ) : null
+              <LabelFieldPair>
+                <CardLabel style={editScreen ? { color: "#B1B4B6" } : {}}>{`${t("CORE_COMMON_PROFILE_GENDER")}`}</CardLabel>
+                <Dropdown
+                  style={{ width: "100%" }}
+                  className="form-field"
+                  selected={gender?.length === 1 ? gender[0] : gender}
+                  disable={gender?.length === 1 || editScreen}
+                  option={menu}
+                  select={setGenderName}
+                  value={gender}
+                  optionKey="code"
+                  t={t}
+                  name="gender"
+                />
+              </LabelFieldPair>
+
+              {/* <LabelFieldPair>
+                <CardLabel style={editScreen ? { color: "#B1B4B6" } : {}}>{`${t("CORE_COMMON_PROFILE_EMAIL")}`}</CardLabel>
+                <div style={{ width: "100%" }}>
+                  <TextInput
+                    t={t}
+                    style={{ width: "100%" }}
+                    type={"email"}
+                    isMandatory={false}
+                    optionKey="i18nKey"
+                    name="email"
+                    value={email}
+                    onChange={(e)=>setUserEmailAddress(e.target.value)}
+                    disable={editScreen}
+                  />
+                  {errors?.emailAddress && <CardLabelError> {errors?.emailAddress?.message} </CardLabelError>}
+                </div>
+              </LabelFieldPair> */}
+              
+              <button
+                onClick={updateProfile}
+                style={{
+                  marginTop: "24px",
+                  backgroundColor: "#a82227",
+                  width: "100%",
+                  height: "40px",
+                  color: "white",
+                  
+                  maxWidth : isMobile? "100%":"240px",
+                  borderBottom: "1px solid black",
+                }}
+              >
+                {t("CORE_COMMON_SAVE")}
+              </button>
+            </React.Fragment>
           ) : (
             <React.Fragment>
               <LabelFieldPair style={{ display: "flex" }}>
                 <CardLabel className="profile-label-margin" style={editScreen ? { color: "#B1B4B6", width: "300px" } : { width: "300px" }}>
                   {`${t("CORE_COMMON_PROFILE_NAME")}`}*
                 </CardLabel>
-                <div style={{ width: "100%" }}>
+                <div style={{width: "100%"}}>
                   <TextInput
                     t={t}
                     type={"text"}
@@ -673,7 +482,7 @@ const UserProfile = ({ stateCode, userType, cityDetails }) => {
                     placeholder="Enter Your Name"
                     {...(validation = {
                       isRequired: true,
-                      pattern: "^[a-zA-Z ]*$",
+                      pattern: "^[a-zA-Z-.`' ]*$",
                       type: "text",
                       title: t("CORE_COMMON_PROFILE_NAME_ERROR_MESSAGE"),
                     })}
@@ -715,7 +524,7 @@ const UserProfile = ({ stateCode, userType, cityDetails }) => {
                     placeholder="Enter Your City Name"
                     {...(validation = {
                       isRequired: true,
-                      // pattern: "^[a-zA-Z ]*$",
+                      // pattern: "^[a-zA-Z-.`' ]*$",
                       type: "text",
                       title: t("CORE_COMMON_PROFILE_CITY_ERROR_MESSAGE"),
                     })}
@@ -741,7 +550,7 @@ const UserProfile = ({ stateCode, userType, cityDetails }) => {
                 </div>
               </LabelFieldPair>
               
-               <LabelFieldPair style={{ display: "flex" }}>
+              {/* <LabelFieldPair style={{ display: "flex" }}>
                 <CardLabel className="profile-label-margin" style={editScreen ? { color: "#B1B4B6", width: "300px" } : { width: "300px" }}>{`${t(
                   "CORE_COMMON_PROFILE_EMAIL"
                 )}`}</CardLabel>
@@ -759,16 +568,7 @@ const UserProfile = ({ stateCode, userType, cityDetails }) => {
                   />
                   {errors?.emailAddress && <CardLabelError> {errors?.emailAddress?.message} </CardLabelError>}
                 </div>
-              </LabelFieldPair>
-              <LabelFieldPair style={{ display: "flex" }}>
-                <CardLabel className="profile-label-margin" style={editScreen ? { color: "#B1B4B6", width: "300px" } : { width: "300px" }}>{`${t(
-                  "CORE_COMMON_PROFILE_DOB"
-                )}`}</CardLabel>
-                <div style={{width: "100%"}}>
-                <DatePicker date={dob || dateOfBirth} onChange={setUserDOB} disable={true}  />
-                 {/* {errors?.emailAddress && <CardLabelError> {errors?.emailAddress?.message} </CardLabelError>} */}
-                </div>
-              </LabelFieldPair>             
+              </LabelFieldPair> */}
 
               <LabelFieldPair>
                 <div>
@@ -840,66 +640,6 @@ const UserProfile = ({ stateCode, userType, cityDetails }) => {
           )}
         </section>
       </div>
-
-      {/*
-       * For rendering the user's address details when the "address" tab is active.
-       * - Checks if the `activeTab` is set to "address".
-       * - If the user has addresses (`userAddresses.length > 0`), it iterates over the `userAddresses` array and displays each address inside a `Card` component.
-       * - Each address is displayed using a `StatusTable` with rows for various address fields such as:
-       * - If no addresses are available, it displays a fallback message card with "No Address Available".
-       */}
-      
-      {activeTab === "address" && (
-        <React.Fragment>
-          {userAddresses.length > 0 ? (
-             <React.Fragment>
-                {userAddresses.map((address, index) => (
-                  <Card key={index}>
-                    <StatusTable>
-                    <React.Fragment>
-                        <Row
-                          className="border-none"
-                          label={t(`${address.addressType}`)}
-                          text=""
-                          actionButton={
-                            <ActionButton
-                              onClick={() => {
-                                setSelectedAddress(address);
-                                setShowModal(true);
-                                setisEdit(true);
-                              }}
-                            />
-                          }
-                        />
-                        <Row className="border-none" label={t("COMMON_HOUSE_NO")} text={address.houseNumber || t("CS_NA")} />
-                        <Row className="border-none" label={t("COMMON_STREET_NAME")} text={address.streetName || t("CS_NA")} />
-                        <Row className="border-none" label={t("COMMON_ADDRESS_LINE1")} text={address.address || t("CS_NA")} />
-                        <Row className="border-none" label={t("COMMON_ADDRESS_LINE2")} text={address.address2 || t("CS_NA")} />
-                        <Row className="border-none" label={t("COMMON_LANDMARK")} text={address.landmark || t("CS_NA")} />
-                        <Row className="border-none" label={t("COMMON_CITY")} text={address.city || t("CS_NA")} />
-                        <Row className="border-none" label={t("COMMON_LOCALITY")} text={address.locality || t("CS_NA")} />
-                        <Row className="border-none" label={t("COMMON_ADDRESS_PINCODE")} text={address.pinCode || t("CS_NA")} />
-                        </React.Fragment>
-                    </StatusTable>
-                  </Card>
-                ))}
-
-                {showModal && selectedAddress && (
-                  <Address
-                    isEdit={isEdit}
-                    address={selectedAddress}
-                    actionCancelOnSubmit={() => setShowModal(false)}
-                  />
-                )}
-             </React.Fragment>
-            ) : (
-              <Card>
-                <p>{t("CS_NO_ADDRESS_AVAILABLE")}</p>
-              </Card>
-            )}
-
-        </React.Fragment>
-      )}
 
       {userType === "employee" ? (
         <div

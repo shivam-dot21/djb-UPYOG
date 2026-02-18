@@ -1,5 +1,5 @@
 import React, { Fragment, useEffect, useCallback, useMemo } from "react";
-import { SearchForm, Table, Card, Loader, Header } from "@upyog/digit-ui-react-components";
+import { SearchForm, Table, Card, Loader, Header } from "@egovernments/digit-ui-react-components";
 import { useForm, Controller } from "react-hook-form";
 import SearchFields from "./SearchFields";
 import { useTranslation } from "react-i18next";
@@ -81,16 +81,13 @@ const SearchApplication = ({ tenantId, onSubmit, data, count, resultOk, business
             if (
               row?.original?.["applicationType"] == "NEW_WATER_CONNECTION" || 
               row?.original?.["applicationType"] == "MODIFY_WATER_CONNECTION" ||
-              row?.original?.["applicationType"] == "DISCONNECT_WATER_CONNECTION" ||
-              row?.original?.["applicationType"] == "WATER_RECONNECTION"
-              
+              row?.original?.["applicationType"] == "DISCONNECT_WATER_CONNECTION"
             ) {
               service = "WATER"
             } else if (
               row?.original?.["applicationType"] == "NEW_SEWERAGE_CONNECTION" ||
               row?.original?.["applicationType"] == "MODIFY_SEWERAGE_CONNECTION" || 
-              row?.original?.["applicationType"] == "DISCONNECT_SEWERAGE_CONNECTION" ||
-              row?.original?.["applicationType"] == "SEWERAGE_RECONNECTION"
+              row?.original?.["applicationType"] == "DISCONNECT_SEWERAGE_CONNECTION"
             ) {
               service = "SEWERAGE"
             }
@@ -123,15 +120,13 @@ const SearchApplication = ({ tenantId, onSubmit, data, count, resultOk, business
           if (
             row?.original?.["applicationType"] == "NEW_WATER_CONNECTION" || 
             row?.original?.["applicationType"] == "MODIFY_WATER_CONNECTION" ||
-            row?.original?.["applicationType"] == "DISCONNECT_WATER_CONNECTION"||
-            row?.original?.["applicationType"] == "WATER_RECONNECTION"
+            row?.original?.["applicationType"] == "DISCONNECT_WATER_CONNECTION"
           ) {
             service = "WATER"
           } else if (
             row?.original?.["applicationType"] == "NEW_SEWERAGE_CONNECTION" ||
             row?.original?.["applicationType"] == "MODIFY_SEWERAGE_CONNECTION" || 
-            row?.original?.["applicationType"] == "DISCONNECT_SEWERAGE_CONNECTION" ||
-            row?.original?.["applicationType"] == "SEWERAGE_RECONNECTION"
+            row?.original?.["applicationType"] == "DISCONNECT_SEWERAGE_CONNECTION"
           ) {
             service = "SEWERAGE"
           }

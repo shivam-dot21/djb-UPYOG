@@ -1,25 +1,12 @@
 import React, { useEffect, useState } from "react";
 import {
- HomeIcon,
+  HomeIcon,
   EditPencilIcon,
   LogoutIcon,
   Loader,
-  AddressBookIcon,
-  PropertyHouse,
-  CaseIcon,
-  CollectionIcon,
-  PTIcon,
-  OBPSIcon,
-  PGRIcon,
-  FSMIcon,
-  WSICon,
-  MCollectIcon,
   Phone,
-  BirthIcon,
-  DeathIcon,
-  FirenocIcon,
   LoginIcon,
-  CHBIcon
+  CaseIcon
 } from "@nudmcdgnpm/digit-ui-react-components";
 import { Link, useLocation } from "react-router-dom";
 import SideBarMenu from "../../../config/sidebar-menu";
@@ -77,24 +64,11 @@ const Profile = ({ info, stateName, t }) => (
   </div>
 );
 const IconsObject = {
-  CommonPTIcon: <PTIcon className="icon" />,
-  OBPSIcon: <OBPSIcon className="icon" />,
-  propertyIcon: <PropertyHouse className="icon" />,
-  TLIcon: <CaseIcon className="icon" />,
-  PGRIcon: <PGRIcon className="icon" />,
-  FSMIcon: <FSMIcon className="icon" />,
-  WSIcon: <WSICon className="icon" />,
-  MCollectIcon: <MCollectIcon className="icon" />,
-  CHBIcon:<CHBIcon className="icon" />,
-  BillsIcon: <CollectionIcon className="icon" />,
-  BirthIcon: <BirthIcon className="icon" />,
-  DeathIcon: <DeathIcon className="icon" />,
-  FirenocIcon: <FirenocIcon className="icon" />,
+  // CNDIcon: <CaseIcon className="icon"/>,
   HomeIcon: <HomeIcon className="icon" />,
   EditPencilIcon: <EditPencilIcon className="icon" />,
   LogoutIcon: <LogoutIcon className="icon" />,
   Phone: <Phone className="icon" />,
-  CNDIcon: <CNDIcon className="icon" />,
   LoginIcon: <LoginIcon className="icon" />,
 };
 const StaticCitizenSideBar = ({ linkData, islinkDataLoading }) => {
@@ -215,7 +189,7 @@ const StaticCitizenSideBar = ({ linkData, islinkDataLoading }) => {
   Object.keys(linkData)
     ?.sort((x, y) => y.localeCompare(x))
     ?.map((key) => {
-      if ( linkData[key][0]?.sidebar === "digit-ui-links") {
+      if (linkData[key][0]?.sidebar === "cnd-ui-links") {
         menuItems.splice(1, 0, {
           type: linkData[key][0]?.sidebarURL?.includes("cnd-ui") ? "link" : "external-link",
           text: t(`ACTION_TEST_${Digit.Utils.locale.getTransformedLocale(key)}`),

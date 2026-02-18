@@ -5,12 +5,10 @@ const createProxy = createProxyMiddleware({
   // target: process.env.REACT_APP_PROXY_API || "https://qa.digit.org",
   target: process.env.REACT_APP_PROXY_API || "https://qa.digit.org",
   changeOrigin: true,
-  secure: false,
 });
 const assetsProxy = createProxyMiddleware({
   target: process.env.REACT_APP_PROXY_ASSETS || "https://qa.digit.org",
   changeOrigin: true,
-  secure: false,
 });
 module.exports = function (app) {
   [
@@ -69,6 +67,12 @@ module.exports = function (app) {
     "/pet-services/pet-registration/_create",
     "/pet-services/pet-registration/_search",
     "/pet-services/pet-registration/_update",
+    "/asset-services/v1/assets/_create",
+    "/asset-services/v1/assets/_search",
+    "/asset-services/v1/assets/_update",
+    "/asset-services/v1/assets/assignment/_create",
+    "/asset-services/v1/assets/assignment/_update",
+    "/asset-services/v1/assets/_search",
     "/sv-services/street-vending/_create",
     "/sv-services/street-vending/_search",
     "/sv-services/street-vending/_update",
@@ -88,16 +92,10 @@ module.exports = function (app) {
     "/adv-services/booking/v1/_estimate", // API to estimate costs for advertisement bookings
     "/employee-dashboard/_search",
     "/verification-service/validity/_search",
-    "/request-service/water-tanker/v1/_create",
-    "/asset-services/v1/assets/_create",
-    "/asset-services/v1/assets/_search",
-    "/asset-services/v1/assets/_update",
-    "/asset-services/v1/assets/assignment/_create",
-    "/asset-services/v1/assets/assignment/_update",
-    "/asset-services/v1/assets/_search",
     "/asset-services/v1/assets/depreciation/_process",
     "/asset-services/v1/assets/depreciation/list",
     "/asset-services/v1/disposal/_create",
+    "/request-service/water-tanker/v1/_create",
     "/asset-services/maintenance/v1/_create",
     "/asset-services/maintenance/v1/_update",
     "/asset-services/maintenance/v1/_search",
@@ -108,17 +106,10 @@ module.exports = function (app) {
     "/vendor-management/api/v1/_create",
     "/sv-services/street-vending/_createdemand",
     "/request-service/mobile-toilet/v1/_create",
-    "/tp-services/tree-pruning/v1/_create",
-    "/tp-services/tree-pruning/v1/_search",
-    "/tp-services/tree-pruning/v1/_update",
     "/request-service/mobile-toilet/v1/_update",
     "/request-service/mobile-toilet/v1/_search",
     "/vendor-management/api/v1/vendorPlusAdditional/_search",
-    "/user/_updateAddress",
-    "/pgr-ai-services/v1/request/_create",
-    "/pgr-ai-services/v1/request/_search",
-    "/pgr-ai-services/v1/request/_update",
-    "/individual/v1/_search"
+    "/user/_updateAddress"
     
   ].forEach((location) => app.use(location, createProxy));
   ["/pb-egov-assets"].forEach((location) => app.use(location, assetsProxy));

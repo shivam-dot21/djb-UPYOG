@@ -6,7 +6,6 @@ import { useApplicationDetails } from "../pages/employee/Edit/ApplicationContext
 import { convertToObject } from "../utils";
 import WasteTypeTable from "./WasteTypeTable";
 import { calculateTotalWasteInTons, formatWasteQuantity } from "../utils";
-import { cndStyles } from "../utils/cndStyles";
 
 /**
 * WasteType component that collects information about waste collection requests including
@@ -17,10 +16,10 @@ import { cndStyles } from "../utils/cndStyles";
 
 const WasteType = ({ t, config, onSelect, formData }) => {
   let validation = {};
-  const isEmployee = window.location.href.includes("/employee/cnd/cnd-service") ?true:false;
+  const isEmployee = window.location.href.includes("/employee") ?true:false;
   const applicationDetails = isEmployee ? useApplicationDetails():null;
   const userType = Digit.UserService.getUser().info.type;
-  const inputStyles = userType === "EMPLOYEE" ? cndStyles.employeeFields:cndStyles.citizenWidth;
+  const inputStyles = { width: userType === "EMPLOYEE" ? "50%" : "100%" };
   // Process wasteTypeDetails from applicationDetails to get unique waste types
   const processWasteTypeDetails = (details) => {
     if (!details || !Array.isArray(details)) return [];
@@ -40,8 +39,23 @@ const WasteType = ({ t, config, onSelect, formData }) => {
     siteMediaPhoto: formData?.wasteType?.siteMediaPhoto || null,
     siteStack: formData?.wasteType?.siteStack || null,
   });
+
+  /* TODO: add these CSS inside Classname
+  isInPickupProgress, containerStyle, labelStyle  
+  these CSS added for Waste quantity as well as Pickup date because they are not aliging well in Facility centre Screen
+  */
   const isInPickupProgress = applicationDetails?.applicationStatus === "WASTE_PICKUP_INPROGRESS";
 
+  const containerStyle = {
+    display: isInPickupProgress ? 'flex' : 'block',
+    alignItems: isInPickupProgress ? 'center' : 'initial',
+    marginBottom: '10px'
+  };
+
+  const labelStyle = {
+    minWidth: isInPickupProgress ? '180px' : 'auto',
+    flexShrink: isInPickupProgress ? 0 : 'initial'
+  };
 
   // Initially the files state should just be empty, as we don't have the actual File objects
   const [files, setFiles] = useState({ 
@@ -65,7 +79,7 @@ const WasteType = ({ t, config, onSelect, formData }) => {
         if (!detailsByType[detail.wasteType]) {
           detailsByType[detail.wasteType] = {
             quantity: detail.quantity || 0,
-            unit: detail.metrics || "Kilogram"
+            unit: detail.unit || "Kilogram"
           };
         }
       });
@@ -101,50 +115,35 @@ const WasteType = ({ t, config, onSelect, formData }) => {
   }, [wasteDetails, isEmployee]);
 
   const handleFileUpload = async (e, fieldName) => {
-  const file = e.target.files[0];
-  if (!file) return;
-
-  // 5MB limit
-  if (file.size >= 5242880) {
-    setError(t("CS_MAXIMUM_UPLOAD_SIZE_EXCEEDED"));
-    return;
-  }
-
-  // Reset previous error
-  setError(null);
-
-  // Start loader based on field name
-  if (fieldName === "siteMediaPhoto") {
-    setIsUploadingMedia(true);
-  } else if (fieldName === "siteStack") {
-    setIsUploadingStack(true);
-  }
-
-  // Temporarily clear any previous file so loader shows immediately
-  setFileUploads((prev) => ({ ...prev, [fieldName]: null }));
-
-  try {
-    // Wait for upload to complete
-    const response = await Digit.UploadServices.Filestorage(
-      "CND",
-      file,
-      Digit.ULBService.getStateId()
-    );
-
-    if (response?.data?.files?.length > 0) {
-      const fileStoreId = response.data.files[0].fileStoreId;
-
-      // ✅ Update the state only after upload completes
-      setFileUploads((prev) => ({ ...prev, [fieldName]: fileStoreId }));
-
+    const file = e.target.files[0];
+    
+    if (!file) return;
+    
+    if (file.size >= 5242880) {
+      setError(t("CS_MAXIMUM_UPLOAD_SIZE_EXCEEDED"));
+      return;
+    }
+    
+    // Set the appropriate loading state based on field name
+    if (fieldName === "siteMediaPhoto") {
+      setIsUploadingMedia(true);
+    } else if (fieldName === "siteStack") {
+      setIsUploadingStack(true);
+    }
+    
+    setFileUploads((prev) => ({ ...prev, [fieldName]: null }));
+    
+    try {
+      const response = await Digit.UploadServices.Filestorage("CND", file, Digit.ULBService.getStateId());
+      if (response?.data?.files?.length > 0) {
+        setFileUploads((prev) => ({ ...prev, [fieldName]: response.data.files[0].fileStoreId }));
       } else {
         setError(t("CS_FILE_UPLOAD_ERROR"));
       }
-    } catch (err) {
-      console.error("Upload failed:", err);
+    } catch {
       setError(t("CS_FILE_UPLOAD_ERROR"));
     } finally {
-      // Stop loader for the right field
+      // Reset the appropriate loading state
       if (fieldName === "siteMediaPhoto") {
         setIsUploadingMedia(false);
       } else if (fieldName === "siteStack") {
@@ -152,7 +151,6 @@ const WasteType = ({ t, config, onSelect, formData }) => {
       }
     }
   };
-
 
   const { data: waste_Material_Type } = Digit.Hooks.useEnabledMDMS(Digit.ULBService.getStateId(), CND_VARIABLES.MDMS_MASTER, [{ name: "WasteType" }], {
     select: (data) => {
@@ -243,9 +241,7 @@ const WasteType = ({ t, config, onSelect, formData }) => {
       wasteMaterialType,
       wasteQuantity,
       pickupDate,
-      wasteDetails,
-      siteMediaPhoto: fileUploads.siteMediaPhoto,
-      siteStack: fileUploads.siteStack,
+      wasteDetails
     })};
   }, [wasteMaterialType, wasteQuantity, pickupDate, wasteDetails]);
 
@@ -268,7 +264,7 @@ const WasteType = ({ t, config, onSelect, formData }) => {
   
   return (
     <React.Fragment>
-      <FormStep config={config} onSelect={goNext} t={t} isDisabled={!wasteMaterialType?.length || !pickupDate || !wasteQuantity}>
+      <FormStep config={config} onSelect={goNext} t={t} isDisabled={!wasteMaterialType || !pickupDate}>
         <div>
           {error && <div className="error-message">{error}</div>}
           
@@ -288,23 +284,22 @@ const WasteType = ({ t, config, onSelect, formData }) => {
               onAddWasteType={handleAddWasteType}
             />)
           :
-         (<div style={{ width: userType === "EMPLOYEE" ? "86%" : "100%" }}> 
-            <MultiSelectDropdown 
-              options={common} 
-              selectedValues={wasteMaterialType} 
-              onChange={setwasteMaterialType} 
-              optionKey="i18nKey" 
-              t={t}
-            />
-          </div>
+         (<MultiSelectDropdown 
+          options={common} 
+          selectedValues={wasteMaterialType} 
+          onChange={setwasteMaterialType} 
+          optionKey="i18nKey" 
+          t={t} 
+          style={{inputStyles}}
+          />
           )}
          
-          <div style={isInPickupProgress?cndStyles.containerStyleInProgress:cndStyles.containerStyleNotInProgress}>
-          <CardLabel style={isInPickupProgress?cndStyles.labelStyleInProgress:cndStyles.labelStyleNotInProgress}>
+          <div style={containerStyle}>
+          <CardLabel style={labelStyle}>
             {`${t("CND_WASTE_QUANTITY")}`}<span className="astericColor">*</span>
           </CardLabel>
          { isEmployee? 
-         <span style={cndStyles.employeeSideWasteTypeFont}>{wasteQuantity}</span>
+         <span style={{fontWeight:"bold"}}>{wasteQuantity}</span>
          :
           <TextInput
             t={t}
@@ -314,7 +309,7 @@ const WasteType = ({ t, config, onSelect, formData }) => {
             name="wasteQuantity"
             value={wasteQuantity}
             onChange={setWasteQuantity}
-            style={isInPickupProgress?cndStyles.wasteQunatityInProgress:userType === "EMPLOYEE" ? cndStyles.employeeFields : cndStyles.wasteQuantityCitizen}
+            style={{width:isInPickupProgress?"72%":userType === "EMPLOYEE" ? "50%" : "100%"}}
             ValidationRequired={true}
             {...(validation = {
               isRequired: true,
@@ -324,8 +319,8 @@ const WasteType = ({ t, config, onSelect, formData }) => {
             })}
           />}
         </div>
-        <div style={isInPickupProgress?cndStyles.containerStyleInProgress:cndStyles.containerStyleNotInProgress}>
-          <CardLabel style={isInPickupProgress?cndStyles.labelStyleInProgress:cndStyles.labelStyleNotInProgress}>{t("CND_SCHEDULE_PICKUP")}<span className="astericColor">*</span></CardLabel>
+        <div style={containerStyle}>
+          <CardLabel style={labelStyle}>{t("CND_SCHEDULE_PICKUP")}</CardLabel>
           <DatePicker
             date={pickupDate}
             name="pickupDate"
@@ -340,24 +335,17 @@ const WasteType = ({ t, config, onSelect, formData }) => {
             }}
           />
           </div>
-         
-         { !window.location.href.includes("facility-centre")&&(
+         { !isEmployee && (
           <React.Fragment>
           <CardLabel>{`${t("CND_SITE_MEDIA")}`}</CardLabel>
-          <div style={{
-                ...cndStyles.siteMediaPhotoEmployee,
-                ...(userType === "EMPLOYEE"
-                  ? cndStyles.employeeFields
-                  : cndStyles.wasteQuantityCitizen),
-              }}>
+          <div style={{ marginBottom: "15px", width:"100%" }}>
             <UploadFile
-              key={isUploadingMedia ? "uploading" : "ready"} // ensures clean rerender
               onUpload={(e) => handleFileUpload(e, "siteMediaPhoto")}
               onDelete={() => setFileUploads((prev) => ({ ...prev, siteMediaPhoto: null }))}
               id={"CND"}
               message={
                 isUploadingMedia ? (
-                  <div style={cndStyles.loaderAlignment}>
+                  <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
                     <LoadingSpinner />
                     <span>Uploading...</span>
                   </div>
@@ -367,39 +355,32 @@ const WasteType = ({ t, config, onSelect, formData }) => {
                   "No File Uploaded"
                 )
               }
-              accept=".jpeg, .jpg, .png"
-              style={{ inputStyles }}
+              accept=".pdf, .jpeg, .jpg, .png"
+              style={{inputStyles}}
             />
           </div>
           
           <CardLabel>{`${t("CND_SITE_STACK")}`}</CardLabel>
-          <div style={{
-                ...cndStyles.siteSackPhotoEmployee,
-                ...(userType === "EMPLOYEE"
-                  ? cndStyles.employeeFields
-                  : cndStyles.wasteQuantityCitizen),
-              }}
-            >
+          <div style={{ marginBottom: "20px", width:"100%" }}>
             <UploadFile
-            key={isUploadingStack ? "uploading" : "ready"}
-            onUpload={(e) => handleFileUpload(e, "siteStack")}
-            onDelete={() => setFileUploads((prev) => ({ ...prev, siteStack: null }))}
-            id={"CND"}
-            message={
-              isUploadingStack ? (
-                <div style={cndStyles.loaderAlignment}>
-                  <LoadingSpinner />
-                  <span>Uploading...</span>
-                </div>
-              ) : fileUploads.siteStack ? (
-                "1 File Uploaded"
-              ) : (
-                "No File Uploaded"
-              )
-            }
-            accept=".jpeg, .jpg, .png"
-            style={{ inputStyles }}
-          />
+              onUpload={(e) => handleFileUpload(e, "siteStack")}
+              onDelete={() => setFileUploads((prev) => ({ ...prev, siteStack: null }))}
+              id={"CND"}
+              message={
+                isUploadingStack ? (
+                  <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                    <LoadingSpinner />
+                    <span>Uploading...</span>
+                  </div>
+                ) : fileUploads.siteStack ? (
+                  "1 File Uploaded"
+                ) : (
+                  "No File Uploaded"
+                )
+              }
+              accept=".pdf, .jpeg, .jpg, .png"
+              style={{inputStyles}}
+            />
           </div>
           </React.Fragment>)}
         </div>

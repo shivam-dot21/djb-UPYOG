@@ -1,4 +1,4 @@
-import { Dropdown, FormComposer, InfoBannerIcon, Loader, Localities, RadioButtons, Toast } from "@upyog/digit-ui-react-components";
+import { Dropdown, FormComposer, InfoBannerIcon, Loader, Localities, RadioButtons, Toast } from "@nudmcdgnpm/digit-ui-react-components";
 import _ from "lodash";
 import PropTypes from "prop-types";
 import React, { useEffect, useLayoutEffect, useState } from "react";
@@ -375,9 +375,6 @@ const SearchProperty = ({ config: propsConfig, onSelect }) => {
     delete tempObject.addParam;
     delete tempObject.addParam1;
     delete tempObject.city;
-    if(action == 1 && tempObject?.oldPropertyId){
-      delete tempObject.oldPropertyId;
-    }
     setSearchData({ city: city, filters: tempObject });
     return;
   };

@@ -6,8 +6,6 @@ import get from "lodash/get";
 import CNDApplicationTimeLine from "../../components/CNDApplicationTimeLine";
 import ApplicationTable from "../../components/inbox/ApplicationTable";
 import cndAcknowledgementData from "../../utils/cndAcknowledgementData";
-import { cndStyles } from "../../utils/cndStyles";
-import { CNDDocumnetPreview, getOrderDocuments } from "../../utils";
 
 
 /**
@@ -38,7 +36,6 @@ const CndApplicationDetails = () => {
   sessionStorage.setItem("cnd-application", JSON.stringify(application));
   const [loading, setLoading]=useState(false);
 
-
   const fetchBillData=async()=>{
     setLoading(true);
     const result= await Digit.PaymentService.fetchBill(tenantId,{ businessService: "cnd-service", consumerCode: applicationNumber });
@@ -58,17 +55,6 @@ const CndApplicationDetails = () => {
     },
     { enabled: applicationNumber ? true : false }
   );
-
-   const getApplicationDocs = cndData?.documentDetails?.map((doc) => ({
-    ...doc,
-    module: "CND",
-  })) || [];
-
-  // Step 2: Fetch PDF details only if documents exist
-  const { data: pdfDetails } = Digit.Hooks.useDocumentSearch(getApplicationDocs, {enabled: getApplicationDocs.length > 0});
-
-  // Step 3: Extract only StreetVending PDFs
-  const applicationDocs = pdfDetails?.pdfFiles?.filter((pdf) => pdf?.module === "CND") || [];
 
   if (!cndData.workflow) {
     let workflow = {
@@ -100,7 +86,7 @@ const CndApplicationDetails = () => {
 
   async function getRecieptSearch({ tenantId, payments, ...params }) {
     let response = { filestoreIds: [payments?.fileStoreId] };
-    response = await Digit.PaymentService.generatePdf(tenantId, { Payments: [{ ...payments }] }, "cnd-service");
+    response = await Digit.PaymentService.generatePdf(tenantId, { Payments: [{ ...payments }] }, "consolidatedreceipt");
     const fileStore = await Digit.PaymentService.printReciept(tenantId, { fileStoreIds: response.filestoreIds[0] });
     window.open(fileStore[response?.filestoreIds[0]], "_blank");
   };
@@ -130,7 +116,7 @@ const columnName = [
 
 const operationRows = cndData.wasteTypeDetails.map((items, index) => ({
   sNo: index + 1,
-  wasteType: t(items?.wasteType) || "-",
+  wasteType: items?.wasteType || "-",
   quantity: items?.quantity?items?.quantity:"0",
   siUnit:items?.metrics ? items?.metrics : "-"
 }));
@@ -139,8 +125,8 @@ const operationRows = cndData.wasteTypeDetails.map((items, index) => ({
   return (
     <React.Fragment>
       <div>
-        <div className="cardHeaderWithOptions" style={cndStyles.cardHeaderWithOptions}>
-          <Header styles={cndStyles.cardHeader}>{t("CND_REQUEST_DETAILS")}</Header>
+        <div className="cardHeaderWithOptions" style={{ marginRight: "auto", maxWidth: "960px" }}>
+          <Header styles={{ fontSize: "32px" }}>{t("CND_REQUEST_DETAILS")}</Header>
           {dowloadOptions && dowloadOptions.length > 0 && (
             <MultiLink
               className="multilinkWrapper"
@@ -160,7 +146,7 @@ const operationRows = cndData.wasteTypeDetails.map((items, index) => ({
             <Row
               className="border-none"
               label={t("CND_APPLICATION_TYPE")}
-              text={t(cndData?.applicationType)} 
+              text={cndData?.applicationType} 
             />
             <Row
               className="border-none"
@@ -170,12 +156,12 @@ const operationRows = cndData.wasteTypeDetails.map((items, index) => ({
             <Row
               className="border-none"
               label={t("CND_TYPE_CONSTRUCTION")}
-              text={t(cndData?.typeOfConstruction)} 
+              text={cndData?.typeOfConstruction} 
             />
             <Row
               className="border-none"
               label={t("CND_PROPERTY_USAGE")}
-              text={t(cndData?.propertyType)} 
+              text={cndData?.propertyType} 
             />
             <Row
               className="border-none"
@@ -205,7 +191,7 @@ const operationRows = cndData.wasteTypeDetails.map((items, index) => ({
 
           {cndData?.applicationStatus==="COMPLETED" &&(
           <React.Fragment>
-          <CardSubHeader style={cndStyles.citizenApplicantDetailCard}>{t("CND_FACILITY_DETAILS")}</CardSubHeader>
+          <CardSubHeader style={{ fontSize: "24px" }}>{t("CND_FACILITY_DETAILS")}</CardSubHeader>
           <StatusTable>
             <Row className="border-none" label={t("CND_DISPOSE_DATE")} text={cndData?.facilityCenterDetail?.disposalDate?.split(" ")[0] || t("CS_NA")} />
             <Row className="border-none" label={t("CND_DISPOSE_TYPE")} text={cndData?.facilityCenterDetail?.disposalType || t("CS_NA")} />
@@ -215,14 +201,14 @@ const operationRows = cndData.wasteTypeDetails.map((items, index) => ({
             <Row className="border-none" label={t("CND_NET_WEIGHT"+ " Ton")} text={cndData?.facilityCenterDetail?.netWeight|| t("CS_NA")} />
           </StatusTable>
           </React.Fragment>)}
-          <CardSubHeader style={cndStyles.citizenApplicantDetailCard}>{t("COMMON_PERSONAL_DETAILS")}</CardSubHeader>
+          <CardSubHeader style={{ fontSize: "24px" }}>{t("COMMON_PERSONAL_DETAILS")}</CardSubHeader>
           <StatusTable>
             <Row className="border-none" label={t("COMMON_APPLICANT_NAME")} text={cndData?.applicantDetail?.nameOfApplicant || t("CS_NA")} />
             <Row className="border-none" label={t("COMMON_MOBILE_NUMBER")} text={cndData?.applicantDetail?.mobileNumber || t("CS_NA")} />
             <Row className="border-none" label={t("COMMON_EMAIL_ID")} text={cndData?.applicantDetail?.emailId || t("CS_NA")} />
             <Row className="border-none" label={t("COMMON_ALT_MOBILE_NUMBER")} text={cndData?.applicantDetail?.alternateMobileNumber|| t("CS_NA")} />
           </StatusTable>
-          <CardSubHeader style={cndStyles.citizenApplicantDetailCard}>{t("CND_WASTE_PICKUP_ADDRESS")}</CardSubHeader>
+          <CardSubHeader style={{ fontSize: "24px" }}>{t("CND_WASTE_PICKUP_ADDRESS")}</CardSubHeader>
           <StatusTable>
             <Row className="border-none" label={t("HOUSE_NO")} text={cndData?.addressDetail?.houseNumber || t("CS_NA")} />
             <Row className="border-none" label={t("ADDRESS_LINE1")} text={cndData?.addressDetail?.addressLine1 || t("CS_NA")} />
@@ -233,38 +219,31 @@ const operationRows = cndData.wasteTypeDetails.map((items, index) => ({
             <Row className="border-none" label={t("PINCODE")} text={cndData?.addressDetail?.pinCode|| t("CS_NA")} />
           </StatusTable>
 
-          <CardSubHeader style={cndStyles.citizenApplicantDetailCard}>{t("CND_WASTE_DETAILS")}</CardSubHeader>
+          <CardSubHeader style={{ fontSize: "24px" }}>{t("CND_WASTE_DETAILS")}</CardSubHeader>
           <StatusTable>
           <ApplicationTable
               t={t}
               data={operationRows}
               columns={columnName}
               getCellProps={(cellInfo) => ({
-                style: cndStyles.citizenApplicationTable
+                style: {
+                  minWidth: "150px",
+                  padding: "10px",
+                  fontSize: "16px",
+                  paddingLeft: "20px",
+                },
               })}
               isPaginationRequired={false}
               totalRecords={operationRows.length}
             />
           </StatusTable>
 
-          {cndData?.documentDetails && cndData?.documentDetails.length > 0 && (
-            <React.Fragment>
-              <br />
-              <CardSubHeader>{t("CND_DOC_DETAILS")}</CardSubHeader>
-              <CNDDocumnetPreview 
-                documents={getOrderDocuments(applicationDocs)} 
-                svgStyles={{}} 
-                isSendBackFlow={false} 
-                titleStyles={{ fontSize: "18px", fontWeight: 700, marginBottom: "10px" }} 
-              />
-            </React.Fragment>
-          )}
-
           <CNDApplicationTimeLine application={application} id={application?.applicationNumber} userType={"citizen"} />
           {showToast && (
           <Toast
             error={showToast.key}
             label={t(showToast.label)}
+            style={{bottom:"0px"}}
             onClose={() => {
               setShowToast(null);
             }}

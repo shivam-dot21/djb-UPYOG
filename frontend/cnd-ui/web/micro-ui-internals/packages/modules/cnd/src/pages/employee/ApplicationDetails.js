@@ -5,7 +5,6 @@ import { useTranslation } from "react-i18next";
 import { useParams } from "react-router-dom";
 import ApplicationDetailsTemplate from "../../../../templates/ApplicationDetails";
 import cndAcknowledgementData from "../../utils/cndAcknowledgementData";
-import { cndStyles } from "../../utils/cndStyles";
 
 /**
 * ApplicationDetails component displays the details of a CND application
@@ -105,7 +104,7 @@ const ApplicationDetails = () => {
 
   async function getRecieptSearch({ tenantId, payments, ...params }) {
     let response = { filestoreIds: [payments?.fileStoreId] };
-    response = await Digit.PaymentService.generatePdf(tenantId, { Payments: [{ ...payments }] }, "cnd-service");
+    response = await Digit.PaymentService.generatePdf(tenantId, { Payments: [{ ...payments }] }, "consolidatedreceipt");
     const fileStore = await Digit.PaymentService.printReciept(tenantId, { fileStoreIds: response.filestoreIds[0] });
     window.open(fileStore[response?.filestoreIds[0]], "_blank");
   };
@@ -119,11 +118,11 @@ const ApplicationDetails = () => {
   
   return (
     <div>
-      <div className={"employee-application-details"} style={cndStyles.siteMediaPhotoEmployee}>
-        <Header styles={cndStyles.applicationDetailHeader}>{t("CND_APPLICATION_DETAILS")}</Header>
-        <div style={cndStyles.applicationDetailCard}>
+      <div className={"employee-application-details"} style={{ marginBottom: "15px" }}>
+        <Header styles={{ marginLeft: "0px", paddingTop: "10px", fontSize: "32px" }}>{t("CND_APPLICATION_DETAILS")}</Header>
+        <div style={{zIndex: "10",display:"flex",flexDirection:"row-reverse",alignItems:"center",marginTop:"-25px"}}>
          
-      <div style={cndStyles.downloadButton}>
+      <div style={{zIndex: "10",  position: "relative"}}>
         {dowloadOptions && dowloadOptions.length > 0 && (
           <MultiLink
             className="multilinkWrapper"
@@ -156,7 +155,7 @@ const ApplicationDetails = () => {
         timelineStatusPrefix={"CND_"}
         forcedActionPrefix={"C&D"}
         statusAttribute={"state"}
-        MenuStyle={cndStyles.menuStyle}
+        MenuStyle={{ color: "#FFFFFF", fontSize: "18px" }}
       />
 
     </div>

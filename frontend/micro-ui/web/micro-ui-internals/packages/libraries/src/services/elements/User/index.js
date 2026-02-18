@@ -131,6 +131,13 @@ export const UserService = {
       auth: true,
     });
   },
+  //GET captcha for user
+  userCaptchaSearch: async (tenantId, data) => {
+    return Request({
+      url: Urls.UserCaptcha,
+      method: "GET",
+    });
+  },
   userSearch: async (tenantId, data, filters) => {
     return Request({
       url: Urls.UserSearch,
@@ -139,16 +146,6 @@ export const UserService = {
       auth: true,
       userService: true,
       data: data.pageSize ? { tenantId, ...data } : { tenantId, ...data, pageSize: "100" },
-    });
-  },
-  userCreate: async (tenantId, user, filters) => {
-    return Request({
-      url: Urls.UserCreate,
-      params: { ...filters },
-      method: "POST",
-      auth: false,
-      userService: false,
-      data: { user: {tenantId, ...user} } ,
     });
   },
   // user search for user profile

@@ -1,5 +1,4 @@
 import { MTService } from "../../elements/MT";
-import format from "date-fns/format";
 import React from "react";
 
 /**
@@ -40,29 +39,29 @@ export const MTSearch = {
           { title: "MT_EMAIL_ID", value: response?.applicantDetail?.emailId || t("CS_NA")}
         ],
       },
-      {
-        title: "ES_TITLE_ADDRESS_DETAILS",
-        asSectionHeader: true,
-        values: [
-          { title: "PINCODE", value: response?.address?.pincode || t("CS_NA")},
-          { title: "CITY", value: response?.address?.city  || t("CS_NA")},
-          { title: "LOCALITY", value: response?.address?.locality  || t("CS_NA")},
-          { title: "STREET_NAME", value: response?.address?.streetName  || t("CS_NA")},
-          { title: "HOUSE_NO", value: response?.address?.houseNo  || t("CS_NA")},
-          { title: "LANDMARK", value: response?.address?.landmark  || t("CS_NA")},
-          { title: "ADDRESS_LINE1", value: response?.address?.addressLine1  || t("CS_NA")},
-          { title: "ADDRESS_LINE2", value: response?.address?.addressLine2  || t("CS_NA")}
-        ],
-      },
+//       {
+//         title: "MT_ADDRESS_DETAILS",
+//         asSectionHeader: true,
+//         values: [
+//           { title: "MT_PINCODE", value: response?.address?.pincode || t("CS_NA")},
+//           { title: "MT_CITY", value: response?.address?.city  || t("CS_NA")},
+//           { title: "MT_LOCALITY", value: response?.address?.locality  || t("CS_NA")},
+//           { title: "MT_STREET_NAME", value: response?.address?.streetName  || t("CS_NA")},
+//           { title: "MT_HOUSE_NO", value: response?.address?.houseNo  || t("CS_NA")},
+//           { title: "MT_LANDMARK", value: response?.address?.landmark  || t("CS_NA")},
+//           { title: "MT_ADDRESS_LINE1", value: response?.address?.addressLine1  || t("CS_NA")},
+//           { title: "MT_ADDRESS_LINE2", value: response?.address?.addressLine2  || t("CS_NA")}
+//         ],
+//       },
       {
         title: "MT_REQUEST_DETAILS",
         asSectionHeader: true,
         values: [
           { title: "MT_NUMBER_OF_MOBILE_TOILETS", value: response?.noOfMobileToilet || t("CS_NA")},
-          { title: "MT_DELIVERY_FROM_DATE", value: format(new Date(response?.deliveryFromDate), 'dd-MM-yyyy')  || t("CS_NA")},
-          { title: "MT_DELIVERY_TO_DATE", value: format(new Date(response?.deliveryToDate), 'dd-MM-yyyy')  || t("CS_NA")},
-          { title: "MT_REQUIREMNENT_FROM_TIME", value: response?.deliveryFromTime || t("CS_NA"), isTimeValue: true },
-          { title: "MT_REQUIREMNENT_TO_TIME", value: response?.deliveryToTime || t("CS_NA"), isTimeValue: true },
+          { title: "MT_DELIVERY_FROM_DATE", value: response?.deliveryFromDate || t("CS_NA")},
+          { title: "MT_DELIVERY_TO_DATE", value: response?.deliveryToDate || t("CS_NA")},
+          { title: "MT_REQUIREMNENT_FROM_TIME", value: response?.deliveryFromTime || t("CS_NA")},
+          { title: "MT_REQUIREMNENT_TO_TIME", value: response?.deliveryToTime || t("CS_NA")},
           { title: "MT_SPECIAL_REQUEST", value: response?.description || t("CS_NA")},
         ],
       },

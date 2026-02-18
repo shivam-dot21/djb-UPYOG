@@ -10,7 +10,7 @@ import {
   Rating,
   ShareIcon,
   WhatsappIcon,
-} from "@upyog/digit-ui-react-components";
+} from "@egovernments/digit-ui-react-components";
 import { format } from "date-fns";
 import React, { useMemo, useRef, useState, useContext } from "react";
 import { useTranslation } from "react-i18next";
@@ -18,7 +18,7 @@ import { useParams } from "react-router-dom";
 import FilterContext from "../components/FilterContext";
 import { ArrowUpwardElement } from "../components/ArrowUpward";
 import { ArrowDownwardElement } from "../components/ArrowDownward";
-import { Bar, BarChart, CartesianGrid, Legend, ResponsiveContainer, Tooltip, XAxis, YAxis,Line,ComposedChart } from "recharts";
+import { Bar, BarChart, CartesianGrid, Legend, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import { Icon } from "../components/common/Icon";
 import MapChart from "../components/MapChart";
 import MapDrillChart from "../components/mapDrillDownTable";
@@ -26,8 +26,7 @@ import NoData from "../components/NoData";
 import { ReactComponent as Arrow_Right } from "../images/Arrow_Right.svg";
 import { ReactComponent as Arrow_Right_White } from "../images/Arrow_Right_white.svg";
 import { checkCurrentScreen } from "../components/DSSCard";
-import CustomAreaChart from "../components/CustomAreaChart"
-import LineChartWithData from "../components/LineChart";
+
 const key = "DSS_FILTERS";
 const getInitialRange = () => {
   const data = Digit.SessionStorage.get(key);
@@ -76,17 +75,6 @@ const Chart = ({ data, moduleLevel, overview = false }) => {
   if (isLoading) {
     return <Loader />;
   }
-  
-  if(response?.responseData?.data?.[0]?.headerName === "DSS_STATE_GDP_REVENUE_COLLECTION" )
-  {
-    
-    response.responseData.data[0].headerValue = response.responseData.data[0].headerValue * 100
-  }
- if( response?.responseData?.data?.[0]?.headerName === "NURT_TOTAL_CITIZENS" && response.responseData.data[0].headerValue == 0)
-  {
-    response.responseData.data[0].headerValue = 2652677
-  }
-
   const insight = response?.responseData?.data?.[0]?.insight?.value?.replace(/[+-]/g, "")?.split("%");
   return (
     <div className={"dss-insight-card"} style={overview ? {} : { margin: "0px" }}>
@@ -103,7 +91,7 @@ const Chart = ({ data, moduleLevel, overview = false }) => {
           <span style={{ fontSize: "14px", fontWeight: "400px", color: "white" }}>{t(`TIP_${data.name}`)}</span>
         </span>
       </div>
-      {data.name === "NATIONAL_DSS_OVERVIEW_CITIZEN_FEEDBACK_SCORE" ?
+      {data.name === "NATIONAL_DSS_OVERVIEW_CITIZEN_FEEDBACK_SCORE" ? 
       <Rating
           //id={response?.responseData?.data?.[0]?.headerValue}
           currentRating={Math.round(response?.responseData?.data?.[0]?.headerValue * 10) / 10}
@@ -112,15 +100,14 @@ const Chart = ({ data, moduleLevel, overview = false }) => {
           toolTipText={t("COMMON_RATING_LABEL")}
       />
               :<p className="p2">
-
-        {response?.responseData?.data?.[0]?.headerName == "NATIONAL_DSS_TOTAL_COLLECTION" ? Digit.Utils.dss.formatter(response?.responseData?.data?.[0]?.headerValue, response?.responseData?.data?.[0]?.headerSymbol, "Cr", true, t): response?.responseData?.data?.[0]?.headerName ==  "NATIONAL_DSS_TARGET_COLLECTION"? Digit.Utils.dss.formatter(response?.responseData?.data?.[0]?.headerValue, response?.responseData?.data?.[0]?.headerSymbol, "Cr", true, t): response?.responseData?.data?.[0]?.headerName == "DSS_NON_TAX_REVENUE_PER_HOUSEHOLD"? Digit.Utils.dss.formatter(response?.responseData?.data?.[0]?.headerValue, response?.responseData?.data?.[0]?.headerSymbol, "Unit", true, t): response?.responseData?.data?.[0]?.headerName == "PropertyTaxRevenuePerHouseholdOverview" ? Digit.Utils.dss.formatter(response?.responseData?.data?.[0]?.headerValue, response?.responseData?.data?.[0]?.headerSymbol, "Unit", true, t): response?.responseData?.data?.[0]?.headerName == "DSS_STATE_GDP_REVENUE_COLLECTION"  ? Digit.Utils.dss.formatter(response?.responseData?.data?.[0]?.headerValue, response?.responseData?.data?.[0]?.headerSymbol, "UnitGDP", true, t): Digit.Utils.dss.formatter(response?.responseData?.data?.[0]?.headerValue, response?.responseData?.data?.[0]?.headerSymbol, "Unit", true, t)}
+        {Digit.Utils.dss.formatter(response?.responseData?.data?.[0]?.headerValue, response?.responseData?.data?.[0]?.headerSymbol, "Lac", true, t)}
       </p>}
-      {/* {response?.responseData?.data?.[0]?.insight?.value ? (
+      {response?.responseData?.data?.[0]?.insight?.value ? (
         <p className={`p3 ${response?.responseData?.data?.[0]?.insight?.indicator === "upper_green" ? "color-green" : "color-red"}`}>
           {response?.responseData?.data?.[0]?.insight?.indicator === "upper_green" ? ArrowUpwardElement("10px") : ArrowDownwardElement("10px")}
           {insight?.[0] && `${insight[0]}% ${t(Digit.Utils.locale.getTransformedLocale("DSS" + insight?.[1] || ""))}`}
         </p>
-      ) : null} */}
+      ) : null}
     </div>
   );
 };
@@ -150,120 +137,28 @@ const HorBarChart = ({ data, setselectState = "" }) => {
     requestDate,
     filters: filters,
   });
-  function swapNames(arr) {
-    // Get the length of the array
-    let len = arr.length;
-
-    // Find the maximum count of objects with a 'name' property (top and bottom)
-    let bottomNameCount = 12; // You want to swap with the last 12 objects, adjust if needed.
-
-    // Loop through the objects to swap 'name' properties
-    for (let i = 0; i < bottomNameCount; i++) {
-        let topIndex = i;
-        let bottomIndex = len + i; // Fix the bottom index calculation
-console.log("bottomIndexbottomIndex",bottomIndex)
-        // Ensure the bottomIndex is within bounds and has an object to swap with
-        if (arr[bottomIndex]) {
-            // Swap the 'name' property between the top and bottom objects
-            let tempName = arr[topIndex]?.name; // Store the top name temporarily
-
-            // Assign the bottom 'name' to the top object
-            arr[topIndex].name = arr[bottomIndex]?.name;
-
-            // Remove the 'name' property from the bottom object
-            delete arr[bottomIndex].name;
-
-            // Assign the temporarily stored top 'name' to the bottom object
-            if (tempName !== undefined) {
-                arr[bottomIndex].name = tempName;
-            }
-        }
-    }
-
-    return arr;
-}
-
 
   const constructChartData = (data) => {
-
-    let transformedData
-    if (data?.[0]) {
-      console.log("datasssssswsss", data)
-      transformedData = swapNames(data[0].plots);
-      console.log("ddddddd", transformedData);
-    }
-    const currencyFormatter = new Intl.NumberFormat("en-IN", { currency: "INR" });
-
-    var date = new Date();
-    var months = [],
-      monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-
-    for (var i = 0; i < 12; i++) {
-      months.push(monthNames[date.getMonth()] + '-' + date.getFullYear());
-      date.setMonth(date.getMonth() - 1);
-    }
-    console.log("monthsmonths", months)
-
-    if (data?.[0]) {
-
-      let plotsss = transformedData.map((data, index) => {
-        //console.log("ssssssssssss", { ...data })
-        return { ...data }
-      })
-      data[0].plots = plotsss.reverse()
-      let plotulb = data[1].plots.map((data, index) => {
-        return { ...data, name: months[index] }
-      })
-      data[1].plots = plotulb.reverse()
-    }
-    console.log("datadatadata"), data
     let result = {};
     for (let i = 0; i < data?.length; i++) {
       const row = data[i];
       for (let j = 0; j < row.plots.length; j++) {
         const plot = row.plots[j];
-        if (months.includes(plot?.name)) {
-
-          if (plot?.value > 10000) {
-            result[plot.name] = { ...result[plot.name], [t(row.headerName)]: currencyFormatter.format((plot?.value / 10000000).toFixed(2) || 0), name: t(plot.name) };
-          }
-          else {
-            result[plot.name] = { ...result[plot.name], [t(row.headerName)]: plot?.value, name: t(plot.name) };
-          }
-        }
+        result[plot.name] = { ...result[plot.name], [t(row.headerName)]: plot?.value, name: t(plot.name) };
       }
     }
-    return Object.keys(result)
-    .sort((a, b) => {
-      const monthA = new Date(a.split('-').reverse().join('-'));
-      const monthB = new Date(b.split('-').reverse().join('-'));
-      return monthB - monthA; 
-    })
-    .map((key) => {
+    return Object.keys(result).map((key) => {
       return {
         name: key,
         ...result[key],
       };
     });
   };
-const renderLegend = (value) => {
-
-  return (
-    <li style={{display:"contents"}}>
-      {
-        value == "TotalCollection"?
-          <span style={{ fontSize: "14px", color: "#505A5F" }}>{t(`DSS_${Digit.Utils.locale.getTransformedLocale(value)}`)}(Cr)</span>:<span style={{ fontSize: "14px", color: "#505A5F" }}>{t(`DSS_${Digit.Utils.locale.getTransformedLocale(value)}`)}</span>
-        
-      }
-    </li>
-  )
-}
+  const renderLegend = (value) => (
+    <span style={{ fontSize: "14px", color: "#505A5F" }}>{t(`DSS_${Digit.Utils.locale.getTransformedLocale(value)}`)}</span>
+  );
   const chartData = useMemo(() => constructChartData(response?.responseData?.data));
-  console.log("chartDatachartData",chartData,response)
-  const tooltipFormatter = (value, name) => {
-    return name == "TotalCollection"?`${value} Cr`:`${value}`
 
-  };
   if (isLoading) {
     return <Loader />;
   }
@@ -283,26 +178,44 @@ const renderLegend = (value) => {
       {chartData?.length === 0 || !chartData ? (
         <NoData t={t} />
       ) : (
-          <ComposedChart
-            width="100%"
-            height="100%"
-            margin={{
-              top: 5,
-              right: 5,
-              left: 5,
-              bottom: 5,
+        <BarChart
+          width="100%"
+          height="100%"
+          margin={{
+            top: 5,
+            right: 5,
+            left: 5,
+            bottom: 5,
+          }}
+          layout={"horizontal"}
+          data={chartData}
+          barGap={12}
+          barSize={30}
+        >
+          <CartesianGrid strokeDasharray="2 2" />
+          <YAxis
+            dataKey={""}
+            type={"number"}
+            tick={{ fontSize: "12px", fill: "#505A5F" }}
+            label={{
+              value: "",
+              angle: -90,
+              position: "insideLeft",
+              dy: 50,
+              fontSize: "12px",
+              fill: "#505A5F",
             }}
-            data={chartData}
-          >
-            <CartesianGrid stroke="#f5f5f5" strokeDasharray="3 3" />
-            <XAxis dataKey={"name"} type={"category"} tick={{ fontSize: "14px", fill: "#505A5F" }} tickCount={12} />
-            <YAxis yAxisId="left"  type={"number"} orientation="left" stroke="#54d140" tickCount={10} domain={[0, 600]}/>
-            <YAxis yAxisId="right" type={"number"} orientation="right" stroke="#a82227" tickCount={10} />
-            <Tooltip cursor={false} formatter={tooltipFormatter}/>
-             <Legend formatter={renderLegend} iconType="circle" />
-            <Bar yAxisId="left" dataKey="TotalCollection" fill="#54d140" />
-            <Line yAxisId="right" type="monotone" dataKey="liveUlbsCount" stroke="#a82227" />
-          </ComposedChart>
+            tickCount={10}
+            unit={""}
+            width={130}
+          />
+          <XAxis dataKey={"name"} type={"category"} tick={{ fontSize: "14px", fill: "#505A5F" }} tickCount={10} />
+          {bars?.map((bar, id) => (
+            <Bar key={id} dataKey={t(bar)} fill={barColors[id]} stackId={bars?.length > 2 ? 1 : id} />
+          ))}
+          <Legend formatter={renderLegend} iconType="circle" />
+          <Tooltip cursor={false} />
+        </BarChart>
       )}
     </ResponsiveContainer>
   );
@@ -345,7 +258,7 @@ const Home = ({ stateCode }) => {
   const handlePrint = () => Digit.Download.PDF(fullPageRef, t(dashboardConfig?.[0]?.name));
 
   const dashboardConfig = response?.responseData;
-  console.log("dashboardConfig",dashboardConfig)
+
   const shareOptions = navigator.share
     ? [
         {
@@ -413,14 +326,12 @@ const Home = ({ stateCode }) => {
   if (isLoading || localizationLoading) {
     return <Loader />;
   }
-  console.log("selectedState",selectedState)
-  console.log("totalCount",totalCount)
-  console.log("liveCount",liveCount)
+
   return (
     <FilterContext.Provider value={provided}>
       <div ref={fullPageRef}>
         <div className="options" style={{ margin: "10px" }}>
-        <Header styles={{ marginBottom: "0px" }}><span style={{color:"#a82227"}}>UMEED</span> - <span><span style={{color:"#a82227"}}>U</span>rban <span style={{color:"#a82227"}}>M</span>onitoring for <span style={{color:"#a82227"}}>E</span>fficient and <span style={{color:"#a82227"}}>E</span>ffective <span style={{color:"#a82227"}}>D</span>ecision-making</span></Header>
+          <Header styles={{ marginBottom: "0px" }}>{t(dashboardConfig?.[0]?.name)}</Header>
           {mobileView ? null : (
             <div>
               <div className="mrlg">
@@ -441,7 +352,7 @@ const Home = ({ stateCode }) => {
             </div>
           )}
         </div>
- 
+
         {mobileView ? (
           <div className="options-m">
             <div>
@@ -499,7 +410,7 @@ const Home = ({ stateCode }) => {
                           )}
                         </div>
                         {item?.charts?.[0]?.chartType == "map" && (
-                          <div className="dss-card-header" style={{ width: "60%" }}>
+                          <div className="dss-card-header" style={{ width: "45%" }}>
                             {Icon(row.vizArray?.[1]?.name)}
                             <p style={{ marginLeft: "20px", fontSize: "24px", fontFamily: "Roboto, sans-serif", fontWeight: 500, color: "#000000" }}>
                               {selectedState === ""
@@ -536,37 +447,7 @@ const Home = ({ stateCode }) => {
                       </div>
                     </div>
                   );
-                }else if (item?.charts?.[0]?.chartType == "line") {
-                  return (
-                    <div
-                      className={`dss-card-parent  ${
-                        item.vizType == "chart"
-                          ? "w-100"
-                          : item.name.includes("NO_OF_TRANSACTION")
-                          ? "dss-h-100"
-                          : ""
-                      }`}
-                      style={item.vizType == "chart" ? { backgroundColor: "#fff", height: "600px" } : { backgroundColor: colors[index].light }}
-                      key={index}
-                    >
-                      <div
-                        style={{
-                          display: "flex",
-                          flexDirection: "row",
-                          justifyContent: "space-between",
-                        }}
-                      >
-                       
-                      </div>
-                      <div className="dss-card-body">
-                        {item?.charts?.[0]?.chartType == "line" &&
-                          <LineChartWithData data={item?.charts?.[0]} title={"NURT_NO_OF_TRANSACTION_CUMULATIVE"}  moduleCode={moduleCode} />
-                          }
-                       
-                      </div>
-                    </div>
-                  );
-                } else if(item?.moduleLevel!=="BIRTH-DEATH") {
+                } else {
                   return (
                     <div
                       className={`dss-card-parent  ${

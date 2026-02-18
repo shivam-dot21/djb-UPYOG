@@ -11,9 +11,8 @@ import {
   Card,
   MobileNumber,
   Loader,
-  CardText,
-  Header,
-} from "@upyog/digit-ui-react-components";
+  Header
+} from "@nudmcdgnpm/digit-ui-react-components";
 import { Link } from "react-router-dom";
 
 /**

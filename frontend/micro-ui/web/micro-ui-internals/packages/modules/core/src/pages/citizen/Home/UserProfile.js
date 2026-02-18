@@ -16,7 +16,7 @@ import {
   Row,
   EditIcon,
   LinkButton
-} from "@upyog/digit-ui-react-components";
+} from "@nudmcdgnpm/digit-ui-react-components";
 import React, { useEffect, useState, Fragment } from "react";
 import { useTranslation } from "react-i18next";
 import { useHistory } from "react-router-dom";
@@ -82,55 +82,104 @@ const UserProfile = ({ stateCode, userType, cityDetails }) => {
   const [showModal, setShowModal] = useState(false);
   const [isEdit, setisEdit] = useState(false);
   const [selectedAddress, setSelectedAddress] = useState(null);
+  const [designationName, setDesignationName] = React.useState(Digit.SessionStorage.get("Employee.designation"));
+  const [departmentName, setDepartmentName] = React.useState(Digit.SessionStorage.get("Employee.department"));
+
   /*
- * Fetches the user's address details using the `Digit.UserService.userSearchNewV2` API.
- * - Retrieves the user's UUID from `userInfo`.
- * - Calls the API with the tenant ID and UUID to fetch user data.
- * - Updates the `userAddresses` state with the fetched address list if available.
- */
-  const userSearchNewV2 = async () => {
+   * Fetches the user's address details using the `Digit.UserService.userSearchNewV2` API.
+   * - Retrieves the user's UUID from `userInfo`.
+   * - Calls the API with the tenant ID and UUID to fetch user data.
+   * - Updates the `userAddresses` state with the fetched address list if available.
+   */
+  const getUserInfo = async (isMounted) => {
     const uuid = userInfo?.uuid;
     if (uuid) {
-      const usersResponse = await Digit.UserService.userSearchNewV2(tenant, { uuid: [uuid] }, {});
-      if (usersResponse && usersResponse.user && usersResponse.user.length) {
-        setUserAddresses(usersResponse.user[0]?.addresses || []); // Set addresses separately
+      try {
+        const usersResponse = await Digit.UserService.userSearch(tenant, { uuid: [uuid] }, {});
+        if (usersResponse && usersResponse.user && usersResponse.user.length && isMounted.current) {
+          setUserDetails(usersResponse.user[0]);
+        }
+      } catch (error) {
+        console.error("Error fetching user info:", error);
+        if (isMounted.current) {
+          setLoading(false);
+        }
       }
     }
   };
 
-  const getUserInfo = async () => {
-    const uuid = userInfo?.uuid;
-    if (uuid) {
-      const usersResponse = await Digit.UserService.userSearch(tenant, { uuid: [uuid] }, {});
-      if (usersResponse && usersResponse.user && usersResponse.user.length) {
-        setUserDetails(usersResponse.user[0]);
-      }
-    }
-  };
-
+  // Window resize listener with cleanup
   React.useEffect(() => {
-    window.addEventListener("resize", () => setWindowWidth(window.innerWidth));
+    const handleResize = () => setWindowWidth(window.innerWidth);
+    window.addEventListener("resize", handleResize);
+
     return () => {
-      window.removeEventListener("resize", () => setWindowWidth(window.innerWidth));
+      window.removeEventListener("resize", handleResize);
     };
-  });
+  }, []);
 
+  // Fetch user info on mount with cleanup tracking
   useEffect(() => {
-    setLoading(true);
-    userSearchNewV2();
-    getUserInfo();
+    const isMounted = { current: true };
 
-    setGender({
-      i18nKey: undefined,
-      code: userDetails?.gender,
-      value: userDetails?.gender,
-    });
+    setLoading(true);
+    getUserInfo(isMounted);
+
+    return () => {
+      isMounted.current = false;
+      setLoading(false);
+    };
+  }, []);
+
+  // Update derived states when userDetails changes
+  useEffect(() => {
+    if (userDetails) {
+      setGender({
+        i18nKey: undefined,
+        code: userDetails.gender,
+        value: userDetails.gender,
+      });
 
     const thumbs = userDetails?.photo?.split(",");
     setProfileImg(thumbs?.at(0));
 
-    setLoading(false);
-  }, [userDetails !== null]);
+      setLoading(false);
+    }
+  }, [userDetails]);
+
+  // Session storage polling with proper cleanup and dependencies
+  useEffect(() => {
+    let interval = null;
+    let isActive = true;
+
+    interval = setInterval(() => {
+      if (!isActive) return;
+
+      const storedDesignation = Digit.SessionStorage.get("Employee.designation");
+      const storedDepartment = Digit.SessionStorage.get("Employee.department");
+
+      if ((storedDesignation && storedDesignation !== designationName) || (storedDepartment && storedDepartment !== departmentName)) {
+        if (storedDesignation && storedDesignation !== designationName && isActive) {
+          setDesignationName(storedDesignation);
+        }
+
+        if (storedDepartment && storedDepartment !== departmentName && isActive) {
+          setDepartmentName(storedDepartment);
+        }
+
+        if (interval) {
+          clearInterval(interval);
+        }
+      }
+    }, 300);
+
+    return () => {
+      isActive = false;
+      if (interval) {
+        clearInterval(interval);
+      }
+    };
+  }, [designationName, departmentName]);
 
   let validation = {};
   const editScreen = false; // To-do: Deubug and make me dynamic or remove if not needed
@@ -153,12 +202,29 @@ const UserProfile = ({ stateCode, userType, cityDetails }) => {
     }
   }
   
+  //const setUserEmailAddress = (value) => {
+   // setEmail(value);
+    //const emailPattern=/^[a-zA-Z0-9._%+-]+@[a-z.-]+\.(com|org|in)$/
+    //if(value.length && !emailPattern.test(value)){
+      //setErrors({...errors, emailAddress: {type: "pattern", message: t("CORE_COMMON_PROFILE_EMAIL_INVALID")}})
+    //}else{
+      //setEmail(value);
+      //setErrors({ ...errors, emailAddress: null });
+    //}
+  //};
   const setUserEmailAddress = (value) => {
     setEmail(value);
-    const emailPattern=/^[a-zA-Z0-9._%+-]+@[a-z.-]+\.(com|org|in)$/
-    if(value.length && !emailPattern.test(value)){
-      setErrors({...errors, emailAddress: {type: "pattern", message: t("CORE_COMMON_PROFILE_EMAIL_INVALID")}})
-    }else{
+    const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-z]{2,}$/;
+
+    if (value.length && !emailPattern.test(value)) {
+      setErrors({
+        ...errors,
+        emailAddress: {
+          type: "pattern",
+          message: t("CORE_COMMON_PROFILE_EMAIL_INVALID"),
+        },
+      });
+    } else {
       setEmail(value);
       setErrors({ ...errors, emailAddress: null });
     }
@@ -240,6 +306,7 @@ const UserProfile = ({ stateCode, userType, cityDetails }) => {
         emailId: email,
         altContactNumber: altMobileNumber,
         photo: profilePic,
+        correspondenceAddress:city
       };
 
       if (!new RegExp(/^([a-zA-Z ])*$/).test(name) || name === "" || name.length > 50 || name.length < 1) {
@@ -250,11 +317,14 @@ const UserProfile = ({ stateCode, userType, cityDetails }) => {
         throw JSON.stringify({ type: "error", message: t("CORE_COMMON_PROFILE_MOBILE_NUMBER_INVALID") });
       }
 
-      if (!new RegExp(/^[6-9]{1}[0-9]{9}$/).test(altMobileNumber)) {
+      if (userType === "citizen" && !new RegExp(/^[6-9]{1}[0-9]{9}$/).test(altMobileNumber)) {
         throw JSON.stringify({ type: "error", message: t("CORE_COMMON_PROFILE_MOBILE_NUMBER_INVALID") });
       }
 
-      if (email.length && !/^[a-zA-Z0-9._%+-]+@gmail\.com$/.test(email)) {
+      //if (email.length && !/^[a-zA-Z0-9._%+-]+@gmail\.com$/.test(email)) {
+        //throw JSON.stringify({ type: "error", message: t("CORE_COMMON_PROFILE_EMAIL_INVALID") });
+      //}
+      if (email.length && !/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-z]{2,}$/.test(email)) {
         throw JSON.stringify({ type: "error", message: t("CORE_COMMON_PROFILE_EMAIL_INVALID") });
       }
 
@@ -289,6 +359,7 @@ const UserProfile = ({ stateCode, userType, cityDetails }) => {
               emailId: email,
               permanentCity: city,
               photo: profileImg,
+              correspondenceAddress:city,
             },
           });
         }
@@ -367,9 +438,7 @@ const UserProfile = ({ stateCode, userType, cityDetails }) => {
 
   //function for edit button with edit icon and functioanality of redirecting to differnt URL's
   const ActionButton = ({ onClick }) => {
-    return <LinkButton 
-    label={<EditIcon style={{  float: "right" }} />}
-    className="check-page-link-button" onClick={onClick} />;
+    return <LinkButton label={<EditIcon style={{ float: "right" }} />} className="check-page-link-button" onClick={onClick} />;
   };
 
   return (
@@ -645,6 +714,47 @@ const UserProfile = ({ stateCode, userType, cityDetails }) => {
             ) : null
           ) : (
             <React.Fragment>
+              <LabelFieldPair style={{ display: "flex" }}>
+                <CardLabel className="profile-label-margin" style={editScreen ? { color: "#B1B4B6", width: "300px" } : { width: "300px" }}>
+                  {t("HR_EMP_ID_LABEL")}
+                </CardLabel>
+                <div style={{ width: "100%" }}>
+                  <TextInput t={t} type={"text"} isMandatory={false} name="code" value={userInfo?.userName} disable />
+                </div>
+              </LabelFieldPair>
+
+              <LabelFieldPair style={{ display: "flex" }}>
+                <CardLabel className="profile-label-margin" style={editScreen ? { color: "#B1B4B6", width: "300px" } : { width: "300px" }}>
+                  {t("HR_DESG_LABEL")}
+                </CardLabel>
+                <div style={{ width: "100%" }}>
+                  <TextInput
+                    t={t}
+                    type={"text"}
+                    isMandatory={false}
+                    name="code"
+                    value={`${t(`COMMON_MASTERS_DESIGNATION_${designationName}`)}`}
+                    disable
+                  />
+                </div>
+              </LabelFieldPair>
+
+              <LabelFieldPair style={{ display: "flex" }}>
+                <CardLabel className="profile-label-margin" style={editScreen ? { color: "#B1B4B6", width: "300px" } : { width: "300px" }}>
+                  {t("HR_DEPT_LABEL")}
+                </CardLabel>
+                <div style={{ width: "100%" }}>
+                  <TextInput
+                    t={t}
+                    type={"text"}
+                    isMandatory={false}
+                    name="code"
+                    value={`${t(`COMMON_MASTERS_DEPARTMENT_${departmentName}`)}`}
+                    disable
+                  />
+                </div>
+              </LabelFieldPair>
+
               <LabelFieldPair style={{ display: "flex" }}>
                 <CardLabel className="profile-label-margin" style={editScreen ? { color: "#B1B4B6", width: "300px" } : { width: "300px" }}>
                   {`${t("CORE_COMMON_PROFILE_NAME")}`}*

@@ -11,13 +11,6 @@ import { configBPAApproverApplication } from "./BPAApproverApplication";
 import { configNOCApproverApplication } from "./NOCApproverApplication";
 import { configWSApproverApplication } from "./WSApproverApplication";
 import { configWSDisConnectApplication } from "./WSDisconnectApplication";
-import { configPTRApproverApplication } from "./PTRApproverApplication";
-import { configASSETApproverApplication } from "./ASSETApproverApplication";
-import { configCHBApproverApplication } from "./CHBApproverApplication";
-import { configEWApproverApplication } from "./EWApproverApplication";
-import { configSVApproverApplication } from "./SVApproverApplication";
-
-
 
 export {
   configAssignDso,
@@ -32,11 +25,5 @@ export {
   configBPAApproverApplication,
   configNOCApproverApplication,
   configWSApproverApplication,
-  configWSDisConnectApplication,
-  configPTRApproverApplication,
-  configASSETApproverApplication,
-  configCHBApproverApplication,
-  configEWApproverApplication,
-  configSVApproverApplication
-
+  configWSDisConnectApplication
 };
