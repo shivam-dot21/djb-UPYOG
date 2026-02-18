@@ -1,16 +1,12 @@
-import { CardLabel, CheckBox, DatePicker, Dropdown, LabelFieldPair, Loader } from "@nudmcdgnpm/digit-ui-react-components";
+import { CardLabel, CheckBox, DatePicker, Dropdown, LabelFieldPair, Loader } from "@upyog/digit-ui-react-components";
 import React, { useEffect, useState } from "react";
 import cleanup from "../Utils/cleanup";
 import { convertEpochToDate } from "../Utils/index";
 
 const Assignments = ({ t, config, onSelect, userType, formData }) => {
   const tenantId = Digit.ULBService.getCurrentTenantId();
-  const tenant = tenantId?.includes(".") ? tenantId.split(".")[0] : tenantId;
   const { data: data = {}, isLoading } = Digit.Hooks.hrms.useHrmsMDMS(tenantId, "egov-hrms", "HRMSRolesandDesignation") || {};
-  const { data: commonData = {} } = Digit.Hooks.useCommonMDMS(tenant, "common-masters", ["ZoneDivisionMapping"]) || {};
-
-  // const [currentassignemtDate, setCurrentAssiginmentDate] = useState(null);
-  const [previousZone, setPreviousZone] = useState(null); // Track previous zone
+  const [currentassignemtDate, setCurrentAssiginmentDate] = useState(null);
   const [assignments, setassignments] = useState(
     formData?.Assignments || [
       {
@@ -20,11 +16,9 @@ const Assignments = ({ t, config, onSelect, userType, formData }) => {
         isCurrentAssignment: false,
         department: null,
         designation: null,
-        division: null,
       },
     ]
   );
-
   const reviseIndexKeys = () => {
     setassignments((prev) => prev.map((unit, index) => ({ ...unit, key: index })));
   };
@@ -39,7 +33,6 @@ const Assignments = ({ t, config, onSelect, userType, formData }) => {
         isCurrentAssignment: false,
         department: null,
         designation: null,
-        division: null,
       },
     ]);
   };
@@ -52,78 +45,21 @@ const Assignments = ({ t, config, onSelect, userType, formData }) => {
     reviseIndexKeys();
   };
 
-  const getDivisionData = (department, assignmentKey) => {
-    const mappings = commonData?.["common-masters"]?.ZoneDivisionMapping || [];
-    const selectedZone = formData?.Jurisdictions?.[0]?.zone;
-
-    if (!department || !selectedZone) return [];
-
-    // Use department code if department is an object, otherwise use department directly
-    const departmentCode = typeof department === "object" ? department.code : department;
-
-    // Get zone code properly
-    const zoneCode = typeof selectedZone === "object" ? selectedZone.code || selectedZone : selectedZone;
-
-    const mapping = mappings.find((m) => m.zoneCode === zoneCode && m.departmentCode === departmentCode);
-
-    return mapping
-      ? mapping.divisions.map((div) => ({
-          ...div,
-          code: div.divisionCode || div.code,
-          divisionCode: div.divisionCode || div.code,
-          i18key: t("COMMON_MASTERS_DIVISION_" + (div.divisionCode || div.code)),
-        }))
-      : [];
-  };
-
-  useEffect(() => {
-    const selectedZone = formData?.Jurisdictions?.[0]?.zone;
-    const currentZoneCode = typeof selectedZone === "object" ? selectedZone.code || selectedZone : selectedZone;
-
-    // Only reset divisions if zone actually changed (not on initial load)
-    if (selectedZone && previousZone !== null && currentZoneCode !== previousZone) {
-      // Zone changed - reset divisions for all assignments
-      setassignments((prev) =>
-        prev.map((item) => {
-          if (item.department && (item.division === null || item.division === undefined)) {
-            // Do not auto select even if only one division
-            return { ...item, division: null };
-          }
-          return { ...item, division: null };
-        })
-      );
-    } else if (selectedZone && previousZone === null) {
-      setassignments((prev) =>
-        prev.map((item) => {
-          if (item.department && (item.division === null || item.division === undefined)) {
-            // Do not auto select even if only one division
-            return { ...item, division: null };
-          }
-          return item;
-        })
-      );
-    }
-
-    setPreviousZone(currentZoneCode);
-  }, [formData?.Jurisdictions?.[0]?.zone]);
-
   useEffect(() => {
     var promises = assignments?.map((assignment) => {
       return assignment
         ? cleanup({
-            id: assignment?.id,
-            position: assignment?.position,
-            govtOrderNumber: assignment?.govtOrderNumber,
-            tenantid: assignment?.tenantid,
-            auditDetails: assignment?.auditDetails,
-            fromDate: assignment?.fromDate ? new Date(assignment?.fromDate).getTime() : undefined,
-            toDate: assignment?.toDate ? new Date(assignment?.toDate).getTime() : undefined,
-            isCurrentAssignment: assignment?.isCurrentAssignment,
-            // Send only codes as strings, not objects - handle null divisions
-            department: assignment?.department?.code || assignment?.department,
-            designation: assignment?.designation?.code || assignment?.designation,
-            division: assignment?.division?.divisionCode || assignment?.division?.code || assignment?.division || null,
-          })
+          id: assignment?.id,
+          position: assignment?.position,
+          govtOrderNumber: assignment?.govtOrderNumber,
+          tenantid: assignment?.tenantid,
+          auditDetails: assignment?.auditDetails,
+          fromDate: assignment?.fromDate ? new Date(assignment?.fromDate).getTime() : undefined,
+          toDate: assignment?.toDate ? new Date(assignment?.toDate).getTime() : undefined,
+          isCurrentAssignment: assignment?.isCurrentAssignment,
+          department: assignment?.department?.code,
+          designation: assignment?.designation?.code,
+        })
         : [];
     });
 
@@ -134,11 +70,11 @@ const Assignments = ({ t, config, onSelect, userType, formData }) => {
       );
     });
 
-    // assignments.map((ele) => {
-    //   if (ele.isCurrentAssignment) {
-    //     setCurrentAssiginmentDate(ele.fromDate);
-    //   }
-    // });
+    assignments.map((ele) => {
+      if (ele.isCurrentAssignment) {
+        setCurrentAssiginmentDate(ele.fromDate);
+      }
+    });
   }, [assignments]);
 
   let department = [];
@@ -157,9 +93,9 @@ const Assignments = ({ t, config, onSelect, userType, formData }) => {
       return ele;
     });
   }
-
-  if (isLoading) return <Loader />;
-
+  if (isLoading) {
+    return <Loader />;
+  }
   return (
     <div>
       {assignments?.map((assignment, index) => (
@@ -177,11 +113,10 @@ const Assignments = ({ t, config, onSelect, userType, formData }) => {
           department={department}
           designation={designation}
           getdesignationdata={getdesignationdata}
-          getDivisionData={getDivisionData}
           assignments={assignments}
           handleRemoveUnit={handleRemoveUnit}
-          // setCurrentAssiginmentDate={setCurrentAssiginmentDate}
-          // currentassignemtDate={currentassignemtDate}
+          setCurrentAssiginmentDate={setCurrentAssiginmentDate}
+          currentassignemtDate={currentassignemtDate}
         />
       ))}
       <label onClick={handleAddUnit} className="link-label" style={{ width: "12rem" }}>
@@ -190,7 +125,6 @@ const Assignments = ({ t, config, onSelect, userType, formData }) => {
     </div>
   );
 };
-
 function Assignment({
   t,
   assignment,
@@ -205,48 +139,40 @@ function Assignment({
   handleRemoveUnit,
   designation,
   getdesignationdata,
-  getDivisionData,
   setCurrentAssiginmentDate,
   currentassignemtDate,
 }) {
   const selectDepartment = (value) => {
-    const availableDivisions = getDivisionData(value, assignment.key);
-    const autoDivision = availableDivisions.length === 1 ? availableDivisions[0] : null;
-
-    setassignments((pre) =>
-      pre.map((item) => {
-        if (item.key === assignment.key) {
-          // ❌ remove auto-selection of division
-          return { ...item, department: value, division: null };
-        }
-        return item;
-      })
-    );
+    setassignments((pre) => pre.map((item) => (item.key === assignment.key ? { ...item, department: value } : item)));
   };
-
   const selectDesignation = (value) => {
     setassignments((pre) => pre.map((item) => (item.key === assignment.key ? { ...item, designation: value } : item)));
   };
 
-  const selectDivision = (value) => {
-    setassignments((pre) => pre.map((item) => (item.key === assignment.key ? { ...item, division: value } : item)));
-  };
-
   const onAssignmentChange = (value) => {
     setassignments((pre) =>
-      pre.map((item) => {
-        if (item.key === assignment.key) {
-          return {
-            ...item,
-            isCurrentAssignment: value,
-            toDate: value ? null : item.toDate,
-          };
-        }
-        return item; // Keep other assignments' current status unchanged
-      })
+      pre.map((item) => (item.key === assignment.key ? { ...item, isCurrentAssignment: value } : { ...item, isCurrentAssignment: false }))
     );
+    if (value) {
+      setassignments((pre) =>
+        pre.map((item) =>
+          item.key === assignment.key
+            ? {
+              ...item,
+              toDate: null,
+            }
+            : item
+        )
+      );
+      assignments.map((ele) => {
+        if (ele.key == assignment.key) {
+          setCurrentAssiginmentDate(ele.fromDate);
+        }
+      });
+    } else {
+      setCurrentAssiginmentDate(null);
+    }
   };
-
   const onIsHODchange = (value) => {
     setassignments((pre) => pre.map((item) => (item.key === assignment.key ? { ...item, isHOD: value } : item)));
   };
@@ -271,19 +197,20 @@ function Assignment({
         </LabelFieldPair>
 
         <LabelFieldPair>
-          <CardLabel className={assignment?.id ? "card-label-smaller disabled" : "card-label-smaller"}>
-            {" "}
-            {`${t("HR_ASMT_FROM_DATE_LABEL")} * `}{" "}
-          </CardLabel>
+          <CardLabel className={assignment?.id ? "card-label-smaller disabled" : "card-label-smaller"}> {`${t("HR_ASMT_FROM_DATE_LABEL")} * `} </CardLabel>
           <div className="field">
             <DatePicker
               type="date"
               name="fromDate"
+              max={currentassignemtDate ? currentassignemtDate : convertEpochToDate(new Date())}
+              min={formData?.SelectDateofEmployment?.dateOfAppointment}
+              disabled={assignment?.id ? true : false}
+              onChange={(e) => {
+                setassignments((pre) => pre.map((item) => (item.key === assignment.key ? { ...item, fromDate: e } : item)));
+                setFocusIndex(index);
+              }}
               date={assignment?.fromDate}
               autoFocus={focusIndex === index}
-              min={formData?.SelectDateofEmployment?.dateOfAppointment}
-              max={convertEpochToDate(new Date())}
-              onChange={(e) => setassignments((pre) => pre.map((item) => (item.key === assignment.key ? { ...item, fromDate: e } : item)))}
             />
           </div>
         </LabelFieldPair>
@@ -296,11 +223,14 @@ function Assignment({
             <DatePicker
               type="date"
               name="toDate"
-              date={assignment?.toDate}
               min={assignment?.fromDate}
-              max={convertEpochToDate(new Date())}
+              max={currentassignemtDate ? currentassignemtDate : convertEpochToDate(new Date())}
               disabled={assignment?.isCurrentAssignment}
-              onChange={(e) => setassignments((pre) => pre.map((item) => (item.key === assignment.key ? { ...item, toDate: e } : item)))}
+              onChange={(e) => {
+                setassignments((pre) => pre.map((item) => (item.key === assignment.key ? { ...item, toDate: e } : item)));
+                setFocusIndex(index);
+              }}
+              date={assignment?.toDate}
               autoFocus={focusIndex === index}
             />
           </div>
@@ -319,11 +249,11 @@ function Assignment({
           </div>
         </LabelFieldPair>
         <LabelFieldPair>
-          <CardLabel className="card-label-smaller">{`${t("HR_DEPT_LABEL")} * `}</CardLabel>
+          <CardLabel className={assignment?.id ? "card-label-smaller disabled" : "card-label-smaller"}> {`${t("HR_DEPT_LABEL")} * `}</CardLabel>
           <Dropdown
             className="form-field"
             selected={assignment?.department}
-            disable={false}
+            disable={assignment?.id ? true : false}
             optionKey={"i18key"}
             option={getdepartmentdata(department) || []}
             select={selectDepartment}
@@ -332,24 +262,11 @@ function Assignment({
         </LabelFieldPair>
 
         <LabelFieldPair>
-          <CardLabel className="card-label-smaller">{`${t("HR_DIVS_LABEL")} `}</CardLabel>
-          <Dropdown
-            className="form-field"
-            selected={assignment?.division}
-            disable={!assignment?.department}
-            optionKey={"i18key"}
-            option={getDivisionData(assignment?.department, assignment.key)}
-            select={selectDivision}
-            t={t}
-          />
-        </LabelFieldPair>
-
-        <LabelFieldPair>
-          <CardLabel className="card-label-smaller">{`${t("HR_DESG_LABEL")} * `}</CardLabel>
+          <CardLabel className={assignment?.id ? "card-label-smaller disabled" : "card-label-smaller"}>{`${t("HR_DESG_LABEL")} * `}</CardLabel>
           <Dropdown
             className="form-field"
             selected={assignment?.designation}
-            disable={false}
+            disable={assignment?.id ? true : false}
             option={getdesignationdata(designation) || []}
             select={selectDesignation}
             optionKey={"i18key"}

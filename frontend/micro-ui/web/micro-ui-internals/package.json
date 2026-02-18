@@ -7,6 +7,7 @@
     "packages/css",
     "example",
     "packages/react-components",
+    "packages/modules/hrms",
     "packages/modules/ptr",
     "packages/modules/core",
     "packages/modules/dss",
