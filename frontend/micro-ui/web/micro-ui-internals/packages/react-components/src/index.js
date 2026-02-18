@@ -175,7 +175,7 @@ import {
   InfoIcon,
   LoginIcon,
   PTRIcon,
-  CHBIcon
+  CHBIcon,
 } from "./atoms/svgindex";
 import Table from "./atoms/Table";
 import TelePhone from "./atoms/TelePhone";
@@ -231,6 +231,7 @@ import CitizenConsentForm from "./atoms/CitizenConsentForm";
 import AddressDetails from "./molecules/AddressDetails";
 import ApplicantDetails from "./molecules/ApplicantDetails";
 import Timeline from "./molecules/Timeline";
+import ModuleHeader from "./atoms/ModuleHeader";
 
 export {
   Phone,
@@ -470,5 +471,6 @@ export {
   CHBIcon,
   AddressDetails,
   ApplicantDetails,
-  Timeline
+  Timeline,
+  ModuleHeader,
 };
