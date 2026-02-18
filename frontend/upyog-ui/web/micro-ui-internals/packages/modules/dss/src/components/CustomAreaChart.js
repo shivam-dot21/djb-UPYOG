@@ -1,8 +1,8 @@
-import { Loader } from "@upyog/digit-ui-react-components";
+import { Loader } from "@egovernments/digit-ui-react-components";
 import { getDaysInMonth } from "date-fns";
 import React, { useContext, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Area, AreaChart, CartesianGrid, Legend, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis ,ComposedChart, Bar} from "recharts";
+import { Area, AreaChart, CartesianGrid, Legend, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import FilterContext from "./FilterContext";
 import NoData from "./NoData";
 const COLORS = ["#048BD0", "#FBC02D", "#8E29BF", "#EA8A3B", "#0BABDE", "#6E8459", "#D4351C", "#0CF7E4", "#F80BF4", "#22F80B"];
@@ -11,19 +11,13 @@ const increasedHeightCharts = [
   "nssNOCApplicationVsProvisionalVsActual",
   "nocApplicationVsProvisionalVsActual",
   "permitsandOCissued",
-  "cumulativeCollectionOverview"
 ];
 const getColors = (index = 0) => {
   index = COLORS.length > index ? index : 0;
   return COLORS[index];
 };
 
-const getDenominatedValue = (denomination, plotValue,plot) => {
-  if(plot?.COLLECTIONS_NONTAX || plot?.COLLECTIONS_TAX || plot?.COLLECTIONS)
-  {
-    return Number((plotValue / 10000000).toFixed(2));
-  }
-  else {
+const getDenominatedValue = (denomination, plotValue) => {
   switch (denomination) {
     case "Unit":
       return plotValue;
@@ -34,7 +28,6 @@ const getDenominatedValue = (denomination, plotValue,plot) => {
     default:
       return "";
   }
-}
 };
 
 const getValue = (plot) => plot.value;
@@ -57,7 +50,7 @@ const renderUnits = (t, denomination, symbol) => {
   }
 };
 
-const CustomAreaChart = ({ xDataKey = "name", yDataKey = getValue, data, setChartDenomination, moduleCode }) => {
+const CustomAreaChart = ({ xDataKey = "name", yDataKey = getValue, data, setChartDenomination }) => {
   const lineLegend = {
     margin: "10px",
   };
@@ -72,7 +65,7 @@ const CustomAreaChart = ({ xDataKey = "name", yDataKey = getValue, data, setChar
   const [manageChart, setmanageChart] = useState("Area");
   const stateTenant = Digit.ULBService.getStateId();
   const { isMdmsLoading, data: mdmsData } = Digit.Hooks.useCommonMDMS(stateTenant, "FSM", "FSTPPlantInfo", {
-    enabled: id === "fssmCapacityUtilization",
+    enabled: id === "fsmCapacityUtilization",
   });
   const { isLoading, data: response } = Digit.Hooks.dss.useGetChart({
     key: id,
@@ -139,49 +132,24 @@ const CustomAreaChart = ({ xDataKey = "name", yDataKey = getValue, data, setChar
   }, [response, totalCapacity]);
 
   const renderPlot = (plot, key) => {
-
     const plotValue = key ? plot?.[key] : plot?.value || 0;
-    if (id === "fssmCapacityUtilization" || id === "fsmCapacityUtilization" ){
+    if (id === "fsmCapacityUtilization") {
       return Number(plotValue.toFixed(1));
     }
-    if (key === "Reopened Complaints")
-    {
-      return null
-    }
-    if(id === "cumulativeCollectionv3")
-    {
+    if (plot?.symbol?.toLowerCase() === "amount") {
       const { denomination } = value;
-      return getDenominatedValue(denomination, plotValue,plot);
-    }
-   if(id == "cumulativeCollectionOverview")
-    {
-      return getDenominatedValue("Cr", plotValue,plot);
-    }
-    if(id =="totalApplication&ClosedApplicationOverview")
-    {
-       return Number(plotValue.toFixed(1));
-    }
-    else if (plot?.symbol?.toLowerCase() === "amount") {
-      const { denomination } = value;
-      return getDenominatedValue(denomination, plotValue,plot);
+      return getDenominatedValue(denomination, plotValue);
     } else if (plot?.symbol?.toLowerCase() === "number") {
       return Number(plotValue.toFixed(1));
-    } 
-    else {
+    } else {
       return plotValue;
     }
   };
 
   const renderLegend = () => <span style={{ fontSize: "14px", color: "#505A5F" }}>{t(`DSS_${Digit.Utils.locale.getTransformedLocale(id)}`)}</span>;
 
-  const renderLegendForLine = (ss, sss, index) => {
-    return (
-      <ul>
- <span style={{ fontSize: "14px", color: "#505A5F" }}>{keysArr?.[index]}</span>
-      </ul>
-    )
-  }
-  
+  const renderLegendForLine = (ss, sss, index) => <span style={{ fontSize: "14px", color: "#505A5F" }}>{keysArr?.[index]}</span>;
+
   const tickFormatter = (value) => {
     if (typeof value === "string") {
       return value.replace("-", ", ");
@@ -222,7 +190,6 @@ const CustomAreaChart = ({ xDataKey = "name", yDataKey = getValue, data, setChar
   };
 
   const renderTooltipForLine = ({ payload, label, unit }) => {
-    console.log("payloadpayload",payload)
     let payloadObj = payload?.[0] || {};
     let prefix = payloadObj?.payload?.symbol?.toLowerCase() === "amount" && value?.denomination === "Unit" ? " ₹" : " ";
     let postfix =
@@ -237,28 +204,13 @@ const CustomAreaChart = ({ xDataKey = "name", yDataKey = getValue, data, setChar
     delete newPayload?.symbol;
     let newObjArray = [newPayload?.name];
     delete newPayload?.name;
-    console.log("sssssssss",payloadObj)
-if(payloadObj?.payload?.["Non Tax Collection"])
-{
-  Object.keys(newPayload).map((key) => {
-    newObjArray.push(
-      `${key} -${prefix}${ 
-       getDenominatedValue("Cr", newPayload?.[key],payloadObj?.payload)
-      }Cr `
-    );
-  });
-}
-else {
-  Object.keys(newPayload).map((key) => {
-    newObjArray.push(
-      `${key} -${prefix}${ 
-        payloadObj?.payload?.COLLECTIONS_NONTAX ?getDenominatedValue(value?.denomination, newPayload?.[key],payloadObj?.payload):
-        payloadObj?.payload?.symbol?.toLowerCase() === "amount" ? getDenominatedValue(value?.denomination, newPayload?.[key])+": Diiference " : newPayload?.[key]
-      } ${postfix}`
-    );
-  });
-}
-     
+    Object.keys(newPayload).map((key) => {
+      newObjArray.push(
+        `${key} -${prefix}${
+          payloadObj?.payload?.symbol?.toLowerCase() === "amount" ? getDenominatedValue(value?.denomination, newPayload?.[key])+": Diiference " : newPayload?.[key]
+        } ${postfix}`
+      );
+    });
     return (
       <div
         style={{
@@ -281,7 +233,7 @@ else {
   }
   return (
     <div style={{ display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center", height: "100%" }}>
-      {(id === "fssmCapacityUtilization"  ||id === "fsmCapacityUtilization"  )&& (
+      {id === "fsmCapacityUtilization" && (
         <p>
           {t("DSS_FSM_TOTAL_SLUDGE_TREATED")} - {totalWaste} {t("DSS_KL")}
         </p>
@@ -319,65 +271,7 @@ else {
             <Legend formatter={renderLegend} iconType="circle" />
             <Area type="monotone" dataKey={renderPlot} stroke="#048BD0" fill="url(#colorUv)" dot={true} />
           </AreaChart>
-        ) : id == "pgrCumulativeClosedCompla" ? (
-      
-              <ComposedChart
-            width="100%"
-            height="100%"
-            margin={{
-              top: 15,
-              right: 5,
-              left: 20,
-              bottom: 5,
-            }}
-            data={chartData}
-          >
-            <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="name" />
-            <YAxis yAxisId="left"  type={"number"} orientation="left" stroke="black" tickCount={10} />
-            <YAxis yAxisId="right" orientation="right" stroke="#54d140" tickCount={10}/>
-            <Tooltip content={renderTooltipForLine} />
-            <Legend
-            />
-          <Bar yAxisId="right" dataKey="Opened Complaints" fill="#54d140" />
-          <Line
-                yAxisId="left"
-                  type="monotone"
-                  dataKey={"Closed Complaints"}
-                  stroke={getColors(0)}
-                  activeDot={{ r: 8 }}
-                  strokeWidth={2}
-                  key={0}
-                  dot={{ stroke: getColors(0), strokeWidth: 1, r: 2, fill: getColors(0) }}
-                />
-                  <Line
-                yAxisId="left"
-                  type="monotone"
-                  dataKey={"Total Complaints"}
-                  stroke={getColors(2)}
-                  activeDot={{ r: 8 }}
-                  strokeWidth={2}
-                  key={2}
-                  dot={{ stroke: getColors(2), strokeWidth: 1, r: 2, fill: getColors(2) }}
-                />
-                
-            {/* {keysArr?.map((key, i) => {
-              return (
-                <Line
-                yAxisId="left"
-                  type="monotone"
-                  dataKey={(plot) => renderPlot(plot, key)}
-                  stroke={getColors(i)}
-                  activeDot={{ r: 8 }}
-                  strokeWidth={2}
-                  key={i}
-                  dot={{ stroke: getColors(i), strokeWidth: 1, r: 2, fill: getColors(i) }}
-                />
-              );
-            })} */}
-          
-          </ComposedChart>
-        ):(
+        ) : (
           <LineChart
             width={500}
             height={300}
@@ -391,7 +285,22 @@ else {
           >
             <CartesianGrid strokeDasharray="3 3" />
             <XAxis dataKey="name" />
-            <YAxis/>
+            <YAxis
+            /*
+            Removed this custom yaxis label for all line charts 
+            label={{
+                value: `${t(`DSS_Y_${response?.responseData?.data?.[0]?.headerName.replaceAll(" ", "_").toUpperCase()}`)} ${
+                  renderUnits(t, value.denomination,response?.responseData?.data?.[0]?.headerSymbol) 
+                }`,
+                angle: -90,
+                position: "insideLeft",
+                dy: 40,
+                offset: -10,
+                fontSize: "14px",
+                fill: "#505A5F",
+              }}
+              */
+            />
             <Tooltip content={renderTooltipForLine} />
             <Legend
               layout="horizontal"

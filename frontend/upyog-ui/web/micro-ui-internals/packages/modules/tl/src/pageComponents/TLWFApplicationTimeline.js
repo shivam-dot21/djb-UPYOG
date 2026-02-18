@@ -1,5 +1,5 @@
-import { ActionLinks, CardSectionHeader, CheckPoint, ConnectingCheckPoints, Loader, SubmitBar, LinkButton } from "@upyog/digit-ui-react-components";
-import React, { Fragment, useState } from "react";
+import { ActionLinks, CardSectionHeader, CheckPoint, ConnectingCheckPoints, Loader, SubmitBar } from "@egovernments/digit-ui-react-components";
+import React, { Fragment } from "react";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 //TODO : make it a react component
@@ -14,7 +14,6 @@ const TLWFApplicationTimeline = (props) => {
     moduleCode: businessService,
   });
 
-  const [showAllTimeline, setShowAllTimeline]=useState(false);
   function OpenImage(imageSource, index,thumbnailsToShow){
     window.open(thumbnailsToShow?.fullImage?.[0],"_blank");
   }
@@ -49,10 +48,7 @@ const TLWFApplicationTimeline = (props) => {
   if (isLoading) {
     return <Loader />;
   }
-  
-  const toggleTimeline=()=>{
-    setShowAllTimeline((prev)=>!prev);
-  }
+
   return (
     <React.Fragment>
       {!isLoading && (
@@ -71,7 +67,7 @@ const TLWFApplicationTimeline = (props) => {
           ) : (
             <ConnectingCheckPoints>
               {data?.timeline &&
-                 data?.timeline.slice(0,showAllTimeline? data.timeline.length:2).map((checkpoint, index, arr) => {
+                data?.timeline.map((checkpoint, index, arr) => {
                   return (
                     <React.Fragment key={index}>
                       <CheckPoint
@@ -84,10 +80,6 @@ const TLWFApplicationTimeline = (props) => {
                   );
                 })}
             </ConnectingCheckPoints>
-          )}
-          {data?.timeline?.length > 2 && (
-            <LinkButton label={showAllTimeline? t("COLLAPSE") : t("VIEW_TIMELINE")} onClick={toggleTimeline}>
-            </LinkButton>   
           )}
         </Fragment>
       )}

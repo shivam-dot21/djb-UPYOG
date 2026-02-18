@@ -1,4 +1,4 @@
-import { CardLabel, Dropdown, FormStep, Loader, TextInput, Toast, UploadFile } from "@upyog/digit-ui-react-components";
+import { CardLabel, Dropdown, FormStep, Loader, TextInput, Toast, UploadFile } from "@nudmcdgnpm/digit-ui-react-components";
 import React, { useEffect, useState } from "react";
 import { useLocation, useHistory } from "react-router-dom";
 import { getPattern, stringReplaceAll, sortDropdownNames  } from "../utils";
@@ -22,15 +22,6 @@ const EDCRForm = ({ t, config, onSelect, userType, formData, ownerIndex = 0, add
 
 
     function setApplicantName(e) {
-        const value=e.target.value;
-        setError(null);
-        if(!/^[a-zA-Z ]+$/.test(value)){
-
-            setError(t("APPLICANT_NAME_INVALID_PATTERN"))
-        }
-        else{
-            setError(null);
-        }
         setName(e.target.value);
     }
 
@@ -101,7 +92,6 @@ const EDCRForm = ({ t, config, onSelect, userType, formData, ownerIndex = 0, add
             onSkip={onSkip}
             isDisabled={!tenantIdData || !name || !file || isSubmitBtnDisable}
             onAdd={onAdd}
-            forcedError={error}
             isMultipleAllow={true}
         >
             <CardLabel>{`${t("EDCR_SCRUTINY_CITY")} *`}</CardLabel>

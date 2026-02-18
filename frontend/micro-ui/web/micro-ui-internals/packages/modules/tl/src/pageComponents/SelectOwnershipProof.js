@@ -1,9 +1,8 @@
-import { CardLabel, CardLabelDesc,  UploadFile } from "@upyog/digit-ui-react-components";
+import { CardLabel, CardLabelDesc, FormStep, UploadFile } from "@nudmcdgnpm/digit-ui-react-components";
 import React, { useEffect, useState } from "react";
 import Timeline from "../components/TLTimeline";
-import FormStep from "../../../../react-components/src/molecules/FormStep"
 
-const SelectOwnershipProof = ({ t, config, onSelect, userType, formData, isMandatory }) => {
+const SelectOwnershipProof = ({ t, config, onSelect, userType, formData }) => {
   const [uploadedFile, setUploadedFile] = useState(formData?.owners?.documents?.ProofOfOwnership?.fileStoreId || null);
   const [file, setFile] = useState(formData?.owners?.documents?.ProofOfOwnership);
   const [error, setError] = useState(null);
@@ -77,7 +76,7 @@ const SelectOwnershipProof = ({ t, config, onSelect, userType, formData, isManda
   return (
     <React.Fragment>
     {window.location.href.includes("/citizen") ? <Timeline currentStep={3}/> : null}
-    <FormStep config={config} onSelect={handleSubmit} onSkip={onSkip} t={t} isDisabled={!uploadedFile || error} isMandatory={isMandatory}>
+    <FormStep config={config} onSelect={handleSubmit} onSkip={onSkip} t={t} isDisabled={!uploadedFile || error}>
       <CardLabelDesc style={{ fontWeight: "unset" }}>{t(`TL_UPLOAD_OWNERSHIP_RESTRICTIONS_TYPES`)}</CardLabelDesc>
       <CardLabelDesc style={{ fontWeight: "unset" }}>{t(`TL_UPLOAD_RESTRICTIONS_SIZE`)}</CardLabelDesc>
       <CardLabel>{`${t("TL_CATEGORY_DOCUMENT_TYPE")}`}</CardLabel>

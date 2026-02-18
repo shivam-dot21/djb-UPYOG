@@ -4,7 +4,6 @@ import { Card, DetailsCard, Loader, PopUp, SearchAction } from "@nudmcdgnpm/digi
 import { FilterAction } from "@nudmcdgnpm/digit-ui-react-components";
 import SearchApplication from "./search";
 import SortBy from "./SortBy";
-import { cndStyles } from "../../utils/cndStyles";
 
 /**
  * The ApplicationCard component is a React functional component that renders a card displaying application data with 
@@ -64,11 +63,11 @@ export const ApplicationCard = ({
   let result;
   if (!data || data?.length === 0) {
     result = (
-      <Card style={cndStyles.clearButton}>
+      <Card style={{ marginTop: 20 }}>
         {t("CS_MYAPPLICATIONS_NO_APPLICATION")
           .split("\\n")
           .map((text, index) => (
-            <p key={index} style={cndStyles.noInboxApplication}>
+            <p key={index} style={{ textAlign: "center" }}>
               {text}
             </p>
           ))}

@@ -1,4 +1,4 @@
-import { Header, CitizenHomeCard,CHBIcon } from "@upyog/digit-ui-react-components";
+import { Header, CitizenHomeCard,CHBIcon } from "@nudmcdgnpm/digit-ui-react-components";
 import React, { useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { useRouteMatch } from "react-router-dom";
@@ -27,7 +27,6 @@ import SelectOtp from "../../core/src/pages/citizen/Login/SelectOtp";
 import CitizenFeedback from "@upyog/digit-ui-module-core/src/components/CitizenFeedback";
 import AcknowledgementCF from "@upyog/digit-ui-module-core/src/components/AcknowledgementCF";
 import CHBRequiredDoc from "./pageComponents/CHBRequiredDoc";
-import CHBMapView from "./components/CHBMapView";
 
 
 /**
@@ -78,8 +77,8 @@ const componentsToRegister = {
   CHBDocumentDetails,
   CHBSearchHall,
   CHBWFApplicationTimeline,
-  CHBRequiredDoc,
-  CHBMapView
+  CHBRequiredDoc
+ 
 };
 
 const addComponentsToRegistry = () => {

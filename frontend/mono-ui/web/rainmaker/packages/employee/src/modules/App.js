@@ -72,8 +72,17 @@ class App extends Component {
     }
 
     const isPrivacyPolicy = location && location.pathname && location.pathname.includes("privacy-policy");
+    const isLocalhost = Boolean(
+      window.location.hostname === "localhost" ||
+      window.location.hostname === "[::1]" ||
+      window.location.hostname.match(/^127(?:\.(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)){3}$/)
+    );
     if (nextProps.hasLocalisation !== this.props.hasLocalisation && !authenticated && !isPrivacyPolicy) {
-      nextProps.hasLocalisation && this.props.history.replace("/language-selection");
+      if (isLocalhost) {
+        nextProps.hasLocalisation && this.props.history.replace("/language-selection");
+      } else {
+        this.props.history.replace("/user/login");
+      }
     }
   }
 
@@ -115,9 +124,11 @@ class App extends Component {
               window.open('https://www.digit.org/', '_blank').focus();
             }}></img>
             <span style={{ margin: "0 10px" }}>|</span> */}
-            <span style={{ cursor: "pointer", fontSize: "16px", fontWeight: "400"}} onClick={() => { window.open('https://niua.in/', '_blank').focus();}} >Copyright © 2022 National Institute of Urban Affairs</span>
+            <span style={{ cursor: "pointer", fontSize: "14px", fontWeight: "400"}} onClick={() => { window.open(pdfUrl, '_blank').focus();}}>UPYOG License</span>
             <span style={{ margin: "0 10px" }}>|</span>
-            <span style={{ cursor: "pointer", fontSize: "16px", fontWeight: "400"}} onClick={() => { window.open(pdfUrl, '_blank').focus();}}>UPYOG License</span>
+            <span style={{ cursor: "pointer", fontSize: "14px", fontWeight: "400"}} onClick={() => { window.open('https://mcdonline.nic.in/', '_blank').focus();}} >Copyright © 2025 Municipal Corporation of Delhi</span>
+            <span style={{ margin: "0 10px" }}>|</span>
+            <span style={{ cursor: "pointer", fontSize: "14px", fontWeight: "400"}} onClick={() => { window.open('https://nitcon.org/', '_blank').focus();}} >Designed & Developed By NITCON Ltd</span>
         </div>}
 
         {!loginScreens && !dashboardScreen && !isFixedFooter&&<div style={{ width: '100%', display: 'flex', flexFlow: 'column', position:"fixed", bottom: "0" }}>
@@ -126,9 +137,11 @@ class App extends Component {
               window.open('https://www.digit.org/', '_blank').focus();
             }}></img>
             <span style={{ margin: "0 10px" }}>|</span> */}
-            <span style={{ cursor: "pointer", fontSize: "16px", fontWeight: "400"}} onClick={() => { window.open('https://niua.in/', '_blank').focus();}} >Copyright © 2022 National Institute of Urban Affairs</span>
+            <span style={{ cursor: "pointer", fontSize: "14px", fontWeight: "400"}} onClick={() => { window.open(pdfUrl, '_blank').focus();}}>UPYOG License</span>
             <span style={{ margin: "0 10px" }}>|</span>
-            <span style={{ cursor: "pointer", fontSize: "16px", fontWeight: "400"}} onClick={() => { window.open(pdfUrl, '_blank').focus();}}>UPYOG License</span>
+            <span style={{ cursor: "pointer", fontSize: "14px", fontWeight: "400"}} onClick={() => { window.open('https://mcdonline.nic.in/', '_blank').focus();}} >Copyright © 2025 Municipal Corporation of Delhi</span>
+            <span style={{ margin: "0 10px" }}>|</span>
+            <span style={{ cursor: "pointer", fontSize: "14px", fontWeight: "400"}} onClick={() => { window.open('https://nitcon.org/', '_blank').focus();}} >Designed & Developed By NITCON Ltd</span>
           </div>
         </div>}
         
@@ -138,9 +151,11 @@ class App extends Component {
               window.open('https://www.digit.org/', '_blank').focus();
             }}></img>
             <span style={{ margin: "0 10px" }}>|</span> */}
-            <span style={{ cursor: "pointer", fontSize: "16px", fontWeight: "400"}} onClick={() => { window.open('https://niua.in/', '_blank').focus();}} >Copyright © 2022 National Institute of Urban Affairs</span>
+            <span style={{ cursor: "pointer", fontSize: "14px", fontWeight: "400"}} onClick={() => { window.open(pdfUrl, '_blank').focus();}}>UPYOG License</span>
             <span style={{ margin: "0 10px" }}>|</span>
-            <span style={{ cursor: "pointer", fontSize: "16px", fontWeight: "400"}} onClick={() => { window.open(pdfUrl, '_blank').focus();}}>UPYOG License</span>
+            <span style={{ cursor: "pointer", fontSize: "14px", fontWeight: "400"}} onClick={() => { window.open('https://mcdonline.nic.in/', '_blank').focus();}} >Copyright © 2025 Municipal Corporation of Delhi</span>
+            <span style={{ margin: "0 10px" }}>|</span>
+            <span style={{ cursor: "pointer", fontSize: "14px", fontWeight: "400"}} onClick={() => { window.open('https://nitcon.org/', '_blank').focus();}} >Designed & Developed By NITCON Ltd</span>
           </div>
         </div>}
       </div>

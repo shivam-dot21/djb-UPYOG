@@ -5,6 +5,7 @@ export const configASSETApproverApplication = ({
   action,
   businessService,
 }) => {
+  console.log("njhsegfdhjsbedwfdwe",action);
 
   
   return {

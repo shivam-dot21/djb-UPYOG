@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
-import { FormComposer, CardLabelDesc, Loader, Menu } from "@upyog/digit-ui-react-components";
-import { FormStep, CardLabel, RadioButtons, RadioOrSelect } from "@upyog/digit-ui-react-components";
-import { TextInput, LabelFieldPair, Dropdown } from "@upyog/digit-ui-react-components";
+import { FormComposer, CardLabelDesc, Loader, Menu } from "@nudmcdgnpm/digit-ui-react-components";
+import { FormStep, CardLabel, RadioButtons, RadioOrSelect } from "@nudmcdgnpm/digit-ui-react-components";
+import { TextInput, LabelFieldPair, Dropdown } from "@nudmcdgnpm/digit-ui-react-components";
 import PropTypes from "prop-types";
 import { useHistory } from "react-router-dom";
 import { useTranslation } from "react-i18next";
@@ -166,12 +166,12 @@ const SearchChallan = ({ config: propsConfig, formData }) => {
           name="ChallanNo"
           value={challanNo}
           onChange={setchallanNo}
-          {...(validation = {
-            //isRequired: true,
-            pattern: "PG-CH-\\d{4}-\\d{2}-\\d{2}-\\d{6}",
-            //type: "any",
-            title: t("Please enter a valid challan No"),
-          })} 
+          /* {...(validation = {
+            isRequired: true,
+            //pattern: "^[a-zA-Z-.`' ]*$",
+            type: "any",
+            title: t("wrong Challan No."),
+          })} */
         />
       </FormStep>
     </div>

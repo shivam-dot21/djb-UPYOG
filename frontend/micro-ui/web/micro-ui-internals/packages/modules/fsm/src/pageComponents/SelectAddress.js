@@ -7,7 +7,7 @@ import {
   LabelFieldPair,
   RadioOrSelect,
   TextInput,
-} from "@upyog/digit-ui-react-components";
+} from "@nudmcdgnpm/digit-ui-react-components";
 import Timeline from "../components/TLTimelineInFSM";
 import { useLocation } from "react-router-dom";
 
@@ -54,8 +54,8 @@ const SelectAddress = ({ t, config, onSelect, userType, formData }) => {
       ? allCities.filter((city) => city?.pincode?.some((pin) => pin == pincode))
       : allCities;
 const property = sessionStorage.getItem("Digit_FSM_PT")
-// const [selectedCity, setSelectedCity] = useState(() => formData?.address?.city || sessionStorage.getItem("Digit_FSM_PT") || null);
-//   const [newLocality, setNewLocality] = useState();
+const [selectedCity, setSelectedCity] = useState(() => formData?.address?.city || sessionStorage.getItem("Digit_FSM_PT") || null);
+  const [newLocality, setNewLocality] = useState();
 
   const [selectedCity, setSelectedCity] = useState(
     () =>

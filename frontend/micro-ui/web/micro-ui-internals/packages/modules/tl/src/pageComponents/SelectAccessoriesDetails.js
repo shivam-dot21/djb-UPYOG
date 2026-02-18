@@ -1,4 +1,4 @@
-import { CardLabel, FormStep, LinkButton, Loader, RadioOrSelect, TextInput } from "@upyog/digit-ui-react-components";
+import { CardLabel, FormStep, LinkButton, Loader, RadioOrSelect, TextInput } from "@nudmcdgnpm/digit-ui-react-components";
 import isUndefined from "lodash/isUndefined";
 import React, { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
@@ -134,21 +134,10 @@ const SelectAccessoriesDetails = ({ t, config, onSelect, userType, formData }) =
   }
   function selectAccessoryCount(i, e) {
     setAccCountError(null);
-    const value= e.target.value;
-    if (value === ""){
-      setAccCountError(null);
-      return;
-
-    } 
-    if(value.length>7 || !/^\d+$/.test(value)){
-      setAccCountError("TL_ONLY_NUM_ALLOWED");
-    }
-    else{
-      setAccCountError(null);
-    }
+    if (isNaN(e.target.value)) setAccCountError("TL_ONLY_NUM_ALLOWED");
     let acc = [...fields];
-    acc[i].accessorycount = value;
-    setAccessoryCount(value);
+    acc[i].accessorycount = e.target.value;
+    setAccessoryCount(e.target.value);
     setFeilds(acc);
   }
   function selectUnitOfMeasure(i, e) {

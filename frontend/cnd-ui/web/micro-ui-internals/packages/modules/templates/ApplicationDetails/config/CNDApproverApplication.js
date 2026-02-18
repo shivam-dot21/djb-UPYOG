@@ -58,8 +58,7 @@ export const configCNDApproverApplication = ({ t, action,approvers, selectedAppr
                     ),
                   },
                 ]
-              : action?.action==="REJECT"?"":
-              [
+              : [
                   {
                     label: t("CND_ASSIGNEE"),
                     type: "dropdown",

@@ -9,23 +9,22 @@
     "start": "react-scripts start"
   },
   "devDependencies": {
-    "@djb25/digit-ui-module-asset": "1.0.3",
-    "@djb25/digit-ui-module-hrms": "1.0.0",
-    "@djb25/digit-ui-module-ws": "1.0.2",
-    "@djb25/digit-ui-module-wt": "1.0.1",
+    "@upyog/digit-ui-module-bills": "1.8.0",
+    "@upyog/digit-ui-module-common": "1.8.12",
+    "@upyog/digit-ui-module-engagement": "1.8.0",
+    "@upyog/digit-ui-module-fsm": "1.8.17",
+    "@upyog/digit-ui-module-mcollect": "1.8.8",
+    "@upyog/digit-ui-module-receipts": "1.8.0",
+    "@upyog/digit-ui-module-commonpt": "1.8.1",
     "@nudmcdgnpm/upyog-ui-module-cm": "1.2.2",
-    "@nudmcdgnpm/upyog-ui-module-pgrai": "1.0.0",
-    "@nudmcdgnpm/upyog-ui-module-vendor": "1.2.2",
-    "@upyog/digit-ui-module-bills": "3.0.0",
-    "@upyog/digit-ui-module-common": "3.0.4",
-    "@upyog/digit-ui-module-commonpt": "3.0.2",
-    "@upyog/digit-ui-module-engagement": "3.0.1",
-    "@upyog/digit-ui-module-fsm": "3.0.1",
-    "@upyog/digit-ui-module-mcollect": "3.0.2",
-    "@upyog/digit-ui-module-pgr": "3.0.0",
-    "@upyog/digit-ui-module-receipts": "3.0.0",
-    "@upyog/upyog-ui-module-ptr": "3.0.0",
+    "@nudmcdgnpm/upyog-ui-module-vendor": "1.2.1",
+    "@djb25/digit-ui-module-hrms": "1.0.0",
+    "@mcd89/digit-ui-module-finance": "1.0.8",
+    "@nudmcdgnpm/digit-ui-module-pgr": "1.2.1",
     "http-proxy-middleware": "1.0.5",
+    "@djb25/digit-ui-module-ws": "1.0.2",
+    "@djb25/digit-ui-module-wt": "1.0.0",
+    "@djb25/digit-ui-module-asset": "1.0.3",
     "react": "17.0.2",
     "react-dom": "17.0.2",
     "react-i18next": "11.16.2",
@@ -36,8 +35,5 @@
     ">0.2%",
     "not dead",
     "not op_mini all"
-  ],
-  "dependencies": {
-    "@djb25/digit-ui-css": "^1.0.5"
-  }
+  ]
 }

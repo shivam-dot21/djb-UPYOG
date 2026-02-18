@@ -1,16 +1,14 @@
 import React, { useState, Fragment, useEffect } from "react";
 import { useParams, useHistory } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { FormComposer, Header, Card, CardSectionHeader, PDFSvg, Loader, StatusTable, Row, ActionBar, SubmitBar, MultiLink, LinkButton } from "@upyog/digit-ui-react-components";
+import { FormComposer, Header, Card, CardSectionHeader, PDFSvg, Loader, StatusTable, Row, ActionBar, SubmitBar, MultiLink, LinkButton } from "@nudmcdgnpm/digit-ui-react-components";
 import ApplicationDetailsTemplate from "../../../../../templates/ApplicationDetails";
 import { newConfig as newConfigFI } from "../../../config/InspectionReportConfig";
 import get from "lodash/get";
 import orderBy from "lodash/orderBy";
 import { getBusinessServices, convertDateToEpoch, downloadPdf, printPdf } from "../../../utils";
 import cloneDeep from "lodash/cloneDeep";
-import useBPADetailsPage from "../../../../../../libraries/src/hooks/obps/useBPADetailsPage";
-import useWorkflowDetails from "../../../../../../libraries/src/hooks/workflow";
-import useApplicationActions from "../../../../../../libraries/src/hooks/obps/useApplicationActions";
+
 const BpaApplicationDetail = () => {
 
   const { id } = useParams();
@@ -33,7 +31,7 @@ const BpaApplicationDetail = () => {
 
   const { isMdmsLoading, data: mdmsData } = Digit.Hooks.obps.useMDMS(stateId, "BPA", ["RiskTypeComputation"]);
 
-  const { data = {}, isLoading } = useBPADetailsPage(tenantId, { applicationNo: id });
+  const { data = {}, isLoading } = Digit.Hooks.obps.useBPADetailsPage(tenantId, { applicationNo: id });
 
 
   let businessService = [];
@@ -42,7 +40,7 @@ const BpaApplicationDetail = () => {
   {
     businessService = ["BPA.LOW_RISK_PERMIT_FEE"]
   }
-  else if(data?.applicationData?.businessService === "BPA"||data?.applicationData?.businessService === "BPA-PAP")
+  else if(data?.applicationData?.businessService === "BPA")
   {
     businessService = ["BPA.NC_APP_FEE","BPA.NC_SAN_FEE"];
   }
@@ -81,27 +79,7 @@ const BpaApplicationDetail = () => {
        response = { filestoreIds: [payments?.fileStoreId] };      
     }
     else{
-      const formattedStakeholderType=data?.applicationData?.additionalDetails?.typeOfArchitect
-            const stakeholderType=formattedStakeholderType.charAt(0).toUpperCase()+formattedStakeholderType.slice(1).toLowerCase()
-      const updatedpayments={
-        ...payments,
-       
-            paymentDetails:[
-              {
-                ...payments.paymentDetails?.[0],
-                additionalDetails:{
-                  ...payments.paymentDetails[0].additionalDetails,
-                  "propertyID":data?.applicationData?.additionalDetails?.propertyID,
-                  "stakeholderType":stakeholderType,
-                  "contact":data?.applicationData?.businessService==="BPA-PAP"? t("APPLICANT_CONTACT") : `${stakeholderType} Contact`,
-                  "idType":data?.applicationData?.businessService==="BPA-PAP" ? t("APPLICATION_NUMBER"):`${stakeholderType} ID`,
-                  "name":data?.applicationData?.businessService==="BPA-PAP" ? t("APPLICANT_NAME"):`${stakeholderType} Name`,
-                },
-              },
-            ],  
-         
-      }
-       response = await Digit.PaymentService.generatePdf(stateId, { Payments: [{...updatedpayments}] }, "bpa-receipt");
+       response = await Digit.PaymentService.generatePdf(stateId, { Payments: [{...payments}] }, "bpa-receipt");
     }    
     const fileStore = await Digit.PaymentService.printReciept(stateId, { fileStoreIds: response.filestoreIds[0] });
     window.open(fileStore[response?.filestoreIds[0]], "_blank");
@@ -147,7 +125,7 @@ const BpaApplicationDetail = () => {
     data: updateResponse,
     error: updateError,
     mutate,
-  } = useApplicationActions(tenantId);
+  } = Digit.Hooks.obps.useApplicationActions(tenantId);
 
   const nocMutation = Digit.Hooks.obps.useObpsAPI(
     tenantId,
@@ -184,7 +162,7 @@ const BpaApplicationDetail = () => {
 
   let configs =  newConfig?.InspectionReportConfig ? newConfig?.InspectionReportConfig : newConfigFI;
   
-  let workflowDetails = useWorkflowDetails({
+  let workflowDetails = Digit.Hooks.useWorkflowDetails({
     tenantId: tenantId,
     id: id,
     moduleCode: "BPA",
@@ -297,7 +275,7 @@ const BpaApplicationDetail = () => {
       onClick: () => getRevocationPDFSearch({tenantId: data?.applicationData?.tenantId}),
     });
     
-  } else if(data && (data?.applicationData?.businessService === "BPA"||data?.applicationData?.businessService==="BPA-PAP") && data?.collectionBillDetails?.length > 0) {
+  } else if(data && data?.applicationData?.businessService === "BPA" && data?.collectionBillDetails?.length > 0) {
     if(data?.applicationData?.status==="APPROVED"){
     dowloadOptions.push({
       order: 3,

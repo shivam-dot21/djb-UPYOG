@@ -1,7 +1,7 @@
-import { Loader, Modal, FormComposer } from "@upyog/digit-ui-react-components";
+import { Loader, Modal, FormComposer } from "@egovernments/digit-ui-react-components";
 import React, { useState, useEffect } from "react";
 
-import { configPTVerifyApplication, configPTApproverApplication, configPTAssessProperty } from "../config";
+import { configPTRejectApplication, configPTVerifyApplication, configPTApproverApplication, configPTAssessProperty } from "../config";
 import * as predefinedConfig from "../config";
 
 const Heading = (props) => {
@@ -58,8 +58,6 @@ const ActionModal = ({ t, action, tenantId, state, id, closeModal, submitAction,
 
   useEffect(() => {
     if (financialYearsData && financialYearsData["egf-master"]) {
-      let data = sortFinancialYears(financialYearsData)
-      console.log("datadatadata",data)
       setFinancialYears(financialYearsData["egf-master"]?.["FinancialYear"]);
     }
   }, [financialYearsData]);
@@ -70,9 +68,6 @@ const ActionModal = ({ t, action, tenantId, state, id, closeModal, submitAction,
 
   function selectFile(e) {
     setFile(e.target.files[0]);
-  }
-  function sortFinancialYears(data) {
-    return data.sort((a, b) => a.startingDate - b.startingDate);
   }
 
   useEffect(() => {
@@ -98,19 +93,7 @@ const ActionModal = ({ t, action, tenantId, state, id, closeModal, submitAction,
   }, [file]);
 
   function submit(data) {
-    if (action?.action == "INACTIVE_PROPERTY"){
-      // console.log("dataaaaa123",data)
-      let workflow = { action: "OPEN", comment: data?.comments, businessService:"PT.CREATE", moduleName: "PT" };
-      applicationData.creationReason = "STATUS"
-      submitAction({
-        customFunctionToExecute: action?.customFunctionToExecute,
-        Property: {
-          ...applicationData,
-          workflow,
-        },
-      });
-          }
-    else if (!action?.showFinancialYearsModal) {
+    if (!action?.showFinancialYearsModal) {
       let workflow = { action: action?.action, comment: data?.comments, businessService, moduleName: moduleCode };
       workflow["assignes"] = action?.isTerminateState || !selectedApprover ? [] : [selectedApprover];
       if (uploadedFile)
@@ -128,8 +111,7 @@ const ActionModal = ({ t, action, tenantId, state, id, closeModal, submitAction,
           workflow,
         },
       });
-    } 
-      else {
+    } else {
       submitAction({
         customFunctionToExecute: action?.customFunctionToExecute,
         Assessment: {

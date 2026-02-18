@@ -10,17 +10,12 @@ const amountFormatter = (value, denomination, t) => {
       return `₹ ${currencyFormatter.format((value / 10000000).toFixed(2) || 0)} ${t("ES_DSS_CR")}`;
     case "Unit":
       return `₹ ${currencyFormatter.format(value?.toFixed(2) || 0)}`;
-      case "UnitOverview":
-      return `${currencyFormatter.format(value?.toFixed(2) || 0)} %`;
-      case "UnitGDP":
-      return `${currencyFormatter.format(value?.toFixed(4) || 0)}`;
     default:
       return "";
   }
 };
 
-export const formatter = (value, symbol, unit, commaSeparated = true, t, data,isDecimal,code) => {
-  console.log("formatter",value, symbol, unit,data)
+export const formatter = (value, symbol, unit, commaSeparated = true, t, isDecimal) => {
   if (!value && value !== 0) return "";
   switch (symbol) {
     case "amount":
@@ -37,19 +32,9 @@ export const formatter = (value, symbol, unit, commaSeparated = true, t, data,is
 
       const Nformatter = new Intl.NumberFormat("en-IN");
       return Nformatter.format(Math.round(value));
-      case "percentage":
-        const Pformatter = new Intl.NumberFormat("en-IN", { maximumSignificantDigits: 3 });
-        const formatValue = (val) => {
-          const cappedValue = data && data.headerName.includes("SLA") 
-            ? Math.min(100, Math.max(0, val)) // Cap value between 0 and 100 for SLA
-            : Math.max(0, val); // Ensure non-negative value for others
-          return Pformatter.format(cappedValue.toFixed(2));
-        };
-      
-        return `${formatValue(value)} %`;
-             
-       
-      
+    case "percentage":
+      const Pformatter = new Intl.NumberFormat("en-IN", { maximumSignificantDigits: 3 });
+      return `${Pformatter.format(value.toFixed(2))} %`;
     default:
       return "";
   }

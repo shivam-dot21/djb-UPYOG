@@ -6,14 +6,13 @@ import { FormStep, CardLabel, TextInput, TextArea,Dropdown } from "@nudmcdgnpm/d
    
 const ToiletRequestDetails = ({ t, config, onSelect, userType, formData }) => {
   const user = Digit.UserService.getUser().info;
-  const [mobileToilet, setMobileToilet] = useState(formData?.toiletRequestDetails?.mobileToilet || "");
+  const [mobileToilet, setMobileToilet] = useState(formData?.serviceType?.mobileToilet || "");
   const [deliveryfromTime, setdeliveryfromTime] = useState(formData?.toiletRequestDetails?.deliveryfromTime || "");
   const [deliverytoTime, setdeliverytoTime] = useState(formData?.toiletRequestDetails?.deliverytoTime || "");
   const [deliveryfromDate, setdeliveryfromDate] = useState(formData?.toiletRequestDetails?.deliveryfromDate || "");
   const [deliverytoDate, setdeliverytoDate] = useState(formData?.toiletRequestDetails?.deliverytoDate || "");
   const [specialRequest, setSpecialRequest] = useState(formData?.toiletRequestDetails?.specialRequest || "");
   const tenantId=Digit.ULBService.getStateId();
-  const inputStyles = {width:user.type === "EMPLOYEE" ? "52%" : "100%"};
    // Fetch noOfMobileToilet data from MDMS
    const { data: NoOfMobileToilet} = Digit.Hooks.useCustomMDMS(tenantId, "request-service", [{ name: "NoOfMobileToilet" }], {
     select: (data) => {
@@ -44,7 +43,6 @@ const ToiletRequestDetails = ({ t, config, onSelect, userType, formData }) => {
         <TextInput
           type="time"
           value={deliveryfromTime}
-          style={inputStyles}
           onChange={(e) => setdeliveryfromTime(e.target.value)}
           min="06:00"
           max="23:59"
@@ -58,7 +56,6 @@ const ToiletRequestDetails = ({ t, config, onSelect, userType, formData }) => {
         <TextInput
           type="time"
           value={deliverytoTime}
-          style={inputStyles}
           onChange={(e) => setdeliverytoTime(e.target.value)}
           min="06:00"
           max="23:59"
@@ -86,7 +83,7 @@ const ToiletRequestDetails = ({ t, config, onSelect, userType, formData }) => {
         config={config}
         onSelect={goNext}
         t={t}
-        isDisabled={!mobileToilet || !deliveryfromTime || !deliverytoTime || !deliveryfromDate || !deliverytoDate || !specialRequest}
+        isDisabled={!mobileToilet || !deliveryfromTime || !deliverytoTime || !deliveryfromDate || !deliverytoDate}
       >
         <div>
           <CardLabel>{t("MT_NUMBER_OF_MOBILE_TOILETS")} <span className="check-page-link-button">*</span></CardLabel>
@@ -96,7 +93,7 @@ const ToiletRequestDetails = ({ t, config, onSelect, userType, formData }) => {
               placeholder={"Select Number of Mobile Toilets"}
               select={setMobileToilet}
               option={noOfMobileToilet}
-              style={inputStyles}
+              style={{width:"100%"}}
               optionKey="i18nKey"
               t={t}
             />
@@ -108,7 +105,6 @@ const ToiletRequestDetails = ({ t, config, onSelect, userType, formData }) => {
             isMandatory={false}
             optionKey="i18nKey"
             name="deliveryDate"
-            style={inputStyles}
             value={deliveryfromDate}
             onChange={SetdeliveryfromDate}
             min={new Date().toISOString().split('T')[0]}
@@ -125,7 +121,6 @@ const ToiletRequestDetails = ({ t, config, onSelect, userType, formData }) => {
             optionKey="i18nKey"
             name="deliveryDate"
             value={deliverytoDate}
-            style={inputStyles}
             onChange={SetdeliverytoDate}
             min={deliveryfromDate}
             rules={{
@@ -147,7 +142,6 @@ const ToiletRequestDetails = ({ t, config, onSelect, userType, formData }) => {
             isMandatory={false}
             optionKey="i18nKey"
             name="mobileToilet"
-            style={inputStyles}
             placeholder="Special Request"
             value={specialRequest}
             onChange={SetSpecialRequest}

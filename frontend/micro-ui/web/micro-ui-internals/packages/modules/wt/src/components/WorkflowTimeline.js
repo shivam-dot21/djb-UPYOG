@@ -1,6 +1,6 @@
 import React, { Fragment } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Card, CardSubHeader, StatusTable, Row, SubmitBar, LinkButton } from '@upyog/digit-ui-react-components';
+import { Card, CardSubHeader, StatusTable, Row, SubmitBar, LinkButton } from '@nudmcdgnpm/digit-ui-react-components';
 
 const WorkflowTimeline = ({ workflowDetails }) => {
     const { t } = useTranslation();

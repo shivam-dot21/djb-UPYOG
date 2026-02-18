@@ -1,6 +1,5 @@
 import cloneDeep from "lodash/cloneDeep";
-import { v4 as uuid_v4 } from 'uuid';
-import { PreApprovedPlanService } from "../../../../libraries/src/services/elements/PREAPPROVEDPLAN";
+// import { v4 as uuid_v4 } from 'uuid';
 
 export const getPattern = (type) => {
   switch (type) {
@@ -22,6 +21,10 @@ export const stringReplaceAll = (str = "", searcher = "", replaceWith = "") => {
 export const sortDropdownNames = (options, optionkey, locilizationkey) => {
   return options.sort((a, b) => locilizationkey(a[optionkey]).localeCompare(locilizationkey(b[optionkey])));
 };
+
+// export const uuidv4 = () => {
+//   return uuid_v4();
+// };
 
 export const pdfDownloadLink = (documents = {}, fileStoreId = "", format = "") => {
   let downloadLink = documents[fileStoreId] || "";
@@ -349,7 +352,7 @@ export const getBPAOwners = (data, isOCBPA) => {
 
 export const getOwnerShipCategory = (data, isOCBPA) => {
     if(isOCBPA) return data?.landInfo?.ownershipCategory
-    return data?.owners?.ownershipCategory.code || data?.landInfo?.ownershipCategory
+    return data.owners.ownershipCategory.code || data?.landInfo?.ownershipCategory
 }
 
 export const convertToBPAObject = (data, isOCBPA = false, isSendBackTOCitizen = false) => {
@@ -392,11 +395,11 @@ export const convertToBPAObject = (data, isOCBPA = false, isSendBackTOCitizen = 
       approvalDate: data?.approvalDate,
       applicationDate: data?.applicationDate,
       status: isSendBackTOCitizen ? data.status : data.status ? data.status : "INITIATED",
-      documents: getDocumentforBPA(data?.documents?.documents||data?.documents, data?.PrevStateDocuments),
+      documents: getDocumentforBPA(data?.documents?.documents, data?.PrevStateDocuments),
       landInfo: isOCBPA ? data?.landInfo : { ...data?.landInfo, ownershipCategory: getOwnerShipCategory(data, isOCBPA), owners: getBPAOwners(data, isOCBPA), unit: getBPAUnit(data) },
       assignee: isSendBackTOCitizen ? data.assignee : [],
       workflow: {
-        action: data?.businessService==="BPA-PAP"?"APPLY":"SEND_TO_CITIZEN",
+        action: "SEND_TO_CITIZEN",
         assignes: null,
         comments: null,
         varificationDocuments: null,
@@ -665,7 +668,7 @@ export const getBusinessServices = (businessService, status) => {
   let billBusinessService = "BPA.NC_APP_FEE";
   if (businessService === "BPA_LOW") {
     billBusinessService = "BPA.LOW_RISK_PERMIT_FEE";
-  } else if (businessService === "BPA"||businessService==="BPA-PAP") {
+  } else if (businessService === "BPA") {
     billBusinessService = status == "PENDING_APPL_FEE" ? "BPA.NC_APP_FEE" : "BPA.NC_SAN_FEE";
   } else if (businessService === "BPA_OC") {
     billBusinessService = status == "PENDING_APPL_FEE" ? "BPA.NC_OC_APP_FEE" : "BPA.NC_OC_SAN_FEE";
@@ -779,20 +782,14 @@ export const getCheckBoxLabelData = (t, appData) => {
 
 
 export const scrutinyDetailsData = async (edcrNumber, tenantId) => {
-  if(edcrNumber.length===8){
-    const preApprovedResponse = await PreApprovedPlanService.search({drawingNo:edcrNumber})
-    return preApprovedResponse
-  }
-  else{
-  const scrutinyDetails = await Digit.OBPSService.scrutinyDetails(tenantId, {edcrNumber: edcrNumber})
-  const bpaDetails = await Digit.OBPSService.BPASearch(tenantId, {edcrNumber: edcrNumber})
+  const scrutinyDetails = await Digit.OBPSService.scrutinyDetails(tenantId, {edcrNumber: edcrNumber});
+  const bpaDetails = await Digit.OBPSService.BPASearch(tenantId, {edcrNumber: edcrNumber});
   if (bpaDetails?.BPA?.length == 0) {
     return scrutinyDetails?.edcrDetail?.[0] ? scrutinyDetails?.edcrDetail?.[0] : {type: "ERROR", message: "BPA_NO_RECORD_FOUND"};
   } else if (bpaDetails?.BPA?.length > 0 && (bpaDetails?.BPA?.[0]?.status == "INITIATED" || bpaDetails?.BPA?.[0]?.status == "REJECTED" || bpaDetails?.BPA?.[0]?.status == "PERMIT REVOCATION")) {
     return scrutinyDetails?.edcrDetail?.[0] ? scrutinyDetails?.edcrDetail?.[0] : {type: "ERROR", message: "BPA_NO_RECORD_FOUND"};
   } else {
     return {type: "ERROR", message: "APPLICATION_NUMBER_ALREADY_EXISTS"}
-  }
   }
 }
 

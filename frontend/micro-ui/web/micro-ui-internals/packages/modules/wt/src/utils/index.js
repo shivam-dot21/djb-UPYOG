@@ -39,14 +39,13 @@ export const waterTankerPayload = (data) =>{
     waterTankerBookingDetail: {
         tenantId: data?.tenantId,
         tankerType: data?.requestDetails?.tankerType?.code,
-        waterType: data?.requestDetails?.waterType?.code,
         tankerQuantity: data?.requestDetails?.tankerQuantity?.code,
         waterQuantity: data?.requestDetails?.waterQuantity?.code,
         description: data?.requestDetails?.description,
         deliveryDate: data?.requestDetails?.deliveryDate,
         deliveryTime: data?.requestDetails?.deliveryTime,
         extraCharge: (data?.requestDetails?.extraCharge) ? "Y":"N",
-        addressDetailId: data?.address?.addressDetailId || "",
+
         applicantDetail: {
             name: data?.owner?.applicantName,
             mobileNumber: data?.owner?.mobileNumber,
@@ -54,7 +53,6 @@ export const waterTankerPayload = (data) =>{
             emailId: data?.owner?.emailId,
         },
         address: {
-            addressType:data?.address?.addressType?.code,
             pincode: data?.address?.pincode,
             city: data?.address?.city?.city?.name,
             cityCode: data?.address?.city?.city?.code,
@@ -88,7 +86,7 @@ export const waterTankerPayload = (data) =>{
         deliveryToDate: data?.toiletRequestDetails?.deliverytoDate,
         deliveryFromTime: data?.toiletRequestDetails?.deliveryfromTime,
         deliveryToTime: data?.toiletRequestDetails?.deliverytoTime,
-        addressDetailId: data?.address?.addressDetailId || "",
+
         applicantDetail: {
             name: data?.owner?.applicantName,
             mobileNumber: data?.owner?.mobileNumber,
@@ -96,7 +94,6 @@ export const waterTankerPayload = (data) =>{
             emailId: data?.owner?.emailId,
         },
         address: {
-            addressType:data?.address?.addressType?.code,
             pincode: data?.address?.pincode,
             city: data?.address?.city?.city?.name,
             cityCode: data?.address?.city?.city?.code,
@@ -117,51 +114,6 @@ export const waterTankerPayload = (data) =>{
           moduleName:"request-service.mobile_toilet",
         }
     },
-  };
-  return formdata;
-}
-
-  export const treePruningPayload = (data) =>{
-  const formdata={
-    treePruningBookingDetail: {
-        tenantId:data?.tenantId,
-        latitude: data?.treePruningRequestDetails?.latitude,
-        longitude:data?.treePruningRequestDetails?.longitude,
-        reasonForPruning: data?.treePruningRequestDetails?.reasonOfPruning?.code,
-        applicantDetail: {
-            name: data?.owner?.applicantName,
-            mobileNumber: data?.owner?.mobileNumber,
-            alternateNumber: data?.owner?.alternateNumber,
-            emailId: data?.owner?.emailId,
-        },
-         documentDetails: [
-            {
-                documentType: "Site Photograph",
-                fileStoreId: data?.treePruningRequestDetails?.supportingDocumentFile,
-            }
-        ],
-        address: {
-            addressType:data?.address?.addressType?.code,
-            pincode: data?.address?.pincode,
-            city: data?.address?.city?.city?.name,
-            cityCode: data?.address?.city?.city?.code,
-            addressLine1: data?.address?.addressLine1,
-            addressLine2: data?.address?.addressLine2,
-            locality: data?.address?.locality?.i18nKey,
-            localityCode: data?.address?.locality?.code,
-            streetName: data?.address?.streetName,
-            houseNo: data?.address?.houseNo,
-            landmark: data?.address?.landmark
-        },
-        
-        bookingStatus: "BOOKING_CREATED",
-        workflow:{
-          action:"APPLY",
-          comments:"",
-          businessService:"treePruning",
-          moduleName:"request-service.tree_pruning"
-        }
-    }
   };
   return formdata;
 }

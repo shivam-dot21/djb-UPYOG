@@ -4,10 +4,7 @@ import { format } from "date-fns";
 import { MdmsService } from "./MDMS";
 import React from "react";
 import { UploadServices } from "../atoms/UploadServices";
-import { PTService } from "./PT";
-import usePreApprovedSearch from "../../hooks/obps/usePreApprovedSearch";
-import { PreApprovedPlanService } from "./PREAPPROVEDPLAN";
-import { useTranslation } from "react-i18next";
+
 export const OBPSService = {
   scrutinyDetails: (tenantId, params) =>
     Request({
@@ -268,12 +265,6 @@ export const OBPSService = {
   },
   BPADetailsPage: async (tenantId, filters) => {
     const response = await OBPSService.BPASearch(tenantId, filters);
-    sessionStorage.setItem("BPA_WORKFLOW_STATUS", response?.BPA[0]?.status);
-    let PTResponse={};
-    if(response!==undefined && response?.BPA[0]?.additionalDetails?.propertyID ){
-      PTResponse = response?.BPA[0]?.additionalDetails?.propertyID &&
-       (await Digit.PTService.search({ tenantId, filters: { propertyIds: response?.BPA[0]?.additionalDetails?.propertyID } }));
-    }
     let appDocumentFileStoreIds = response?.BPA?.[0]?.documents?.map(docId => docId.fileStoreId);
     if(!appDocumentFileStoreIds) appDocumentFileStoreIds = [];
     response?.BPA?.[0]?.additionalDetails?.fieldinspection_pending?.map(fiData => {
@@ -288,10 +279,9 @@ export const OBPSService = {
     sessionStorage.setItem("BPA_ARCHITECT_NAME", JSON.stringify(response?.BPA?.[0]?.additionalDetails?.typeOfArchitect ? response?.BPA?.[0]?.additionalDetails?.typeOfArchitect : "ARCHITECT"));
     const [BPA] = response?.BPA;
     const edcrResponse = await OBPSService.scrutinyDetails(BPA?.tenantId, { edcrNumber: BPA?.edcrNumber });
-    const preApprovedResponse = await PreApprovedPlanService.search({drawingNo:BPA?.edcrNumber})
-    const [edcr] = edcrResponse?.edcrDetail||preApprovedResponse?.preapprovedPlan
+    const [edcr] = edcrResponse?.edcrDetail;
     const mdmsRes = await MdmsService.getMultipleTypes(tenantId, "BPA", ["RiskTypeComputation", "CheckList"]);
-    const riskType = Digit.Utils.obps.calculateRiskType(mdmsRes?.BPA?.RiskTypeComputation, edcr?.planDetail?.plot?.area, edcr?.planDetail?.blocks)||BPA?.riskType;
+    const riskType = Digit.Utils.obps.calculateRiskType(mdmsRes?.BPA?.RiskTypeComputation, edcr?.planDetail?.plot?.area, edcr?.planDetail?.blocks);
     BPA.riskType = riskType;
     const nocResponse = await OBPSService.NOCSearch(BPA?.tenantId, { sourceRefId: BPA?.applicationNo });
     const noc = nocResponse?.Noc;
@@ -299,8 +289,7 @@ export const OBPSService = {
     const bpaResponse = await OBPSService.BPASearch(tenantId, { ...filter });
        const comparisionRep = {
          ocdcrNumber: BPA?.edcrNumber.includes("OCDCR")? BPA?.edcrNumber:bpaResponse?.BPA?.[0]?.edcrNumber,
-         edcrNumber: bpaResponse?.BPA?.[0]?.edcrNumber.includes("OCDCR")? BPA?.edcrNumber: bpaResponse?.BPA?.[0]?.edcrNumber,
-         propertyId: BPA?.additionalDetails?.propertyID
+         edcrNumber: bpaResponse?.BPA?.[0]?.edcrNumber.includes("OCDCR")? BPA?.edcrNumber: bpaResponse?.BPA?.[0]?.edcrNumber
       }
     const comparisionReport = await OBPSService.comparisionReport(BPA?.tenantId, { ...comparisionRep });
 
@@ -319,7 +308,7 @@ export const OBPSService = {
     let appBusinessService = [], collectionBillDetails = [], collectionBillArray = [], totalAmount = 0, collectionBillRes = [];
 
     if (BPA?.businessService === "BPA_LOW") appBusinessService = ["BPA.LOW_RISK_PERMIT_FEE"]
-    else if (BPA?.businessService === "BPA"||BPA?.businessService === "BPA-PAP") appBusinessService = ["BPA.NC_APP_FEE", "BPA.NC_SAN_FEE"];
+    else if (BPA?.businessService === "BPA") appBusinessService = ["BPA.NC_APP_FEE", "BPA.NC_SAN_FEE"];
     else if (BPA?.businessService === "BPA_OC") appBusinessService = ["BPA.NC_OC_APP_FEE", "BPA.NC_OC_SAN_FEE"];
 
     let fetchBillRes = {};
@@ -485,8 +474,7 @@ export const OBPSService = {
       title: " ",
       isCommon: true,
       values: [
-        { title: "BPA_APPLICATION_NUMBER_LABEL", value: BPA?.applicationNo || "NA" },
-        { title: "BPA_IS_PREAPPROVED", value: `${BPA?.additionalDetails?.isPreApproved || BPA?.businessService === "BPA-PAP" ? "true" : "false"}`}
+        { title: "BPA_APPLICATION_NUMBER_LABEL", value: BPA?.applicationNo || "NA" }
       ]
     };
 
@@ -531,11 +519,11 @@ export const OBPSService = {
       isCommon: true,
       values: [
         { title: "BPA_BASIC_DETAILS_APP_DATE_LABEL", value: BPA?.auditDetails?.createdTime ? format(new Date(BPA?.auditDetails?.createdTime), 'dd/MM/yyyy') : '' },
-        { title: "BPA_BASIC_DETAILS_APPLICATION_TYPE_LABEL", value: `WF_BPA_${edcr?.appliactionType||edcr?.drawingDetail?.applicationType}` },
-        { title: "BPA_BASIC_DETAILS_SERVICE_TYPE_LABEL", value: edcr?.applicationSubType||edcr?.drawingDetail?.serviceType },
-        { title: "BPA_BASIC_DETAILS_OCCUPANCY_LABEL", value: edcr?.planDetail?.planInformation?.occupancy||edcr?.drawingDetail?.occupancy},
-        { title: "BPA_BASIC_DETAILS_RISK_TYPE_LABEL", value: `WF_BPA_${riskType}`},
-        { title: "BPA_BASIC_DETAILS_APPLICATION_NAME_LABEL", value: edcr?.planDetail?.planInformation?.applicantName || BPA?.additionalDetails?.applicantName },
+        { title: "BPA_BASIC_DETAILS_APPLICATION_TYPE_LABEL", value: `WF_BPA_${edcr?.appliactionType}` },
+        { title: "BPA_BASIC_DETAILS_SERVICE_TYPE_LABEL", value: edcr?.applicationSubType },
+        { title: "BPA_BASIC_DETAILS_OCCUPANCY_LABEL", value: edcr?.planDetail?.planInformation?.occupancy },
+        { title: "BPA_BASIC_DETAILS_RISK_TYPE_LABEL", value: `WF_BPA_${riskType}`, isInsert: true, },
+        { title: "BPA_BASIC_DETAILS_APPLICATION_NAME_LABEL", value: edcr?.planDetail?.planInformation?.applicantName },
       ]
     };
 
@@ -544,31 +532,15 @@ export const OBPSService = {
       asSectionHeader: true,
       isCommon: true,
       values: [
-        { title: "BPA_BOUNDARY_PLOT_AREA_LABEL", value: `${edcr?.planDetail?.planInformation?.plotArea||edcr?.drawingDetail?.plotArea}`, isNotTranslated: true, isUnit: "BPA_SQ_FT_LABEL" },
-        { title: "BPA_PLOT_NUMBER_LABEL", value: edcr?.planDetail?.planInformation?.plotNo || BPA?.additionalDetails?.plotNo, isNotTranslated: true  },
-        { title: "BPA_KHATHA_NUMBER_LABEL", value: edcr?.planDetail?.planInformation?.khataNo || BPA?.additionalDetails?.khataNo, isNotTranslated: true  },
+        { title: "BPA_BOUNDARY_PLOT_AREA_LABEL", value: `${edcr?.planDetail?.planInformation?.plotArea}`, isNotTranslated: true, isUnit: "BPA_SQ_FT_LABEL" },
+        { title: "BPA_PLOT_NUMBER_LABEL", value: edcr?.planDetail?.planInformation?.plotNo || "NA", isNotTranslated: true  },
+        { title: "BPA_KHATHA_NUMBER_LABEL", value: edcr?.planDetail?.planInformation?.khataNo || "NA", isNotTranslated: true  },
         { title: "BPA_HOLDING_NUMBER_LABEL", value: BPA?.additionalDetails?.holdingNo || "NA", isNotTranslated: true  },
-        { title: "BPA_BOUNDARY_LAND_REG_DETAIL_LABEL", value: BPA?.additionalDetails?.registrationDetails || "NA", isNotTranslated: true },
-        { title: "BPA_PROPERTY_ID", value: BPA?.additionalDetails?.propertyID || "NA" }
+        { title: "BPA_BOUNDARY_LAND_REG_DETAIL_LABEL", value: BPA?.additionalDetails?.registrationDetails || "NA", isNotTranslated: true }
       ]
     };
 
-    const scrutinyDetails = BPA?.businessService==="BPA-PAP" ? {
-      title: "BPA_STEPPER_PLAN_DETAILS_HEADER",
-      isScrutinyDetails: true,
-      isBackGroundColor: true,
-      additionalDetails: {
-        values: [
-          { title:  "BPA_DRAWING_DETAILS", value: " ", isHeader: true },
-          { title:  "BPA_DRAWING_NUMBER" , value: BPA?.edcrNumber || "NA" },
-        ],
-        scruntinyDetails: [
-          { title: "BPA_UPLOADED_PDF_DIAGRAM", value: edcr?.updatedDxfFile|| edcr?.documents.find(doc => doc?.additionalDetails?.fileName.includes("pdf"))?.additionalDetails?.fileUrl, text: edcr?.updatedDxfFile|| edcr?.documents.find(doc => doc?.additionalDetails?.fileName.includes("pdf"))?.additionalDetails?.fileName },
-          { title: "BPA_UPLOADED_IMAGE_DIAGRAM", value: edcr?.documents.find(doc => doc?.additionalDetails?.fileName.includes("jpg"))?.additionalDetails?.fileUrl, text: edcr?.updatedDxfFile|| edcr?.documents.find(doc => doc?.additionalDetails?.fileName.includes("jpg"))?.additionalDetails?.fileName},
-          { title: "BPA_UPLOADED_CAD_DIAGRAM", value: edcr?.documents.find(doc => doc?.additionalDetails?.fileName.includes("dxf"))?.additionalDetails?.fileUrl, text: edcr?.updatedDxfFile|| edcr?.documents.find(doc => doc?.additionalDetails?.fileName.includes("dxf"))?.additionalDetails?.fileName },
-        ]
-      }
-    }:{
+    const scrutinyDetails = {
       title: "BPA_STEPPER_SCRUTINY_DETAILS_HEADER",
       isScrutinyDetails: true,
       isBackGroundColor: true,
@@ -578,7 +550,7 @@ export const OBPSService = {
           { title: BPA?.businessService !== "BPA_OC" ? "BPA_EDCR_NO_LABEL" : "BPA_OC_EDCR_NO_LABEL", value: BPA?.edcrNumber || "NA" },
         ],
         scruntinyDetails: [
-          { title: "BPA_UPLOADED_PLAN_DIAGRAM", value: edcr?.updatedDxfFile|| edcr?.documents.find(doc => doc?.additionalDetails?.fileName.includes("pdf"))?.additionalDetails?.fileUrl, text: "Uploaded Plan.pdf" },
+          { title: "BPA_UPLOADED_PLAN_DIAGRAM", value: edcr?.updatedDxfFile, text: "BPA_UPLOADED_PLAN_DXF" },
           { title: "BPA_SCRUNTINY_REPORT_OUTPUT", value: edcr?.planReport, text: "BPA_SCRUTINY_REPORT_PDF" },
         ]
       }
@@ -590,10 +562,10 @@ export const OBPSService = {
       isBackGroundColor: true,
       additionalDetails: {
         values: [
-          { title:BPA?.businessService==="BPA-PAP" ? "BPA_BUILDING_EXTRACT_DETAILS": BPA?.businessService !== "BPA_OC" ? "BPA_BUILDING_EXTRACT_HEADER" :"BPA_ACTUAL_BUILDING_EXTRACT_HEADER", value : " ", isHeader: true},
-          { title: "BPA_TOTAL_BUILT_UP_AREA_HEADER", value: edcr?.planDetail?.blocks?.[0]?.building?.totalBuitUpArea||edcr?.drawingDetail?.totalBuitUpArea, isUnit: "BPA_SQ_MTRS_LABEL"},
-          { title: "BPA_SCRUTINY_DETAILS_NUMBER_OF_FLOORS_LABEL", value: edcr?.planDetail?.blocks?.[0]?.building?.totalFloors || edcr?.drawingDetail?.blocks[0]?.building?.totalFloors||"NA" },
-          { title: "BPA_HEIGHT_FROM_GROUND_LEVEL", value: edcr?.planDetail?.blocks?.[0]?.building?.declaredBuildingHeigh||edcr?.drawingDetail?.blocks[0]?.building?.buildingHeight ,  isUnit: "BPA_MTRS_LABEL" }
+          { title: BPA?.businessService !== "BPA_OC" ? "BPA_BUILDING_EXTRACT_HEADER" : "BPA_ACTUAL_BUILDING_EXTRACT_HEADER", value : " ", isHeader: true},
+          { title: "BPA_TOTAL_BUILT_UP_AREA_HEADER", value: edcr?.planDetail?.blocks?.[0]?.building?.totalBuitUpArea, isUnit: "BPA_SQ_MTRS_LABEL"},
+          { title: "BPA_SCRUTINY_DETAILS_NUMBER_OF_FLOORS_LABEL", value: edcr?.planDetail?.blocks?.[0]?.building?.totalFloors || "NA" },
+          { title: "BPA_HEIGHT_FROM_GROUND_LEVEL", value: edcr?.planDetail?.blocks?.[0]?.building?.declaredBuildingHeigh ,  isUnit: "BPA_MTRS_LABEL" }
         ],
         scruntinyDetails: []
       }
@@ -606,7 +578,7 @@ export const OBPSService = {
       additionalDetails: {
         values: [
           { title: "BPA_APP_DETAILS_DEMOLITION_DETAILS_LABEL", value : " ", isHeader: true},
-          { title: "BPA_APPLICATION_DEMOLITION_AREA_LABEL", value: edcr?.planDetail?.planInformation?.demolitionArea||"NA", isUnit: edcr?.planDetail?.planInformation?.demolitionArea?"BPA_SQ_MTRS_LABEL":null } 
+          { title: "BPA_APPLICATION_DEMOLITION_AREA_LABEL", value: edcr?.planDetail?.planInformation?.demolitionArea, isUnit: "BPA_SQ_MTRS_LABEL" } 
         ],
         scruntinyDetails: []
       }
@@ -618,7 +590,7 @@ export const OBPSService = {
       isTitleRepeat: true,
       additionalDetails: {
         values: [
-          { title: BPA?.businessService==="BPA-PAP"?"BPA_BLOCK_HEADER":"BPA_OCC_SUBOCC_HEADER", value : " ", isHeader: true} 
+          { title: "BPA_OCC_SUBOCC_HEADER", value : " ", isHeader: true} 
         ],
         subOccupancyTableDetails: [
           { title: "BPA_APPLICATION_DEMOLITION_AREA_LABEL", value: edcr },
@@ -657,8 +629,7 @@ export const OBPSService = {
               { title: "CORE_COMMON_NAME", value: owner?.name },
               { title: "BPA_APPLICANT_GENDER_LABEL", value: owner?.gender },
               { title: "CORE_COMMON_MOBILE_NUMBER", value: owner?.mobileNumber },
-              { title: "CORE_COMMON_EMAIL_ID", value: owner?.emailId },
-              { title: BPA?.businessService === "BPA-PAP" ? "PRIMARY_OWNER_LABEL" : "BPA_IS_PRIMARY_OWNER_LABEL", value: BPA?.businessService === "BPA-PAP" ? (Number(checkOwnerLength) > 1) ? "Multiple Owner" : "Single Owner" : owner?.isPrimaryOwner, isNotTranslated: false }
+              { title: "BPA_IS_PRIMARY_OWNER_LABEL", value: owner?.isPrimaryOwner, isNotTranslated: false }
             ],
           };
         })

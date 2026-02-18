@@ -3,7 +3,6 @@ import _ from "lodash";
 import React, { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
-import { cndStyles } from "../utils/cndStyles";
 /**
  * DisposeDetails Component
  * 
@@ -96,10 +95,13 @@ const OwnerForm = (_props) => {
     else if (!Object.keys(errors).length && localFormState.errors[config.key]) clearErrors(config.key);
   }, [errors]);
 
+  const errorStyle = { width: "70%", marginLeft: "30%", fontSize: "12px", marginTop: "-21px" };
+
   return (
     <React.Fragment>
-      <div style={cndStyles.siteMediaPhotoEmployee}>
-        <div style={cndStyles.employeeSideContainer}>
+      <div style={{ marginBottom: "16px" }}>
+        <div style={{ border: "1px solid #E3E3E3", padding: "16px", marginTop: "8px" }}>
+           
           <LabelFieldPair>
             <CardLabel className="card-label-smaller">{t("CND_DISPOSE_DATE")} <span className="astericColor">*</span></CardLabel>
             <div className="field">
@@ -129,7 +131,7 @@ const OwnerForm = (_props) => {
               />
             </div>
           </LabelFieldPair>
-          <CardLabelError style={cndStyles.errorStyle}>{localFormState.touched.disposeDate ? errors?.disposeDate?.message : ""}</CardLabelError>
+          <CardLabelError style={errorStyle}>{localFormState.touched.disposeDate ? errors?.disposeDate?.message : ""}</CardLabelError>
  
           <LabelFieldPair>
             <CardLabel className="card-label-smaller">{t("CND_DISPOSE_TYPE")} <span className="astericColor">*</span></CardLabel>
@@ -150,7 +152,7 @@ const OwnerForm = (_props) => {
               )}
             />
           </LabelFieldPair>
-          <CardLabelError style={cndStyles.errorStyle}>{localFormState.touched.disposeType ? errors?.disposeType?.message : ""}</CardLabelError>
+          <CardLabelError style={errorStyle}>{localFormState.touched.disposeType ? errors?.disposeType?.message : ""}</CardLabelError>
 
           <LabelFieldPair>
             <CardLabel className="card-label-smaller">{t("CND_DISPOSAL_SITE_NAME")} </CardLabel>
@@ -182,7 +184,7 @@ const OwnerForm = (_props) => {
               />
             </div>
           </LabelFieldPair>
-          <CardLabelError style={cndStyles.errorStyle}>{localFormState.touched.disposalSiteName ? errors?.disposalSiteName?.message : ""}</CardLabelError>
+          <CardLabelError style={errorStyle}>{localFormState.touched.disposalSiteName ? errors?.disposalSiteName?.message : ""}</CardLabelError>
 
           
         </div>

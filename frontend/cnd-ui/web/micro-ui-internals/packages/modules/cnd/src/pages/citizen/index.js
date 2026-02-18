@@ -2,7 +2,6 @@ import { AppContainer, BackButton, PrivateRoute } from "@nudmcdgnpm/digit-ui-rea
 import React from "react";
 import { Redirect, Switch, useRouteMatch } from "react-router-dom";
 import Inbox from "../employee/Inbox";
-import { cndStyles } from "../../utils/cndStyles";
 
 /**
  * Component to handle all the routings of Citizen Side.
@@ -26,7 +25,7 @@ const App = () => {
   };
 
   return (
-    <span style={cndStyles.wasteQuantityCitizen}>
+    <span style={{width:"100%"}}>
       <Switch>
         <AppContainer>
           <BackButton>Back</BackButton>

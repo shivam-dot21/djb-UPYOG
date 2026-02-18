@@ -59,6 +59,10 @@ const Login = ({ config: propsConfig, t, isDisabled }) => {
   }, [user]);
 
   const onLogin = async (data) => {
+    // if (!data.city) {
+    //   alert("Please Select City!");
+    //   return;
+    // }
     setDisable(true);
 
     const requestData = {
@@ -67,61 +71,21 @@ const Login = ({ config: propsConfig, t, isDisabled }) => {
     };
     requestData.tenantId = data?.city?.code || Digit.ULBService.getStateId();
     delete requestData.city;
-
     try {
-      // 1. First, authenticate to get the Access Token
-      const { UserRequest: initialInfo, ...tokens } = await Digit.UserService.authenticate(requestData);
-
-      // ------------------------------------------------------------------
-      // START CHANGE: Explicitly call /user/_details using the token
-      // ------------------------------------------------------------------
-
-      const token = tokens?.access_token;
-
-      // We manually fetch the user details using the cURL logic you provided
-      const userDetailsResponse = await Digit.Request({
-        url: "/user/_details", // This matches your cURL endpoint
-        method: "POST",
-        auth: false, // We manually handle auth in params/body to match your cURL
-        params: { access_token: token },
-        data: {
-          RequestInfo: {
-            apiId: "Rainmaker",
-            authToken: token,
-            msgId: `${Date.now()}|en_IN`,
-            plainAccessRequest: {}
-          }
-        }
-      });
-
-      // Validating we got the roles back
-      const finalUserInfo = userDetailsResponse?.UserRequest || initialInfo;
-      console.log(finalUserInfo, 'userinfooooo')
-
-      if (!finalUserInfo?.roles || finalUserInfo.roles.length === 0) {
-        console.warn("User has no roles!");
-      }
-
-      // ------------------------------------------------------------------
-      // END CHANGE
-      // ------------------------------------------------------------------
-
-      Digit.SessionStorage.set("Employee.tenantId", finalUserInfo?.tenantId);
-
-      // Combine the token with the fetched user info
-      setUser({ info: finalUserInfo, ...tokens });
-
+      const { UserRequest: info, ...tokens } = await Digit.UserService.authenticate(requestData);
+      Digit.SessionStorage.set("Employee.tenantId", info?.tenantId);
+      setUser({ info, ...tokens });
     } catch (err) {
-      console.error("Login Failed", err);
       setShowToast(
         err?.response?.data?.error_description ||
-        (err?.message == "ES_ERROR_USER_NOT_PERMITTED" && t("ES_ERROR_USER_NOT_PERMITTED")) ||
-        t("INVALID_LOGIN_CREDENTIALS")
+          (err?.message == "ES_ERROR_USER_NOT_PERMITTED" && t("ES_ERROR_USER_NOT_PERMITTED")) ||
+          t("INVALID_LOGIN_CREDENTIALS")
       );
       setTimeout(closeToast, 5000);
     }
     setDisable(false);
   };
+
   const closeToast = () => {
     setShowToast(null);
   };
@@ -134,7 +98,7 @@ const Login = ({ config: propsConfig, t, isDisabled }) => {
     name: Digit.Utils.locale.getTransformedLocale(`TENANT_TENANTS_${Digit.ULBService.getStateId()}`),
   };
 
-  let config = [{ body: propsConfig?.inputs }];
+  let config = [{body : propsConfig?.inputs}];
 
   const { mode } = Digit.Hooks.useQueryParams();
   if (mode === "admin" && config?.[0]?.body?.[2]?.disable == false && config?.[0]?.body?.[2]?.populators?.defaultValue == undefined) {
@@ -170,14 +134,14 @@ const Login = ({ config: propsConfig, t, isDisabled }) => {
       </FormComposerV2>
       {showToast && <Toast error={true} label={t(showToast)} onClose={closeToast} />}
       <div className="employee-login-home-footer" style={{ backgroundColor: "unset" }}>
-        {/* <img
+        <img
           alt="Powered by DIGIT"
           src={window?.globalConfigs?.getConfig?.("DIGIT_FOOTER_BW")}
           style={{ cursor: "pointer" }}
           onClick={() => {
             window.open(window?.globalConfigs?.getConfig?.("DIGIT_HOME_URL"), "_blank").focus();
           }}
-        />{" "} */}
+        />{" "}
       </div>
     </Background>
   );

@@ -13,7 +13,7 @@ import {
   WSICon,
   PTRIcon,
   CHBIcon
-} from "@upyog/digit-ui-react-components";
+} from "@nudmcdgnpm/digit-ui-react-components";
 import React from "react";
 import { useTranslation } from "react-i18next";
 import EmployeeDashboard from "./EmployeeDashboard";
@@ -152,12 +152,8 @@ const EmployeeHome = ({ modules }) => {
     );
   return (
     <div className="employee-app-container">
-      {dashboardConfig && dashboardCemp ? <EmployeeDashboard modules={modules} /> : null}
-      <div className="module-header">
-        <div className="header-top-section">
-          <p className="title">Available Modules To Access</p>
-        </div>
-      </div>
+      <br />
+      {(dashboardConfig && dashboardCemp)?<EmployeeDashboard modules={modules}/>:null}
       <div className="ground-container moduleCardWrapper gridModuleWrapper">
         {modules.map(({ code }, index) => {
           const Card = Digit.ComponentRegistryService.getComponent(`${code}Card`) || (() => <React.Fragment />);

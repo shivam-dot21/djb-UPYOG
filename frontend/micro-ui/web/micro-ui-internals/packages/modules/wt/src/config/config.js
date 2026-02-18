@@ -80,7 +80,7 @@ export const commonConfig =
                     "nextStep": null,
                     "texts": {
                         "submitBarLabel": "COMMON_SAVE_NEXT",
-                        "header":"WT_REQUEST_DETAILS"
+                        "header":"ES_REQUEST_DETAILS"
                     },
                     "timeLine":[{
                         "currentStep":3,
@@ -103,7 +103,7 @@ export const commonConfig =
                     "nextStep":null,
                     "texts": {
                         "submitBarLabel": "COMMON_SAVE_NEXT",
-                        "header":"MT_REQUEST_DETAILS"
+                        "header":"ES_TOILET_REQUEST_DETAILS"
                     },
                     "timeLine":[{
                         "currentStep":3,
@@ -112,27 +112,4 @@ export const commonConfig =
                 },
             ],
         },
-        {
-            "head": "ES_TREE_PRUNING_REQUEST_DETAILS",
-            "body": [
-                {
-                    "route": "treePruningRequest-details",
-                    "component": "TreePruningRequestDetails",
-                    "withoutLabel": true,
-                    "key": "treePruningRequestDetails",
-                    "type": "component",
-                    "isMandatory": true,
-                    "hideInEmployee": true,
-                    "nextStep": null,
-                    "texts": {
-                        "submitBarLabel": "COMMON_SAVE_NEXT",
-                        "header":"TP_REQUEST_DETAILS"
-                    },
-                    "timeLine":[{
-                        "currentStep":3,
-                        "actions":"ES_TREE_PRUNING_REQUEST_DETAILS"
-                    }]
-                },
-            ],
-        }
     ];

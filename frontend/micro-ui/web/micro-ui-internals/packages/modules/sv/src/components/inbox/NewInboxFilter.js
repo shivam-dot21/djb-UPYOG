@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Dropdown, CloseSvg, SubmitBar } from "@upyog/digit-ui-react-components";
+import { Dropdown, CloseSvg, SubmitBar } from "@nudmcdgnpm/digit-ui-react-components";
 import { useQueryClient } from "react-query";
 import { useTranslation } from "react-i18next";
 
@@ -14,13 +14,11 @@ import _ from "lodash";
 const Filter = ({ searchParams, onFilterChange, defaultSearchParams, statusMap, moduleCode, ...props }) => {
   const { t } = useTranslation();
   const client = useQueryClient();
-  const allCities = Digit.Hooks.sv.useTenants();
 
   const [_searchParams, setSearchParams] = useState(() => ({ ...searchParams, services: [] }));
   const [vendingType, setVendingType] = useState()
   const [_vendingZone, setVendingZone] = useState()
   const [app_status, setAppStatus] = useState()
-  const [vendingLocality, setVendingLocality] = useState()
 
   const ApplicationTypeMenu = [
     {
@@ -47,22 +45,6 @@ const Filter = ({ searchParams, onFilterChange, defaultSearchParams, statusMap, 
     },
   ];
 
-  /* fetching vending zones from boundary service */
-  const { data: fetchedVendingZones } = Digit.Hooks.useBoundaryLocalities(
-    vendingLocality?.code,
-    "vendingzones",
-    {
-      enabled: !!vendingLocality,
-    },
-    t
-  );
-
-
-  let vending_Zone = [];
-  fetchedVendingZones && fetchedVendingZones.map((vendingData) => {
-    vending_Zone.push({ i18nKey: vendingData?.i18nkey, code: vendingData?.code, value: vendingData?.name })
-  })
-
   // hook for fetching vending type data
   const { data: vendingTypeData } = Digit.Hooks.useEnabledMDMS(Digit.ULBService.getStateId(), "StreetVending", [{ name: "VendingActivityType" }],
     {
@@ -76,6 +58,19 @@ const Filter = ({ searchParams, onFilterChange, defaultSearchParams, statusMap, 
     vendingTypeOptions.push({ i18nKey: `${vending.name}`, code: `${vending.code}`, value: `${vending.name}` })
   })
 
+  // hook for fetching vending zone data
+  const { data: vendingZone } = Digit.Hooks.useEnabledMDMS(Digit.ULBService.getStateId(), "StreetVending", [{ name: "VendingZones" }],
+    {
+      select: (data) => {
+        const formattedData = data?.["StreetVending"]?.["VendingZones"]
+        return formattedData;
+      },
+    });
+  let vending_Zone = [];
+  vendingZone && vendingZone.map((zone) => {
+    vending_Zone.push({ i18nKey: `${zone.name}`, code: `${zone.code}`, value: `${zone.name}` })
+  })
+
   const localParamChange = (filterParam) => {
     let keys_to_delete = filterParam.delete;
     let _new = { ..._searchParams, ...filterParam };
@@ -86,8 +81,8 @@ const Filter = ({ searchParams, onFilterChange, defaultSearchParams, statusMap, 
 
   const applyLocalFilters = () => {
     if (_searchParams.services.length === 0) onFilterChange({ ..._searchParams, services: ApplicationTypeMenu.map((e) => e.value) });
-    else
-      onFilterChange(_searchParams);
+    else 
+    onFilterChange(_searchParams);
   };
 
   const clearAll = () => {
@@ -96,15 +91,14 @@ const Filter = ({ searchParams, onFilterChange, defaultSearchParams, statusMap, 
     setVendingType(null)
     setVendingZone(null)
     setAppStatus(null)
-    setVendingLocality(null)
   };
 
-
+  
   // setting the vendingzone, vendingtype and status values in searchparams
   useEffect(() => {
-    if (_vendingZone) localParamChange({ vendingZone: _vendingZone?.code || "" });
-    if (vendingType) localParamChange({ vendingType: vendingType?.code || "" });
-    if (app_status) localParamChange({ status: app_status?.i18nKey || "" });
+    if(_vendingZone) localParamChange({ vendingZone: _vendingZone?.code || "" });
+    if(vendingType) localParamChange({ vendingType: vendingType?.code || ""});
+    if(app_status) localParamChange({ status: app_status?.i18nKey || "" });
   }, [_vendingZone, vendingType, app_status])
 
   return (
@@ -144,21 +138,7 @@ const Filter = ({ searchParams, onFilterChange, defaultSearchParams, statusMap, 
           </div>
           <div>
 
-            <div>
-              <div className="filter-label" style={{ fontWeight: "normal" }}>
-                {t("SV_VENDING_LOCALITY")}:
-              </div>
-              <div>
-                <Dropdown
-                  selected={vendingLocality}
-                  select={setVendingLocality}
-                  option={allCities}
-                  optionKey="i18nKey"
-                  t={t}
-                  placeholder={"Select"}
-                />
-              </div>
-
+          <div>
               <div className="filter-label" style={{ fontWeight: "normal" }}>
                 {t("SV_VENDING_ZONES")}:
               </div>
@@ -173,22 +153,22 @@ const Filter = ({ searchParams, onFilterChange, defaultSearchParams, statusMap, 
                 />
               </div>
 
-              <div>
-                <div className="filter-label" style={{ fontWeight: "normal" }}>
-                  {t("SV_VENDING_TYPE")}:
-                </div>
-                <div>
-                  <Dropdown
-                    selected={vendingType}
-                    select={setVendingType}
-                    option={vendingTypeOptions}
-                    optionKey="i18nKey"
-                    t={t}
-                    placeholder={"Select"}
-                  />
-
-                </div>
+            <div>
+              <div className="filter-label" style={{ fontWeight: "normal" }}>
+                {t("SV_VENDING_TYPE")}:
               </div>
+              <div>
+                <Dropdown
+                  selected={vendingType}
+                  select={setVendingType}
+                  option={vendingTypeOptions}
+                  optionKey="i18nKey"
+                  t={t}
+                  placeholder={"Select"}
+                />
+
+              </div>
+            </div>
             </div>
 
 

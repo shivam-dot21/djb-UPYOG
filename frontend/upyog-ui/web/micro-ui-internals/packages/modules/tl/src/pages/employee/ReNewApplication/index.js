@@ -1,4 +1,4 @@
-import { FormComposer, Header, Toast, Loader } from "@upyog/digit-ui-react-components";
+import { FormComposer, Header, Toast } from "@egovernments/digit-ui-react-components";
 import cloneDeep from "lodash/cloneDeep";
 import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -8,7 +8,6 @@ import { newConfig as newConfigTL } from "../../../config/config";
 
 const ReNewApplication = (props) => {
   const applicationData = cloneDeep(props?.location?.state?.applicationData) || {};
-  const stateCode = Digit.ULBService.getStateId();
   const loc=useLocation();
   const propertyId =new URLSearchParams(loc.search).get("propertyId")|| loc?.state?.applicationDetails
                       .find((details)=>details?.title === "PT_DETAILS")?.values
@@ -17,13 +16,9 @@ const ReNewApplication = (props) => {
   const { t } = useTranslation();
   const [canSubmit, setSubmitValve] = useState(false);
   let { data: newConfig, isLoading } = Digit.Hooks.tl.useMDMS.getFormConfig(tenantId?.split?.(".")?.[0], {});
-  let propertyDetails;
-  if(applicationData?.tradeLicenseDetail?.structureType.split('.')[0]==="IMMOVABLE"){
-    const { 
-      data: propertydetails
-    } = Digit.Hooks.pt.usePropertySearch({ filters: { propertyIds: propertyId }, tenantId: tenantId });
-    propertyDetails= propertydetails;   
-}
+  const { 
+    data: propertyDetails
+  } = Digit.Hooks.pt.usePropertySearch({ filters: { propertyIds: propertyId }, tenantId: tenantId }, { filters: { propertyIds: propertyId  }, tenantId: tenantId });
 
   const history = useHistory();
   // delete
@@ -160,9 +155,9 @@ const ReNewApplication = (props) => {
     ownershipCategory: ownershipCategory,
     owners:  getOwners(applicationData)|| [],
     documents: { documents: applicationData?.tradeLicenseDetail?.applicationDocuments || [] },
-    cptId: {  id :applicationData?.tradeLicenseDetail?.structureType.split('.')[0]==="IMMOVABLE" ? propertyId : ""},
-    cpt: {details: applicationData?.tradeLicenseDetail?.structureType.split('.')[0]==="IMMOVABLE" ? propertyDetails?.Properties?.[0] : ""},
-    applicationData: cloneDeep(props?.location?.state?.applicationData)
+    cptId: {id: propertyId},
+    cpt: {details:propertyDetails?.Properties?.[0]}
+    // applicationData: cloneDeep(props?.location?.state?.applicationData)
   };
 
   const closeToast = () => {
@@ -208,7 +203,7 @@ const ReNewApplication = (props) => {
     }
 
     if (data?.owners?.length > 0) {
-      data?.owners?.forEach((data) => {
+      data?.owners.forEach((data) => {
         data.gender = data?.gender?.code;
         data.relationship = data?.relationship?.code;
         data.ownerType = data?.ownerType?.code;
@@ -227,7 +222,7 @@ const ReNewApplication = (props) => {
     }
 
     if (data?.tradeUnits?.length > 0) {
-      data?.tradeUnits?.forEach((data) => {
+      data?.tradeUnits.forEach((data) => {
           (data.tradeType = data?.tradeSubType?.code || null),
           (data.uom = data?.tradeSubType?.uom || null),
           (data.uomValue = Number(data?.uomValue) || null);
@@ -418,10 +413,6 @@ const ReNewApplication = (props) => {
     }
   };
 
-  if (isLoading) {
-    return <Loader></Loader>;
-  }
-
   let configs = [];
   newConfig=newConfig?newConfig:newConfigTL;
   newConfig?.map((conf) => {
@@ -455,7 +446,7 @@ const ReNewApplication = (props) => {
         heading={""}
         isDisabled={!canSubmit}
         label={t("ES_COMMON_APPLICATION_SUBMIT")}
-        config={configs?.map((config) => {
+        config={configs.map((config) => {
           return {
             ...config,
             body: config.body.filter((a) => {

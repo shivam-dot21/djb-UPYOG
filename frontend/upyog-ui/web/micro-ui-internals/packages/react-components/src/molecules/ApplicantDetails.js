@@ -22,7 +22,7 @@
 
 
 import React, { useEffect, useState } from "react";
-import { FormStep, TextInput, CardLabel, MobileNumber, RadioButtons, Dropdown } from "@upyog/digit-ui-react-components";
+import { FormStep, TextInput, CardLabel, MobileNumber, RadioButtons, Dropdown } from "@nudmcdgnpm/digit-ui-react-components";
 
 const ApplicantDetails = ({ t, config, onSelect, formData }) => {
   const user = Digit.UserService.getUser().info;

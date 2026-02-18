@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { TextInput } from "@nudmcdgnpm/digit-ui-react-components";
-import { cndStyles } from "../utils/cndStyles";
 
 /**
  * @author Shivank NUDM
@@ -125,12 +124,17 @@ const WasteTypeTable = ({
   };
 
   return (
-    <div className="waste-type-table" style={cndStyles.wasteTypeTable}>
+    <div className="waste-type-table" style={{ marginTop: "20px", marginBottom: "20px", width: "50%" }}>
       {/* Table Headers */}
-      <div className="waste-type-header" style={cndStyles.wasteTypeHeader}>
-        <div style={cndStyles.wasteTypeHeadingType}>{t("CND_SELECTED_WASTE")}</div>
-        <div style={cndStyles.wasteTypeHeadingQuantity}>{t("CND_QUANTITY")}</div>
-        <div style={cndStyles.wasteTypeHeadingUnits}>{t("CND_UNIT")}</div>
+      <div className="waste-type-header" style={{ 
+        display: "flex", 
+        borderBottom: "1px solid #ccc", 
+        fontWeight: "bold", 
+        padding: "10px 0" 
+      }}>
+        <div style={{ flex: 2 }}>{t("CND_SELECTED_WASTE")}</div>
+        <div style={{ flex: 1, textAlign: "center", marginRight: "8%" }}>{t("CND_QUANTITY")}</div>
+        <div style={{ flex: 1, textAlign: "center" }}>{t("CND_UNIT")}</div>
       </div>
       
       {/* Existing Selected Waste Types */}
@@ -139,31 +143,46 @@ const WasteTypeTable = ({
           <div 
             key={type.code} 
             className="waste-type-row" 
-            style={cndStyles.wasteTypeRow}
+            style={{ 
+              display: "flex", 
+              padding: "15px 0", 
+              borderBottom: "1px solid #eee",
+              alignItems: "center" 
+            }}
           >
             {/* Waste Type Name */}
-            <div style={cndStyles.wasteTypeHeadingType}>{t ? t(type.i18nKey) : type.value || type.i18nKey}</div>
+            <div style={{ flex: 2 }}>{t ? t(type.i18nKey) : type.value || type.i18nKey}</div>
             
             {/* Quantity Input */}
-            <div style={cndStyles.wasteQuantityInput}>
+            <div style={{ flex: 1, textAlign: "center" }}>
               <TextInput
                 t={t}
                 type="text"
                 name={`quantity-${type.code}`}
                 value={wasteDetails[type.code]?.quantity || ""}
                 onChange={(e) => onQuantityChange(type.code, e.target.value)}
-                style={cndStyles.quantityTextInput}
+                style={{ 
+                  width: "50%",
+                  padding: "10px", 
+                  borderRadius: "4px", 
+                  border: "1px solid #ccc",
+                }}
                 ValidationRequired={false}
                 {...validation}
               />
             </div>
             
             {/* Unit Dropdown */}
-            <div style={cndStyles.unitDropdown}>
+            <div style={{ flex: 1, textAlign: "center", marginBottom: "3%" }}>
               <select 
                 value={wasteDetails[type.code]?.unit || "Kilogram"}
                 onChange={(e) => onUnitChange(type.code, e.target.value)}
-                style={cndStyles.unitDropDOwnSelect}
+                style={{ 
+                  padding: "10px", 
+                  borderRadius: "4px", 
+                  border: "1px solid #ccc",
+                  width: "50%" 
+                }}
               >
                 {unitOptions.map(unit => (
                   <option key={unit} value={unit}>{unit}</option>
@@ -173,7 +192,7 @@ const WasteTypeTable = ({
           </div>
         ))
       ) : (
-        <div style={cndStyles.noWasteTypeSelect}>
+        <div style={{ padding: "15px 0", textAlign: "center" }}>
           {t("CND_NO_WASTE_TYPES_SELECTED")}
         </div>
       )}
@@ -183,14 +202,25 @@ const WasteTypeTable = ({
         <div 
           key={row.id} 
           className="waste-type-row additional" 
-          style={cndStyles.additionalWasteTypeRow}
+          style={{ 
+            display: "flex", 
+            padding: "15px 0", 
+            borderBottom: "1px solid #eee",
+            alignItems: "center",
+            backgroundColor: "#f9f9f9" 
+          }}
         >
           {/* Waste Type Dropdown */}
-          <div style={cndStyles.wasteTypeHeadingType}>
+          <div style={{ flex: 2 }}>
             <select
               value={row.selectedType?.code || ""}
               onChange={(e) => handleTypeSelection(row.id, e.target.value)}
-              style={cndStyles.additionalDropDown}
+              style={{ 
+                padding: "10px", 
+                borderRadius: "4px", 
+                border: "1px solid #ccc",
+                width: "90%" 
+              }}
             >
               <option value="">{t("CND_SELECT_WASTE_TYPE")}</option>
               {getAvailableOptions().map(type => (
@@ -202,25 +232,35 @@ const WasteTypeTable = ({
           </div>
           
           {/* Quantity Input */}
-          <div style={cndStyles.wasteQuantityInput}>
+          <div style={{ flex: 1, textAlign: "center" }}>
             <TextInput
               t={t}
               type="text"
               name={`additional-quantity-${row.id}`}
               value={row.quantity}
               onChange={(e) => handleAdditionalQuantityChange(row.id, e.target.value)}
-              style={cndStyles.quantityTextInput}
+              style={{ 
+                width: "50%",
+                padding: "10px", 
+                borderRadius: "4px", 
+                border: "1px solid #ccc",
+              }}
               ValidationRequired={false}
               {...validation}
             />
           </div>
           
           {/* Unit Dropdown */}
-          <div style={cndStyles.additionalUnitDropdown}>
+          <div style={{ flex: 1, textAlign: "center", display: "flex", alignItems: "center", justifyContent: "space-between", paddingRight: "10px" }}>
             <select 
               value={row.unit}
               onChange={(e) => handleAdditionalUnitChange(row.id, e.target.value)}
-              style={cndStyles.quantityTextInput}
+              style={{ 
+                padding: "10px", 
+                borderRadius: "4px", 
+                border: "1px solid #ccc",
+                width: "50%" 
+              }}
             >
               {unitOptions.map(unit => (
                 <option key={unit} value={unit}>{unit}</option>
@@ -231,7 +271,15 @@ const WasteTypeTable = ({
             <button
               type="button"
               onClick={() => handleRemoveRow(row.id)}
-              style={cndStyles.removeButton}
+              style={{
+                padding: "6px 10px",
+                backgroundColor: "#882636",
+                color: "white",
+                border: "none",
+                borderRadius: "4px",
+                cursor: "pointer",
+                fontSize: "12px"
+              }}
             >
               ✕
             </button>
@@ -240,13 +288,23 @@ const WasteTypeTable = ({
       ))}
       
       {/* Add Button */}
-      <div>
+      <div style={{ marginTop: "15px" }}>
         <button
           type="button"
           onClick={handleAddRow}
-          style={cndStyles.addButton}
+          style={{
+            padding: "10px 15px",
+            backgroundColor: "#882636",
+            color: "white",
+            border: "none",
+            borderRadius: "4px",
+            cursor: "pointer",
+            display: "flex",
+            alignItems: "center",
+            gap: "5px"
+          }}
         >
-          <span style={cndStyles.addButtonFont}>+</span> {t("CND_ADD_WASTE_TYPE")}
+          <span style={{ fontSize: "16px" }}>+</span> {t("CND_ADD_WASTE_TYPE")}
         </button>
       </div>
     </div>

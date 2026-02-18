@@ -15,6 +15,19 @@ import store from "ui-redux/store";
 import { getLocaleLabels } from "egov-ui-framework/ui-utils/commons";
 import { addQueryArg, hasTokenExpired, prepareForm } from "./commons";
 import { setUserObj } from "./localStorageUtils";
+import CryptoJS from "crypto-js";
+
+const SECRET_KEY = "MySuperSecretEncryptionKe123456!";
+
+export const encryptAES = (plainText) => {
+  const encrypted = CryptoJS.AES.encrypt(plainText, SECRET_KEY).toString();
+  return encodeURIComponent(encrypted);
+};
+
+export const decryptAES = (cipherText) => {
+  const bytes = CryptoJS.AES.decrypt(cipherText, SECRET_KEY);
+  return bytes.toString(CryptoJS.enc.Utf8);
+};
 
 axios.interceptors.response.use(
   (response) => {
@@ -151,7 +164,26 @@ export const httpRequest = async (
       }
     }
   } catch (error) {
-    const { data, status } = error.response;
+    const response = error.response || {};
+    const data = response.data || {};
+    const status = response.status || 0;
+    var errorMessage = "";
+    if (data.Errors && data.Errors.length > 0) {
+      errorMessage =
+        (data.Errors[0].message || "") + (data.Errors[0].description || "");
+    }
+    var isTokenInvalid =
+      errorMessage.indexOf("InvalidAccessTokenException") !== -1 ||
+      errorMessage.indexOf("INVALID_TOKEN") !== -1 ||
+      hasTokenExpired(status, data);
+
+    if (isTokenInvalid) {
+      localStorage.clear();
+      sessionStorage.clear();
+      window.location.href = `${window.location.origin}/digit-ui/employee/user/login`;
+      return;
+    }
+
     if (hasTokenExpired(status, data)) {
       apiError = "INVALID_TOKEN";
     } else {
@@ -201,7 +233,7 @@ export const uploadFile = async (endPoint, module, file, ulbLevel) => {
   }
 };
 
-export const loginRequest = async (username = null, password = null, refreshToken = "", grantType = "password", tenantId = "", userType) => {
+export const loginRequest = async (username = null, password = null, refreshToken = "", grantType = "password", tenantId = "", userType, captcha = "", captchaId = "") => {
   tenantId = tenantId ? tenantId : commonConfig.tenantId;
   const loginInstance = axios.create({
     baseURL: window.location.origin,
@@ -214,12 +246,24 @@ export const loginRequest = async (username = null, password = null, refreshToke
   let apiError = "Api Error";
   var params = new URLSearchParams();
   username && params.append("username", username);
-  password && params.append("password", password);
-  refreshToken && params.append("refresh_token", refreshToken);
-  params.append("grant_type", grantType);
-  params.append("scope", "read");
-  params.append("tenantId", tenantId);
+  if (password) {
+    const encryptedPassword = encryptAES(password);
+    params.append("password", encryptedPassword);
+  }
+  if (captcha) {
+    const encryptedCaptcha = encryptAES(captcha);
+    params.append("captcha", encryptedCaptcha);
+  }
   userType && params.append("userType", userType);
+  params.append("tenantId", tenantId);
+  if (captchaId) {
+    // Reverting encryption for captchaId as it is likely a server-provided token
+    const encryptedCaptchaId = encryptAES(captchaId);
+    params.append("captchaId", encryptedCaptchaId);
+  }
+  params.append("scope", "read");
+  params.append("grant_type", grantType);
+  refreshToken && params.append("refresh_token", refreshToken);
 
   try {
     const response = await loginInstance.post("/user/oauth/token", params);
@@ -345,7 +389,7 @@ export const commonApiPost = (
           // _err=response.response.data.error.message?"a) "+extractErrorMsg(response.response.data.error, "message", "description")+" : ":"";
           // let fields=response.response.data.error.fields;
           if (response.response.data.Errors.length == 1) {
-            if(response.response.data.Errors[0].message.includes("InvalidAccessTokenException")){
+            if (response.response.data.Errors[0].message.includes("InvalidAccessTokenException")) {
               throw new Error(getLocaleLabels("InvalidAccessTokenException"));
             }
             _err += getLocaleLabels(response.response.data.Errors[0].message) + ".";
@@ -445,7 +489,7 @@ export const downloadPdfFile = async (
     responseType: "arraybuffer",
     headers: {
       "Content-Type": "application/json",
-      Accept: commonConfig.singleInstance ?"application/pdf,application/json":"application/pdf",
+      Accept: commonConfig.singleInstance ? "application/pdf,application/json" : "application/pdf",
     },
   });
 

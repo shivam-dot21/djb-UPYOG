@@ -1,4 +1,4 @@
-import { DownwardArrow, Loader, Rating, RemoveableTag,  UpwardArrow, Table } from "@upyog/digit-ui-react-components";
+import { DownwardArrow, Loader, Rating, RemoveableTag, Table, UpwardArrow } from "@egovernments/digit-ui-react-components";
 import { differenceInCalendarDays, subYears } from "date-fns";
 import React, { useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -16,9 +16,9 @@ const InsightView = ({ rowValue, insight, t, isFinance }) => {
       {rowValue}
       {!(isFinance) && <div>
       {` `}
-      {/* {insight >= 0 ? ArrowUpwardElement() : ArrowDownwardElement()} */}
+      {insight >= 0 ? ArrowUpwardElement() : ArrowDownwardElement()}
       {` `}
-      {/* {isNaN(insight) ? `0%` : `${Digit.Utils.dss.formatter(Math.abs(insight), "number", "Lac", true, t)}%`} */}
+      {isNaN(insight) ? `0%` : `${Digit.Utils.dss.formatter(Math.abs(insight), "number", "Lac", true, t)}%`}
       </div>}
     </span>
   );
@@ -68,28 +68,6 @@ const CustomTable = ({ data = {}, onSearch, setChartData, setChartDenomination, 
     addlFilter: filterStack[filterStack.length - 1]?.addlFilter,
     moduleLevel: value?.moduleLevel || moduleCode,
   });
-  const addMissingFinancialYears = (data) => {
-    // Get the current year and calculate the last three financial years dynamically
-    const currentYear = new Date().getFullYear();
-    const lastThreeYears = [
-      `${currentYear - 1}-${currentYear}`,    // 2023-2024
-      `${currentYear - 2}-${currentYear - 1}`, // 2022-2023
-      `${currentYear}-${currentYear + 1}`  // 2024-2025
-    ];
-
-    // Iterate over the data array
-    data.forEach(item => {
-        lastThreeYears.forEach(year => {
-            // Check if the year is missing in the object, if so, add it with value 0
-            if (!item[year]) {
-                item[year] = 0;
-            }
-        });
-    });
-
-    return data;
-};
-
   useEffect(() => {
     const { id } = data;
     setChartKey(id);
@@ -101,32 +79,30 @@ const CustomTable = ({ data = {}, onSearch, setChartData, setChartDenomination, 
     return response?.responseData?.data?.map((rows, id) => {
       const lyData = lastYearResponse?.responseData?.data?.find((lyRow) => lyRow?.headerName === rows?.headerName);
       return rows?.plots?.reduce((acc, row, currentIndex) => {
-        let cellValue = row?.value !== null ? row?.value : row?.label || 0;
+        let cellValue = row?.value !== null ? row?.value : row?.label || "";
         if (row?.strValue && row?.symbol === "string" && !row?.label) {
           cellValue = row?.strValue;
         }
         let prevData = lyData?.plots?.[currentIndex]?.value;
         let insight = null;
-        //Commented since it was causing mismatch data for the Capacity FSM: SM-1282
-        // if (row?.name === "CapacityUtilization" && chartKey !== "fsmVehicleLogReportByVehicleNo") {
-        //   const { range } = value;
-        //   const { startDate, endDate } = range;
-        //   const numberOfDays = differenceInCalendarDays(endDate, startDate) + 1;
-        //   const ulbs = dssTenants
-        //     .filter((tenant) => tenant?.city?.ddrName === rows?.headerName || tenant?.code === rows?.headerName)
-        //     .map((tenant) => tenant?.code);
-        //   const totalCapacity = fstpMdmsData
-        //     ?.filter((plant) => ulbs.find((ulb) => plant?.ULBS?.includes(ulb)))
-        //     .reduce((acc, plant) => acc + Number(plant?.PlantOperationalCapacityKLD), 0);
-        //   cellValue = calculateFSTPCapacityUtilization(cellValue, totalCapacity, numberOfDays);
-        //   prevData = calculateFSTPCapacityUtilization(prevData, totalCapacity, numberOfDays);
-        // }
-        // if (row?.name === "CapacityUtilization" && chartKey === "fsmVehicleLogReportByVehicleNo") {
-        //   const tankCapcity = rows?.plots.find((plot) => plot?.name === "TankCapacity");
-        //   cellValue = calculateFSTPCapacityUtilization(cellValue, tankCapcity?.value);
-        //   prevData = calculateFSTPCapacityUtilization(prevData, tankCapcity?.value);
-
-        // }
+        if (row?.name === "CapacityUtilization" && chartKey !== "fsmVehicleLogReportByVehicleNo") {
+          const { range } = value;
+          const { startDate, endDate } = range;
+          const numberOfDays = differenceInCalendarDays(endDate, startDate) + 1;
+          const ulbs = dssTenants
+            .filter((tenant) => tenant?.city?.ddrName === rows?.headerName || tenant?.code === rows?.headerName)
+            .map((tenant) => tenant?.code);
+          const totalCapacity = fstpMdmsData
+            ?.filter((plant) => ulbs.find((ulb) => plant?.ULBS?.includes(ulb)))
+            .reduce((acc, plant) => acc + Number(plant?.PlantOperationalCapacityKLD), 0);
+          cellValue = calculateFSTPCapacityUtilization(cellValue, totalCapacity, numberOfDays);
+          prevData = calculateFSTPCapacityUtilization(prevData, totalCapacity, numberOfDays);
+        }
+        if (row?.name === "CapacityUtilization" && chartKey === "fsmVehicleLogReportByVehicleNo") {
+          const tankCapcity = rows?.plots.find((plot) => plot?.name === "TankCapacity");
+          cellValue = calculateFSTPCapacityUtilization(cellValue, tankCapcity?.value);
+          prevData = calculateFSTPCapacityUtilization(prevData, tankCapcity?.value);
+        }
         if (
           (row?.symbol === "number" || row?.symbol === "percentage" || row?.symbol === "amount") &&
           row?.name !== "CitizenAverageRating" &&
@@ -145,49 +121,27 @@ const CustomTable = ({ data = {}, onSearch, setChartData, setChartDenomination, 
         acc[t(`DSS_HEADER_${Digit.Utils.locale.getTransformedLocale(row?.name)}`)] =
           insight !== null ? { value: cellValue, insight } : row?.name === "S.N." ? id + 1 : cellValue;
         acc["key"] = rows?.headerName;
-        console.log("accacc",acc)
         return acc;
       }, {});
     });
   }, [response, lastYearResponse]);
- 
 
   useEffect(() => {
     if (tableData) {
-      if(window.location.href.includes("national-propertytax") && tableData?.[0]?.State =="Jharkhand")
-      {
-        const updatedData = addMissingFinancialYears(tableData);
-
-        console.log("updatedData",updatedData)
-        const result = updatedData?.map((row) => {
-          console.log("tableDatatableData",tableData)
-          return Object.keys(row).reduce((acc, key) => {
-            if (key === "key") return acc;
-            acc[key] = typeof row?.[key] === "object" ? row?.[key]?.value : row?.[key];
-            return acc;
-          }, {});
-        });
-        setChartData(result);
-      }
-      else {
-        const result = tableData?.map((row) => {
-          console.log("tableDatatableData",tableData)
-          return Object.keys(row).reduce((acc, key) => {
-            if (key === "key") return acc;
-            acc[key] = typeof row?.[key] === "object" ? row?.[key]?.value : row?.[key];
-            return acc;
-          }, {});
-        });
-        setChartData(result);
-      }
-   
+      const result = tableData?.map((row) => {
+        return Object.keys(row).reduce((acc, key) => {
+          if (key === "key") return acc;
+          acc[key] = typeof row?.[key] === "object" ? row?.[key]?.value : row?.[key];
+          return acc;
+        }, {});
+      });
+      setChartData(result);
     } else {
       const result = [];
       setChartData(result);
     }
   }, [tableData]);
 
- 
   const filterValue = useCallback((rows, id, filterValue = "") => {
     return rows.filter((row) => {
       const res = Object.keys(row?.values).find((key) => {
@@ -242,7 +196,7 @@ const CustomTable = ({ data = {}, onSearch, setChartData, setChartDenomination, 
     return t(code);
   };
 
-  const getDrilldownCharts = (value, filterKey, label, filters = []) => {   
+  const getDrilldownCharts = (value, filterKey, label, filters = []) => {
     if (response?.responseData?.drillDownChartId && response?.responseData?.drillDownChartId !== "none") {
       let currentValue = value;
       if (filterKey === "tenantId") {
@@ -287,9 +241,9 @@ const CustomTable = ({ data = {}, onSearch, setChartData, setChartDenomination, 
     return (originalRow, rowIndex, columns) => {
       const cellValue = originalRow?.[name];
       if (plot?.symbol === "amount") {
-        return typeof cellValue === "object" 
-          ? { value: Digit.Utils.dss.formatter(convertDenomination(cellValue?.value), "number", "Lac", true, t, isFinance ? true : true), insight: cellValue?.insight }
-          : String(Digit.Utils.dss.formatter(convertDenomination(cellValue), "number", "Lac", true, t, isFinance ? true : true));
+        return typeof cellValue === "object"
+          ? { value: Digit.Utils.dss.formatter(convertDenomination(cellValue?.value), "number", "Lac", true, t, isFinance ? true : false), insight: cellValue?.insight }
+          : String(Digit.Utils.dss.formatter(convertDenomination(cellValue), "number", "Lac", true, t, isFinance ? true : false));
       } else if (plot?.symbol === "number" || plot?.symbol === "percentage") {
         return typeof cellValue === "object"
           ? { value: Digit.Utils.dss.formatter(cellValue?.value, "number", "Lac", true, t), insight: cellValue?.insight }
@@ -325,155 +279,7 @@ const CustomTable = ({ data = {}, onSearch, setChartData, setChartDenomination, 
   };
 
   const tableColumns = useMemo(() => {
-    // const columns = response?.responseData?.data?.find((row) =>!!row);
-let columns=[]
-if(chartKey == "xptFyByStatesv3")
-{
-   columns= {
-    "headerName": "",
-    "headerValue": 5,
-    "headerSymbol": null,
-    "insight": null,
-    "plots": [
-        {
-            "label": "5",
-            "name": "S.N.",
-            "value": null,
-            "strValue": null,
-            "symbol": "text"
-        },
-        {
-            "label": "",
-            "name": "State",
-            "value": null,
-            "strValue": null,
-            "symbol": "text"
-        },
-       
-        {
-            "label": null,
-            "name": "2022-23",
-            "value": "",
-            "strValue": null,
-            "symbol": "number"
-        },
-        {
-            "label": null,
-            "name": "2023-24",
-            "value": "",
-            "strValue": null,
-            "symbol": "number"
-        },
-        {
-          "label": null,
-          "name": "2024-25",
-          "value": "",
-          "strValue": null,
-          "symbol": "number"
-      }
-    ]
-  }
-  
-}else if (chartKey == "xptFyByUlbv3")
-{
-  columns= {
-    "headerName": "",
-    "headerValue": 5,
-    "headerSymbol": null,
-    "insight": null,
-    "plots": [
-        {
-            "label": "5",
-            "name": "S.N.",
-            "value": null,
-            "strValue": null,
-            "symbol": "text"
-        },
-        {
-            "label": "",
-            "name": "Ulb",
-            "value": null,
-            "strValue": null,
-            "symbol": "text"
-        },
-      
-        {
-            "label": null,
-            "name": "2022-23",
-            "value": "",
-            "strValue": null,
-            "symbol": "number"
-        },
-        {
-            "label": null,
-            "name": "2023-24",
-            "value": "",
-            "strValue": null,
-            "symbol": "number"
-        },
-        {
-          "label": null,
-          "name": "2024-25",
-          "value": "",
-          "strValue": null,
-          "symbol": "number"
-      }
-    ]
-  }
-}
-else if (chartKey == "xptFyByWardv3")
-{
-  columns= {
-    "headerName": "",
-    "headerValue": 5,
-    "headerSymbol": null,
-    "insight": null,
-    "plots": [
-        {
-            "label": "5",
-            "name": "S.N.",
-            "value": null,
-            "strValue": null,
-            "symbol": "text"
-        },
-        {
-            "label": "",
-            "name": "Ward",
-            "value": null,
-            "strValue": null,
-            "symbol": "text"
-        },
-        {
-            "label": null,
-            "name": "2022-23",
-            "value": "",
-            "strValue": null,
-            "symbol": "number"
-        },
-        {
-            "label": null,
-            "name": "2023-24",
-            "value": "",
-            "strValue": null,
-            "symbol": "number"
-        },
-        {
-          "label": null,
-          "name": "2024-25",
-          "value": "",
-          "strValue": null,
-          "symbol": "number"
-      },
-    ]
-  }
-}
-else {
- columns = response?.responseData?.data?.find((row) =>!!row);
- if(columns?.plots?.length == 13)
- {
-  columns?.plots?.splice(3,6)
- }
-}
+    const columns = response?.responseData?.data?.find((row) => !!row);
     return columns?.plots
       ?.filter((plot) => plot?.name !== "TankCapacity")
       .map((plot, index) => ({
@@ -587,11 +393,6 @@ else {
             ) : null
           )}
         </div>
-      )}
-      {filterStack?.length > 2 && data?.showOptionalInfo && (
-        <span className={"dss-table-subheader"} style={{ position: "sticky", left: 0, color: "red" }}>
-          {t(data?.optionalInfo)}
-        </span>
       )}
 
       {!tableColumns || !tableData ? (

@@ -1,14 +1,13 @@
 import React from "react";
 import { useQuery } from "react-query";
 import { MdmsService } from "../../services/elements/MDMS";
-import { MdmsServiceV2 } from "../../services/elements/MDMSV2";
 
 const useRatingAndFeedbackMDMS = {
     RatingAndFeedBack: (tenantId) =>
     useQuery(
       [tenantId, "PT_MDMS_RATING_AND_FEEDBACK_VALUES"],
       () =>
-      MdmsServicV2.getDataByCriteria(
+        MdmsService.getDataByCriteria(
           tenantId,
           {
             details: {

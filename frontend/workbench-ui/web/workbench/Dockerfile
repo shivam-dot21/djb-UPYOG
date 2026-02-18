@@ -1,4 +1,4 @@
-FROM delhijalboard/alpine-node-builder-18:yarn AS build
+FROM egovio/alpine-node-builder-14:yarn AS build
 #FROM ghcr.io/egovernments/alpine-node-builder-14:yarn AS build
 RUN apk update && apk upgrade
 RUN apk add --no-cache git>2.30.0

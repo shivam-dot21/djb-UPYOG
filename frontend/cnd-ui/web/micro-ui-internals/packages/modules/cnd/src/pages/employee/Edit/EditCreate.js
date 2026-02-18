@@ -6,7 +6,6 @@ import { useParams } from "react-router-dom";
 import { EditConfig } from "../../../config/editConfig";
 import { ApplicationProvider } from "./ApplicationContext";
 import { CND_VARIABLES } from "../../../utils";
-import { cndStyles } from "../../../utils/cndStyles";
 
 /**
  * Parent Component For Edit Case, 
@@ -47,18 +46,7 @@ const EditCreate = () => {
 
   
   const onFormValueChange = (setValue, formData, formState) => {
-    // Check if waste type quantity is filled and greater than zero
-    let hasValidWasteQuantity = false;
-    // Check if total waste quantity field is filled with value > 0
-    if (formData?.wasteType?.wasteQuantity) {
-      // Extract numeric value from "0 Tons" format
-      const match = formData.wasteType.wasteQuantity.toString().match(/(\d+(\.\d+)?)/);
-      const numericValue = match ? parseFloat(match[0]) : 0;
-      if (numericValue > 0) {
-        hasValidWasteQuantity = true;
-      }
-    }
-    setSubmitValve(!Object.keys(formState.errors).length && hasValidWasteQuantity);
+    setSubmitValve(!Object.keys(formState.errors).length); 
   };
 
     // Extract just the numeric value from the waste quantity string
@@ -79,7 +67,6 @@ const EditCreate = () => {
         applicationStatus: applicationDetails?.applicationData?.applicationData?.applicationStatus,
         depositCentreDetails: "",
         description: "",
-        locality: applicationDetails?.applicationData?.applicationData?.addressDetail?.locality,
         applicationId: applicationDetails?.applicationData?.applicationData?.applicationId,
         applicationNumber: applicationDetails?.applicationData?.applicationData?.applicationNumber,
         vehicleType: "",
@@ -165,7 +152,7 @@ const EditCreate = () => {
     <ApplicationProvider applicationDetails={applicationDetails?.applicationData?.applicationData}>
     <FormComposer
       heading={t("CND_EDIT_PAGE")}
-      isDisabled={!canSubmit}
+      // isDisabled={!canSubmit}
       label={t("ES_COMMON_APPLICATION_SUBMIT")}
       config={EditConfig.map((config) => {
        
@@ -174,8 +161,8 @@ const EditCreate = () => {
           body: config.body.filter((a) => !a.hideInEmployee),
         };
       })}
-      fieldStyle={cndStyles.fieldStyle}
-      cardStyle={cndStyles.cardStyle}
+      fieldStyle={{ marginRight: 0 }}
+      cardStyle={{Width: "60%"}}
       onSubmit={onSubmit}
       onFormValueChange={onFormValueChange}
     />

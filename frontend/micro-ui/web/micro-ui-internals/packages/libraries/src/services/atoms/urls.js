@@ -8,7 +8,6 @@ const Urls = {
     localities: `/egov-location/location/v11/boundarys/_search?hierarchyTypeCode=ADMIN&boundaryType=Locality`,
     revenue_localities: `/egov-location/location/v11/boundarys/_search?hierarchyTypeCode=REVENUE&boundaryType=Locality`,
     gramPanchayats: `/egov-location/location/v11/boundarys/_search?hierarchyTypeCode=REVENUE&boundaryType=GP`,
-    vendingZones: `/egov-location/location/v11/boundarys/_search?hierarchyTypeCode=ADMIN&boundaryType=VendingZone`,
   },
 
   pgr_search: `/pgr-services/v2/request/_search`,
@@ -19,9 +18,6 @@ const Urls = {
   FileFetch: "/filestore/v1/files/url",
   PGR_Create: `/pgr-services/v2/request/_create`,
   pgr_count: `/pgr-services/v2/request/_count`,
-
-    
- 
 
   OTP_Send: "/user-otp/v1/_send",
   Authenticate: "/user/oauth/token",
@@ -37,9 +33,10 @@ const Urls = {
   InboxSearch: "/inbox/v1/_search",
 
   UserSearch: "/user/_search",
-  UserDetails:"/user/_details",
   UserLogout: "/user/_logout",
-  UserCreate:"/user/users/_createnovalidate",
+  UserCaptcha: "/user/api/captcha/image",
+  UserDetails:"/user/_details",
+
 
   Shortener: "/egov-url-shortening/shortener",
   employeeDashboardSearch: "/employee-dashboard/_search",
@@ -63,7 +60,6 @@ const Urls = {
     updateDriver: "/vendor/driver/v1/_update",
     vehicleTripCreate: "/vehicle/trip/v1/_create",
     advanceBalanceCalculate: "/fsm-calculator/v1/_advancebalancecalculate",
-    workerSearch: "/individual/v1/_search",
   },
 
   payment: {
@@ -110,6 +106,8 @@ const Urls = {
     payment_search: "/collection-services/payments/pet-services/_search",
     
   },
+
+
   dss: {
     dashboardConfig: "/dashboard-analytics/dashboard/getDashboardConfig",
     getCharts: "/dashboard-analytics/dashboard/getChartV2",
@@ -165,10 +163,6 @@ const Urls = {
   edcr: {
     create: "/edcr/rest/dcr/scrutinize",
     anonymousCreate: "/edcr/rest/dcr/anonymousScrutinize",
-  },
-  preApproved:{
-    search: "/bpa-services/v1/preapprovedplan/_search",
-    estimate: "/bpa-calculator/_estimate",
   },
 
   events: {
@@ -272,11 +266,6 @@ const Urls = {
     update: "/request-service/mobile-toilet/v1/_update",
     search: "/request-service/mobile-toilet/v1/_search",
   },
-  tp: {
-    create: "/tp-services/tree-pruning/v1/_create",
-    update: "/tp-services/tree-pruning/v1/_update",
-    search: "/tp-services/tree-pruning/v1/_search",
-  },
 
   vendor: {
     create: "/vendor-services/vendor/_create",
@@ -285,25 +274,14 @@ const Urls = {
     vendorcommonSearch: "/vendor-management/api/v1/vendorPlusAdditional/_search"
     
   },
-  // urls for making api calls for pgr-ai module
-  pgrAi:{
-    PGR_Create_AI:"/pgr-ai-services/v1/request/_create",
-    PGR_Search_AI: "/pgr-ai-services/v1/request/_search",
-    PGR_Update_AI:"/pgr-ai-services/v1/request/_update"
-  },
 
 digiLocker:{
-  authorization:"/requester-services-dx/digilocker/authorization/url",
-  register :"/requester-services-dx/digilocker/authorization/url/citizen",
-  token:"/requester-services-dx/digilocker/token/citizen",
-  issueDoc:"/requester-services-dx/digilocker/issuedfiles",
-  uri:"/requester-services-dx/digilocker/file",
-  oauth:"/user/digilocker/oauth/token"
+  authorization:"/requester-services-dx/user/authorization/url",
+  register :"/requester-services-dx/user/authorization/url/citizen",
+  token:"/requester-services-dx/user/token/citizen",
+  issueDoc:"/requester-services-dx/user/issuedfiles",
+  uri:"/requester-services-dx/user/file"
 },
-eSign:{
-  pdfUrl:"/requester-services-dx/eSign/process",
-  fileStoreSearch:"/requester-services-dx/eSign/filestoreId/v1/_search"
-  },
   engagement: {
     document: {
       search: "/egov-document-uploader/egov-du/document/_search",
@@ -341,7 +319,3 @@ eSign:{
 };
 
 export default Urls;
-
-export const getOpenStreetMapUrl = (lat, lng) => {
-  return `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&zoom=18&addressdetails=1`;
-}

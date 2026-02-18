@@ -2,7 +2,6 @@ import React, { useCallback, useMemo, useEffect } from "react"
 import { useForm, Controller } from "react-hook-form";
 import { TextInput, SubmitBar, DatePicker, CardLabelError, SearchForm, SearchField, Dropdown, Table, Card, MobileNumber, Loader, CardText, Header } from "@nudmcdgnpm/digit-ui-react-components";
 import { Link } from "react-router-dom";
-import { cndStyles } from "../utils/cndStyles";
 
 /** The CNDSearchApplication component renders the input fields and table with its data
  * Gets data from its parent component through data prop
@@ -21,7 +20,7 @@ const CNDSearchApplication = ({ tenantId, isLoading, t, onSubmit, data, count, s
             sortOrder: "DESC",
             isUserDetailRequired:"true",
             fromDate: today,
-            toDate: today,
+            toDate: today
         }
     })
 
@@ -117,7 +116,7 @@ const CNDSearchApplication = ({ tenantId, isLoading, t, onSubmit, data, count, s
         <div>
             <Header>{t("CND_SEARCH_APPLICATIONS")}</Header>
             < Card className={"card-search-heading"}>
-                <span style={cndStyles.searchApplicationWarning}>{t("Provide at least one parameter to search for an application")}</span>
+                <span style={{ color: "#505A5F" }}>{t("Provide at least one parameter to search for an application")}</span>
             </Card>
             <SearchForm onSubmit={onSubmit} handleSubmit={handleSubmit}>
                 <SearchField>
@@ -168,7 +167,7 @@ const CNDSearchApplication = ({ tenantId, isLoading, t, onSubmit, data, count, s
                 <SearchField></SearchField> 
                 <SearchField className="submit">
                     <SubmitBar label={t("ES_COMMON_SEARCH")} submit />
-                    <p style={cndStyles.clearButton}
+                    <p style={{ marginTop: "10px" }}
                         onClick={() => {
                             reset({
                                 applicationNumber: "",
@@ -191,7 +190,7 @@ const CNDSearchApplication = ({ tenantId, isLoading, t, onSubmit, data, count, s
                     t(data.display)
                         .split("\\n")
                         .map((text, index) => (
-                            <p key={index} style={cndStyles.noInboxApplication}>
+                            <p key={index} style={{ textAlign: "center" }}>
                                 {text}
                             </p>
                         ))
@@ -204,7 +203,13 @@ const CNDSearchApplication = ({ tenantId, isLoading, t, onSubmit, data, count, s
                     totalRecords={count}
                     columns={columns}
                     getCellProps={(cellInfo) => {
-                        return {style: cndStyles.applicationTable};
+                        return {
+                            style: {
+                                minWidth: cellInfo.column.Header === t("CND_INBOX_APPLICATION_NO") ? "240px" : "",
+                                padding: "20px 18px",
+                                fontSize: "16px"
+                            },
+                        };
                     }}
                     onPageSizeChange={onPageSizeChange}
                     currentPage={getValues("offset") / getValues("limit")}

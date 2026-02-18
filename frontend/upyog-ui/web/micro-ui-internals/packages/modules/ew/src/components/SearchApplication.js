@@ -13,7 +13,7 @@ import {
   Loader,
   CardText,
   Header,
-} from "@upyog/digit-ui-react-components";
+} from "@nudmcdgnpm/digit-ui-react-components";
 import { Link } from "react-router-dom";
 
 /**

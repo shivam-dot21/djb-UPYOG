@@ -13,27 +13,16 @@ const ProfileFormHOC = formHoc({ formKey: "profile" })(ProfileForm);
 class Profile extends Component {
   state = {
     openUploadSlide: false,
-    localProfilePreview: null,
   };
 
   setProfilePic = (file = null, imageUri = "") => {
     const { fileUpload } = this.props;
     this.removeProfilePic();
-    if (file) {
-      const tempUrl = URL.createObjectURL(file);
-      this.setState({ localProfilePreview: tempUrl });
-    }
-
     fileUpload("profile", "photo", { module: "rainmaker-pgr", file, imageUri }, true);
   };
 
   removeProfilePic = () => {
     const { removeFile } = this.props;
-    if (this.state.localProfilePreview) {
-      URL.revokeObjectURL(this.state.localProfilePreview);
-    }
-
-    this.setState({ localProfilePreview: null });
     removeFile("profile", "photo", 0);
   };
 
@@ -44,16 +33,17 @@ class Profile extends Component {
   };
 
   render() {
-    const { profilePic, loading, userInfo } = this.props;
-    const { openUploadSlide, localProfilePreview } = this.state;
+    const { profilePic, loading } = this.props;
+    const { openUploadSlide } = this.state;
+    const { setProfilePic, onClickAddPic, removeProfilePic } = this;
 
     return (
       <Screen loading={loading} className="citizen-profile-screen">
         <div className="profile-container">
-          <ProfileFormHOC onClickAddPic={this.onClickAddPic} img={img} profilePic={profilePic} localProfilePreview={localProfilePreview} userInfo={userInfo}/>
+          <ProfileFormHOC onClickAddPic={onClickAddPic} img={img} profilePic={profilePic} />
         </div>
         {openUploadSlide && (
-          <UploadDrawer removeFile={this.removeProfilePic} setProfilePic={this.setProfilePic} onClickAddPic={this.onClickAddPic} openUploadSlide={openUploadSlide}/>
+          <UploadDrawer removeFile={removeProfilePic} setProfilePic={setProfilePic} onClickAddPic={onClickAddPic} openUploadSlide={openUploadSlide} />
         )}
       </Screen>
     );
@@ -63,23 +53,26 @@ class Profile extends Component {
 const mapStateToProps = (state) => {
   const formKey = "profile";
   const form = state.form[formKey] || {};
-  const userInfo = state.auth["userInfo"] || {};
   const images = (form && form.files && form.files["photo"]) || [];
-  const loading = images.reduce((loading, file) => loading || file.loading, false);
+  const loading =
+    images.reduce((loading, file) => {
+      return loading || file.loading;
+    }, false) || false;
 
   return {
     profilePic: (images.length && images[0].imageUri) || img,
     loading,
-    userInfo,
   };
 };
 
-const mapDispatchToProps = (dispatch) => ({
-  fileUpload: (formKey, fieldKey, module, fileObject) => dispatch(fileUpload(formKey, fieldKey, module, fileObject)),
-  removeFile: (formKey, fieldKey, index) => dispatch(removeFile(formKey, fieldKey, index)),
-});
+const mapDispatchToProps = (dispatch) => {
+  return {
+    fileUpload: (formKey, fieldKey, module, fileObject) => dispatch(fileUpload(formKey, fieldKey, module, fileObject)),
+    removeFile: (formKey, fieldKey, index) => dispatch(removeFile(formKey, fieldKey, index)),
+  };
+};
 
 export default connect(
-  mapStateToProps, 
+  mapStateToProps,
   mapDispatchToProps
-  )(Profile);
+)(Profile);

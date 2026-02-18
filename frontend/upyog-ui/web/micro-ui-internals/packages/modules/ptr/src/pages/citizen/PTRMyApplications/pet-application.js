@@ -1,6 +1,6 @@
 /**
  * This component, `PetApplication`, displays the details of a single pet registration application.
- * It uses `Card` and `KeyNote` components from `@upyog/digit-ui-react-components` 
+ * It uses `Card` and `KeyNote` components from `@nudmcdgnpm/digit-ui-react-components` 
  * to present the application's information in a structured format.
  * 
  * Key Features:
@@ -17,7 +17,7 @@
  */
 
 
-import { Card, KeyNote, SubmitBar } from "@upyog/digit-ui-react-components";
+import { Card, KeyNote, SubmitBar } from "@nudmcdgnpm/digit-ui-react-components";
 import React, { useContext } from "react";
 import { useTranslation } from "react-i18next";
 import { Link, useHistory } from "react-router-dom";

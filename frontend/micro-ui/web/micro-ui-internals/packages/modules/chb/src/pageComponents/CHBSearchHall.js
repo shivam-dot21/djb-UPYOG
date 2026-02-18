@@ -12,7 +12,7 @@ import {
   Toast,
   InfoIcon,
   Card
-} from "@upyog/digit-ui-react-components";
+} from "@nudmcdgnpm/digit-ui-react-components";
 import { DateRangePicker, createStaticRanges } from "react-date-range";
 import { addDays, startOfDay, endOfDay, format, differenceInCalendarDays } from 'date-fns';
 import ChbCommunityHallDetails from "../components/ChbCommunityHallDetails";
@@ -47,7 +47,7 @@ import BookingPopup from "../components/BookingPopup";
  * - A form step component that allows users to search for and select community halls, view booking slot details, and proceed to the next step.
  */
 const CommunityHallSearch = ({ t, onSelect, config, userType, formData }) => {
-  const { selectedCommunityHall } = useLocation();
+  const { pathname: url } = useLocation();
   let index = 0;
   const [bookingSlotDetails, setBookingSlotDetails] = useState(
     (formData.slotlist && formData.slotlist[index] && formData.slotlist[index].bookingSlotDetails) ||
@@ -56,7 +56,7 @@ const CommunityHallSearch = ({ t, onSelect, config, userType, formData }) => {
   );
   const [selectedHall, setSelectedHall] = useState(
     (formData.slotlist && formData.slotlist[index] && formData.slotlist[index].selectedHall) ||
-    formData?.slotlist?.selectedHall || selectedCommunityHall ||
+    formData?.slotlist?.selectedHall ||
     ""
   );
   const [Searchdata, setSearchData] = useState(

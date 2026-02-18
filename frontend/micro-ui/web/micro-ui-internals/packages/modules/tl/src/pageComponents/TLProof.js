@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from "react";
-import { UploadFile, CardLabelDesc, Dropdown, CardLabel } from "@upyog/digit-ui-react-components";
+import { FormStep, UploadFile, CardLabelDesc, Dropdown, CardLabel } from "@nudmcdgnpm/digit-ui-react-components";
 import { stringReplaceAll } from "../utils";
 import Timeline from "../components/TLTimeline";
-import FormStep from "../../../../react-components/src/molecules/FormStep";
 
-const TLProof = ({ t, config, onSelect, userType, formData, isMandatory }) => {
+const TLProof = ({ t, config, onSelect, userType, formData }) => {
   //let index = window.location.href.charAt(window.location.href.length - 1);
   const [uploadedFile, setUploadedFile] = useState(formData?.owners?.documents?.OwnerPhotoProof?.fileStoreId || null);
   const [file, setFile] = useState(formData?.owners?.documents?.OwnerPhotoProof);
@@ -79,7 +78,7 @@ const TLProof = ({ t, config, onSelect, userType, formData, isMandatory }) => {
   return (
     <React.Fragment>
       {window.location.href.includes("/citizen") ? <Timeline currentStep={3} /> : null}
-      <FormStep config={config} onSelect={handleSubmit} onSkip={onSkip} t={t} isDisabled={!uploadedFile || error} isMandatory={isMandatory}>
+      <FormStep config={config} onSelect={handleSubmit} onSkip={onSkip} t={t} isDisabled={!uploadedFile || error}>
         <CardLabelDesc style={{ fontWeight: "unset" }}>{t(`TL_UPLOAD_PHOTO_RESTRICTIONS_TYPES`)}</CardLabelDesc>
         <CardLabelDesc style={{ fontWeight: "unset" }}>{t(`TL_UPLOAD_RESTRICTIONS_SIZE`)}</CardLabelDesc>
         <CardLabel>{`${t("TL_CATEGORY_DOCUMENT_TYPE")}`}</CardLabel>

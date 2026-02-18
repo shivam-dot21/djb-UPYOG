@@ -15,7 +15,6 @@ import React, { Fragment, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 import TLCaption from "./TLCaption";
-import DocumentPreview from "./DocumentPreview";
 
 function ApplicationDetailsContent({
   applicationDetails,
@@ -196,8 +195,6 @@ function ApplicationDetailsContent({
               </table>
             )}
 
-            {detail?.additionalDetails?.documents && <DocumentPreview documents={detail?.additionalDetails?.documents} />}  
-
               <StatusTable>
               {detail?.title &&
                 detail?.values?.map((value, index) => {
@@ -266,10 +263,6 @@ function ApplicationDetailsContent({
 
         </React.Fragment>
       ))}
-
-      
-
-
       {showTimeLine && workflowDetails?.data?.timeline?.length > 0 && (
         <React.Fragment>
           <BreakLine />

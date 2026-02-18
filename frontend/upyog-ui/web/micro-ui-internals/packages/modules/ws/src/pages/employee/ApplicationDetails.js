@@ -11,9 +11,8 @@ import {
   ActionBar,
   SubmitBar,
   MultiLink,
-  LinkButton,
   Toast
-} from "@upyog/digit-ui-react-components";
+} from "@egovernments/digit-ui-react-components";
 import { useParams, useHistory } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import ApplicationDetailsTemplate from "../../../../templates/ApplicationDetails";
@@ -41,7 +40,6 @@ const ApplicationDetails = () => {
   const stateId = Digit.ULBService.getStateId();
   const isMobile = window.Digit.Utils.browser.isMobile();
   const [showOptions, setShowOptions] = useState(false);
-  const [viewTimeline, setViewTimeline]=useState(false);
   let filters = func.getQueryStringParams(location.search);
   const applicationNumber = filters?.applicationNumber;
   const serviceType = filters?.service;
@@ -71,6 +69,8 @@ const ApplicationDetails = () => {
       select: (data) => data?.DataSecurity?.SecurityPolicy?.find((elem) => elem?.model == "User") || {},
     }
   );
+  
+  
 
   let { isLoading, isError, data: applicationDetails, error } = Digit.Hooks.ws.useWSDetailsPage(t, tenantId, applicationNumber, serviceType, userInfo,{ privacy: Digit.Utils.getPrivacyObject() });
 
@@ -152,26 +152,19 @@ const ApplicationDetails = () => {
   }
 
   const checkWSAdditionalDetails = () => {
-    if(applicationDetails?.processInstancesDetails?.[0]?.businessService =="WSReconnection" || applicationDetails?.processInstancesDetails?.[0]?.businessService =="SWReconnection")
-    {
-      return true;
+    const connectionType = applicationDetails?.applicationData?.connectionType;
+    const noOfTaps = applicationDetails?.applicationData?.noOfTaps === 0 ? null : applicationDetails?.applicationData?.noOfTaps;
+    const pipeSize = applicationDetails?.applicationData?.pipeSize === 0 ? null : applicationDetails?.applicationData?.pipeSize;
+    const waterSource =  applicationDetails?.applicationData?.waterSource;
+    const noOfWaterClosets = applicationDetails?.applicationData?.noOfWaterClosets === 0 ? null : applicationDetails?.applicationData?.noOfWaterClosets;
+    const noOfToilets = applicationDetails?.applicationData?.noOfToilets === 0 ? null : applicationDetails?.applicationData?.noOfToilets;
+    const plumberDetails = applicationDetails?.applicationData?.additionalDetails?.detailsProvidedBy;
+    const roadCuttingInfo = applicationDetails?.applicationData?.roadCuttingInfo;
+
+    if( !connectionType || !((noOfTaps && pipeSize && waterSource) || (noOfWaterClosets && noOfToilets)) || !plumberDetails || !roadCuttingInfo){
+      return false
     }
-    else {
-      const connectionType = applicationDetails?.applicationData?.connectionType;
-      const noOfTaps = applicationDetails?.applicationData?.noOfTaps === 0 ? null : applicationDetails?.applicationData?.noOfTaps;
-      const pipeSize = applicationDetails?.applicationData?.pipeSize === 0 ? null : applicationDetails?.applicationData?.pipeSize;
-      const waterSource =  applicationDetails?.applicationData?.waterSource;
-      const noOfWaterClosets = applicationDetails?.applicationData?.noOfWaterClosets === 0 ? null : applicationDetails?.applicationData?.noOfWaterClosets;
-      const noOfToilets = applicationDetails?.applicationData?.noOfToilets === 0 ? null : applicationDetails?.applicationData?.noOfToilets;
-      const plumberDetails = applicationDetails?.applicationData?.additionalDetails?.detailsProvidedBy;
-      const roadCuttingInfo = applicationDetails?.applicationData?.roadCuttingInfo;
-  
-      if( !connectionType || !((noOfTaps && pipeSize && waterSource) || (noOfWaterClosets && noOfToilets)) || !plumberDetails || !roadCuttingInfo){
-        return false
-      }
-      return true;
-    }
-   
+    return true;
   }
   let dowloadOptions = [],
   appStatus = applicationDetails?.applicationData?.applicationStatus || "";
@@ -278,66 +271,23 @@ const ApplicationDetails = () => {
   });
   workflowDetails?.data?.nextActions?.forEach((action) => {
     if (action?.action === "PAY") {
-      if(workflowDetails?.data?.processInstances?.[0]?.businessService =="WSReconnection")
-      {
-        action.redirectionUrll = {
-          pathname: `WSReconnection/${applicationDetails?.applicationNo}/${applicationDetails?.tenantId}?tenantId=${
-            applicationDetails?.tenantId
-          }&ISWSAPP&applicationNumber=${applicationDetails?.applicationNo}`,
-          state: applicationDetails?.tenantId,
-        };
-      }
-      else if(workflowDetails?.data?.processInstances?.[0]?.businessService =="SWReconnection")
-      {
-        action.redirectionUrll = {
-          pathname: `SWReconnection/${applicationDetails?.applicationNo}/${applicationDetails?.tenantId}?tenantId=${
-            applicationDetails?.tenantId
-          }&ISWSAPP&applicationNumber=${applicationDetails?.applicationNo}`,
-          state: applicationDetails?.tenantId,
-        };
-      }
-      else {
-        action.redirectionUrll = {
-          pathname: `${getBusinessService(filters)}/${applicationDetails?.applicationNo}/${applicationDetails?.tenantId}?tenantId=${
-            applicationDetails?.tenantId
-          }&ISWSAPP&applicationNumber=${applicationDetails?.applicationNo}`,
-          state: applicationDetails?.tenantId,
-        };
-      }
-      
+      action.redirectionUrll = {
+        pathname: `${getBusinessService(filters)}/${applicationDetails?.applicationNo}/${applicationDetails?.tenantId}?tenantId=${
+          applicationDetails?.tenantId
+        }&ISWSAPP&applicationNumber=${applicationDetails?.applicationNo}`,
+        state: applicationDetails?.tenantId,
+      };
     }
   });
 
   workflowDetails?.data?.actionState?.nextActions?.forEach((action) => {
-    console.log("workflowDetails",workflowDetails)
     if (action?.action === "PAY") {
-      if (workflowDetails?.data?.processInstances?.[0]?.businessService =="WSReconnection")
-      {
-        action.redirectionUrll = {
-          pathname: `WSReconnection/${applicationDetails?.applicationNo}/${applicationDetails?.tenantId}?tenantId=${
-            applicationDetails?.tenantId
-          }&ISWSAPP&applicationNumber=${applicationDetails?.applicationNo}`,
-          state: applicationDetails?.tenantId,
-        };
-      }
-      else if (workflowDetails?.data?.processInstances?.[0]?.businessService =="SWReconnection")
-      {
-        action.redirectionUrll = {
-          pathname: `SWReconnection/${applicationDetails?.applicationNo}/${applicationDetails?.tenantId}?tenantId=${
-            applicationDetails?.tenantId
-          }&ISWSAPP&applicationNumber=${applicationDetails?.applicationNo}`,
-          state: applicationDetails?.tenantId,
-        };
-      }
-      else{
-        action.redirectionUrll = {
-          pathname: `${getBusinessService(filters)}/${applicationDetails?.applicationNo}/${applicationDetails?.tenantId}?tenantId=${
-            applicationDetails?.tenantId
-          }&ISWSAPP&applicationNumber=${applicationDetails?.applicationNo}`,
-          state: applicationDetails?.tenantId,
-        };
-      }
-     
+      action.redirectionUrll = {
+        pathname: `${getBusinessService(filters)}/${applicationDetails?.applicationNo}/${applicationDetails?.tenantId}?tenantId=${
+          applicationDetails?.tenantId
+        }&ISWSAPP&applicationNumber=${applicationDetails?.applicationNo}`,
+        state: applicationDetails?.tenantId,
+      };
     }
   });
 
@@ -357,32 +307,23 @@ const ApplicationDetails = () => {
   };
 
   async function getRecieptSearch(tenantId, payments, consumerCodes, receiptKey) {
-    let response=null;
-    if(payments?.fileStoreId){
-       response = { filestoreIds: [payments?.fileStoreId] }
-    const fileStore = await Digit.PaymentService.printReciept(tenantId, { fileStoreIds: response.filestoreIds[0] });
-    window.open(fileStore[response.filestoreIds[0]], "_blank");
-    }
-    else{
-    response = await Digit.PaymentService.generatePdf(tenantId, { Payments: [{...payments}] }, receiptKey);
+    let response = await Digit.PaymentService.generatePdf(tenantId, { Payments: [{...payments}] }, receiptKey);
     const fileStore = await Digit.PaymentService.printReciept(tenantId, { fileStoreIds: response.filestoreIds[0] });
     window.open(fileStore[response?.filestoreIds[0]], "_blank");
-    }
   }
 
   const handleEstimateDownload = async () => {
     if (applicationDetails?.applicationData?.additionalDetails?.estimationFileStoreId) {
-      getFiles([applicationDetails?.applicationData?.additionalDetails?.estimationFileStoreId], applicationDetails?.tenantId)
+      getFiles([applicationDetails?.applicationData?.additionalDetails?.estimationFileStoreId], stateCode)
     } else {
       const warningCount = sessionStorage.getItem("WARINIG_COUNT") || "0";
       const warningCountDetails = JSON.parse(warningCount);
       if(warningCountDetails == 0) {
         const filters = { applicationNumber };
-        console.log(filters,"filters")
-        const response = await Digit.WSService.search({tenantId : applicationDetails?.tenantId, filters: { ...filters }, businessService: serviceType == "WATER" ? "WS" : "SW"})
+        const response = await Digit.WSService.search({tenantId : tenantId, filters: { ...filters }, businessService: serviceType == "WATER" ? "WS" : "SW"})
         let details = serviceType == "WATER" ? response?.WaterConnection?.[0] : response?.SewerageConnections?.[0];
         if (details?.additionalDetails?.estimationFileStoreId) {
-          getFiles([details?.additionalDetails?.estimationFileStoreId], tenantId)
+          getFiles([details?.additionalDetails?.estimationFileStoreId], stateCode)
         } else {
           sessionStorage.setItem("WARINIG_COUNT", warningCountDetails ? warningCountDetails + 1 : 1);
           setTimeout(() => {
@@ -406,7 +347,7 @@ const ApplicationDetails = () => {
   const sanctionDownloadObject = {
     order: 2,
     label: t("WS_SANCTION_LETTER"),
-    onClick: () => getFiles([applicationDetails?.applicationData?.additionalDetails?.sanctionFileStoreId], applicationDetails?.tenantId),
+    onClick: () => getFiles([applicationDetails?.applicationData?.additionalDetails?.sanctionFileStoreId], stateCode),
   };
 
   const applicationDownloadObject = {
@@ -418,22 +359,15 @@ const ApplicationDetails = () => {
   const appFeeDownloadReceipt = {
     order: 4,
     label: t("DOWNLOAD_RECEIPT_HEADER"),
-    onClick: () => getRecieptSearch(Digit.ULBService.getStateId(), reciept_data?.Payments?.[0], applicationDetails?.applicationData?.applicationNo, receiptKey ),
+    onClick: () => getRecieptSearch(applicationDetails?.applicationData?.tenantId ? applicationDetails?.applicationData?.tenantId : Digit.ULBService.getCurrentTenantId(), reciept_data?.Payments?.[0], applicationDetails?.applicationData?.applicationNo, receiptKey ),
   };
-  const handleViewTimeline=()=>{
-    setViewTimeline(true);
-      const timelineSection=document.getElementById('timeline');
-      if(timelineSection){
-        timelineSection.scrollIntoView({behavior: 'smooth'});
-      } 
-  };
+  
   const applicationFeeReceipt = {
     order: 4,
     label: t("WS_APLICATION_RECEIPT"),
     onClick: async () => {
-      const tenant = Digit.ULBService.getStateId();
       const ConnectionDetailsfile = await Digit.PaymentService.generatePdf(tenantId, { WaterConnection: [applicationDetails?.applicationData] }, "ws-consolidatedacknowlegment");
-      const file = await Digit.PaymentService.printReciept(tenant, { fileStoreIds: ConnectionDetailsfile.filestoreIds[0] });
+      const file = await Digit.PaymentService.printReciept(tenantId, { fileStoreIds: ConnectionDetailsfile.filestoreIds[0] });
       window.open(file[ConnectionDetailsfile.filestoreIds[0]], "_blank");
     }
   };
@@ -476,11 +410,10 @@ const ApplicationDetails = () => {
       <div className={"employee-main-application-details"}>
         <div className={"employee-application-details"} style={{ marginBottom: "15px" }}>
           <Header styles={{ marginLeft: "0px", paddingTop: "10px", fontSize: "32px" }}>{t("CS_TITLE_APPLICATION_DETAILS")}</Header>
-          <div style={{zIndex: "10",display:"flex",flexDirection:"row-reverse",alignItems:"center",marginTop:"-25px"}}>
-          <div style={{zIndex: "10",  position: "relative", maxWidth:"100% !important"}}>
+
           {dowloadOptions && dowloadOptions.length > 0 && (
             <MultiLink
-              className="multilinkWrapper"
+              className="multilinkWrapper employee-mulitlink-main-div"
               onHeadClick={() => setShowOptions(!showOptions)}
               displayOptions={showOptions}
               options={dowloadOptions}
@@ -489,18 +422,14 @@ const ApplicationDetails = () => {
               ref={menuRef}
             />
           )}
-          </div>
-          <LinkButton label={t("VIEW_TIMELINE")} style={{ color:"#A52A2A"}} onClick={handleViewTimeline}></LinkButton>
-          </div>           
         </div>
-
+        
         <ApplicationDetailsTemplate
           applicationDetails={applicationDetails}
           isLoading={isLoading || isBillingServiceLoading || isCommonmastersLoading || isServicesMasterLoading }
           isDataLoading={isLoading || isBillingServiceLoading || isCommonmastersLoading || isServicesMasterLoading }
           applicationData={applicationDetails?.applicationData}
           mutate={mutate}
-          id={"timeline"}
           workflowDetails={workflowDetails}
           businessService={applicationDetails?.processInstancesDetails?.[0]?.businessService?.toUpperCase()}
           moduleCode="WS"

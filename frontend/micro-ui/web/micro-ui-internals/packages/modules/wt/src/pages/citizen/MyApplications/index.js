@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { Header, Loader, TextInput, Dropdown, SubmitBar, CardLabel, Card } from "@nudmcdgnpm/digit-ui-react-components";
 import { Link } from "react-router-dom";
@@ -59,19 +58,9 @@ export const WTMyApplications = () => {
     setFilters(initialFilters);
   }, [filter]);
 
-  // Conditionally enable hooks based on service type
-  const { isLoading: isLoadingTanker, data: dataTanker } = Digit.Hooks.wt.useTankerSearchAPI(
-    { filters },
-    { enabled: !!filters && (serviceType === "watertanker") }
-  );
-  const { isLoading: isLoadingToilet, data: dataToilet } = Digit.Hooks.wt.useMobileToiletSearchAPI(
-    { filters },
-    { enabled: !!filters && (serviceType === "mobileToilet") }
-  );
-  const { isLoading: isLoadingTreePruning, data: dataTreePruning } = Digit.Hooks.wt.useTreePruningSearchAPI(
-    { filters },
-    { enabled: !!filters && (serviceType === "treePruning") }
-  );
+  // Both hooks unconditionally
+  const { isLoading: isLoadingTanker, data: dataTanker } = Digit.Hooks.wt.useTankerSearchAPI({ filters });
+  const { isLoading: isLoadingToilet, data: dataToilet } = Digit.Hooks.wt.useMobileToiletSearchAPI({ filters });
 
   // Use the results conditionally based on the `serviceType`
   let isLoading = false;
@@ -83,15 +72,11 @@ export const WTMyApplications = () => {
   } else if (serviceType === "mobileToilet") {
     isLoading = isLoadingToilet;
     filteredData = dataToilet?.mobileToiletBookingDetails || [];
-  } else if (serviceType === "treePruning") {
-    isLoading = isLoadingTreePruning;
-    filteredData = dataTreePruning?.treePruningBookingDetails;
   } else {
-    isLoading = isLoadingTanker || isLoadingToilet || isLoadingTreePruning;
+    isLoading = isLoadingTanker || isLoadingToilet;
     filteredData = [
       ...(dataToilet?.mobileToiletBookingDetails || []),
       ...(dataTanker?.waterTankerBookingDetail || []),
-      ...(dataTreePruning?.treePruningBookingDetails || [])
     ];
   }
 
@@ -116,7 +101,6 @@ export const WTMyApplications = () => {
   const serviceOptions = [
     { label: t("MOBILE_TOILET"), code: "mobileToilet" },
     { label: t("WATER_TANKER"), code: "watertanker" },
-    { label: t("TREE_PRUNING"), code: "treePruning" }
   ];
 
   const statusOptions = [
@@ -126,39 +110,6 @@ export const WTMyApplications = () => {
     { i18nKey: "Vendor Assigned", code: "ASSIGN_VENDOR", value: t("WT_ASSIGN_VENDOR") },
     { i18nKey: "Rejected", code: "REJECT", value: t("WT_BOOKING_REJECTED") }
   ];
-
-  const statusOptionForTreePruning = [
-  {
-    i18nKey: "BOOKING_CREATED",
-    code: "BOOKING_CREATED",
-    value: t("TP_BOOKING_CREATED")
-  },
-  {
-    i18nKey: "PENDING_FOR_APPROVAL",
-    code: "PENDING_FOR_APPROVAL",
-    value: t("TP_PENDING_FOR_APPROVAL")
-  },
-  {
-    i18nKey: "PAYMENT_PENDING",
-    code: "PAYMENT_PENDING",
-    value: t("TP_PAYMENT_PENDING")
-  },
-  {
-    i18nKey: "TEAM_ASSIGNMENT_FOR_VERIFICATION",
-    code: "TEAM_ASSIGNMENT_FOR_VERIFICATION",
-    value: t("TP_TEAM_ASSIGNMENT_FOR_VERIFICATION")
-  },
-  {
-    i18nKey: "TEAM_ASSIGNMENT_FOR_EXECUTION",
-    code: "TEAM_ASSIGNMENT_FOR_EXECUTION",
-    value: t("TP_TEAM_ASSIGNMENT_FOR_EXECUTION")
-  },
-  {
-    i18nKey: "TREE_PRUNING_SERVICE_COMPLETED",
-    code: "TREE_PRUNING_SERVICE_COMPLETED",
-    value: t("TP_TREE_PRUNING_SERVICE_COMPLETED")
-  }
-];
 
   return (
     <React.Fragment>
@@ -170,10 +121,7 @@ export const WTMyApplications = () => {
               <CardLabel>{t("SERVICE_TYPE")}</CardLabel>
               <Dropdown
                 selected={serviceOptions.find((option) => option.code === tempServiceType)}
-                select={(option) => {
-                  setTempServiceType(option.code);
-                  setStatus("");
-                }}
+                select={(option) => setTempServiceType(option.code)} // Temporary state update
                 option={serviceOptions}
                 placeholder={t("Select Service Type")}
                 optionKey="label"
@@ -195,7 +143,7 @@ export const WTMyApplications = () => {
                   className="form-field"
                   selected={status}
                   select={setStatus}
-                  option={tempServiceType === 'treePruning' ? statusOptionForTreePruning : statusOptions}
+                  option={statusOptions}
                   placeholder={t("Select Status")}
                   optionKey="value"
                   style={{ width: "100%" }}
@@ -212,7 +160,7 @@ export const WTMyApplications = () => {
               </div>
             </div>
           </div>
-            <Link to={`request-service/service-type`}>
+            <Link to="${APPLICATION_PATH}/citizen/wt/request-service/info">
               <SubmitBar style={{borderRadius:"30px",width:"20%" }} label={t("NEW_REQUEST")+" +"} />
             </Link>
         </div>
@@ -233,7 +181,7 @@ export const WTMyApplications = () => {
             {t("NO_APPLICATION_FOUND_MSG")}
           </p>
         )}
-        {filteredData.length !== 0 && ((dataToilet?.count || 0) + (dataTanker?.count || 0) + (dataTreePruning?.count || 0)) > t1 && (
+        {filteredData.length !== 0 && ((dataToilet?.count || 0) + (dataTanker?.count || 0)) > t1 && (
           <div>
             <p style={{ marginLeft: "16px", marginTop: "16px" }}>
               <span className="link">

@@ -3,7 +3,6 @@ import { useTranslation } from "react-i18next";
 import { useQueryClient } from "react-query";
 import { useRouteMatch, useLocation, useHistory, Switch, Route, Redirect } from "react-router-dom";
 import { newConfig as newConfigBPA } from "../../../config/buildingPermitConfig";
-import {newConfig1} from "./NewConfig"
 // import CheckPage from "./CheckPage";
 // import OBPSAcknowledgement from "./OBPSAcknowledgement";
 
@@ -23,17 +22,17 @@ const NewBuildingPermit = () => {
   const match = useRouteMatch();
   const history = useHistory();
   const location = useLocation();
-  Digit.SessionStorage.set("OBPS_PT", "true");
   sessionStorage.removeItem("BPA_SUBMIT_APP");
 
   const tenantId = Digit.ULBService.getCurrentTenantId();
   const [params, setParams, clearParams] = Digit.Hooks.useSessionStorage("BUILDING_PERMIT", state?.edcrNumber ? { data: { scrutinyNumber: { edcrNumber: state?.edcrNumber }}} : {});
+ 
   const stateId = Digit.ULBService.getStateId();
   let { data: newConfig } = Digit.Hooks.obps.SearchMdmsTypes.getFormConfig(stateId, []);
 
   const goNext = (skipStep) => {
     const currentPath = pathname.split("/").pop();
-    const { nextStep } = newConfig1.find((routeObj) => routeObj.route === currentPath);
+    const { nextStep } = config.find((routeObj) => routeObj.route === currentPath);
     let redirectWithHistory = history.push;
     if (nextStep === null) {
       return redirectWithHistory(`${getPath(match.path, match.params)}/check`);
@@ -79,7 +78,7 @@ const NewBuildingPermit = () => {
 
   return (
     <Switch>
-      {newConfig1.map((routeObj, index) => {
+      {config.map((routeObj, index) => {
         const { component, texts, inputs, key } = routeObj;
         const Component = typeof component === "string" ? Digit.ComponentRegistryService.getComponent(component) : component;
         return (

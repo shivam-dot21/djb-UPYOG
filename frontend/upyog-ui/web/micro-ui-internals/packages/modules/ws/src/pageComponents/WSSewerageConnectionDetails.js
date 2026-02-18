@@ -4,7 +4,7 @@ import {
     TextInput,
     CardLabel,
     Toast
-} from "@upyog/digit-ui-react-components";
+} from "@egovernments/digit-ui-react-components";
 import Timeline from "../components/Timeline";
 
 const WSSewerageConnectionDetails = ({ t, config, userType, onSelect, formData }) => {
@@ -40,8 +40,7 @@ const WSSewerageConnectionDetails = ({ t, config, userType, onSelect, formData }
                     "action": "INITIATE"
                 },
                 "channel": "CITIZEN"
-                },
-                reconnectRequest:false, disconnectRequest:false
+                }
               }
             }
             else{
@@ -60,7 +59,6 @@ const WSSewerageConnectionDetails = ({ t, config, userType, onSelect, formData }
                     gender: formData?.ConnectionHolderDetails?.gender?.code,
                     mobileNumber: formData?.ConnectionHolderDetails?.mobileNumber,
                     name: formData?.ConnectionHolderDetails?.name,
-                    emailId:formData?.ConnectionHolderDetails?.emailId,
                     ownerType: formData?.ConnectionHolderDetails?.specialCategoryType?.code || "NONE",
                     relationship: formData?.ConnectionHolderDetails?.relationship?.code,
                     sameAsPropertyAddress: false,
@@ -81,8 +79,7 @@ const WSSewerageConnectionDetails = ({ t, config, userType, onSelect, formData }
                     "action": "INITIATE"
                 },
                 "channel": "CITIZEN"
-            },
-            reconnectRequest:false, disconnectRequest:false
+            }
             }
           }
       
@@ -111,8 +108,7 @@ const WSSewerageConnectionDetails = ({ t, config, userType, onSelect, formData }
                     "action": "INITIATE"
                 },
                 "channel": "CITIZEN"
-                },
-                reconnectRequest:false, disconnectRequest:false
+                }
               }
             }
             else{
@@ -131,7 +127,6 @@ const WSSewerageConnectionDetails = ({ t, config, userType, onSelect, formData }
                     gender: formData?.ConnectionHolderDetails?.gender?.code,
                     mobileNumber: formData?.ConnectionHolderDetails?.mobileNumber,
                     name: formData?.ConnectionHolderDetails?.name,
-                    emailId: formData?.ConnectionHolderDetails?.emailId,
                     ownerType: formData?.ConnectionHolderDetails?.specialCategoryType?.code || "NONE",
                     relationship: formData?.ConnectionHolderDetails?.relationship?.code,
                     sameAsPropertyAddress: false,
@@ -152,8 +147,7 @@ const WSSewerageConnectionDetails = ({ t, config, userType, onSelect, formData }
                       "action": "INITIATE"
                   },
                   "channel": "CITIZEN"
-              },
-              reconnectRequest:false, disconnectRequest:false
+              }
               }
             }
               
@@ -166,8 +160,7 @@ const WSSewerageConnectionDetails = ({ t, config, userType, onSelect, formData }
                       "action": "INITIATE"
                   },
                   "channel": "CITIZEN"
-                  },
-                  reconnectRequest:false, disconnectRequest:false
+                  }
                 }
               }
             else{
@@ -186,7 +179,6 @@ const WSSewerageConnectionDetails = ({ t, config, userType, onSelect, formData }
                     gender: formData?.ConnectionHolderDetails?.gender?.code,
                     mobileNumber: formData?.ConnectionHolderDetails?.mobileNumber,
                     name: formData?.ConnectionHolderDetails?.name,
-                    emailId:formData?.ConnectionHolderDetails?.emailId,
                     ownerType: formData?.ConnectionHolderDetails?.specialCategoryType?.code || "NONE",
                     relationship: formData?.ConnectionHolderDetails?.relationship?.code,
                     sameAsPropertyAddress: false,
@@ -207,8 +199,7 @@ const WSSewerageConnectionDetails = ({ t, config, userType, onSelect, formData }
                     "action": "INITIATE"
                 },
                 "channel": "CITIZEN"
-            },
-            reconnectRequest:false, disconnectRequest:false
+            }
             }
           }
 
@@ -253,7 +244,7 @@ const WSSewerageConnectionDetails = ({ t, config, userType, onSelect, formData }
                 isDisabled={!proposedWaterClosets || !proposedToilets || isDisableForNext}
                 onAdd={onAdd}
             >
-                <CardLabel>{t("WS_NO_OF_WATER_CLOSETS")}<span className="check-page-link-button"> *</span></CardLabel>
+                <CardLabel>{t("WS_NO_OF_WATER_CLOSETS")}*</CardLabel>
                 <TextInput
                     type={"number"}
                     isMandatory={false}
@@ -268,7 +259,7 @@ const WSSewerageConnectionDetails = ({ t, config, userType, onSelect, formData }
                         title: t("ERR_DEFAULT_INPUT_FIELD_MSG"),
                     })}
                 />
-                <CardLabel>{t("WS_SERV_DETAIL_NO_OF_TOILETS")}<span className="check-page-link-button"> *</span></CardLabel>
+                <CardLabel>{t("WS_SERV_DETAIL_NO_OF_TOILETS")}*</CardLabel>
                 <TextInput
                     type={"number"}
                     isMandatory={false}

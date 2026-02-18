@@ -1,29 +1,13 @@
 import React, { useState, useCallback, useEffect } from "react";
 import { useTranslation } from "react-i18next";
-import { Header, InfoIcon } from "@upyog/digit-ui-react-components";
+import { Header, InfoIcon } from "@nudmcdgnpm/digit-ui-react-components";
 import { useParams, useHistory, useLocation } from "react-router-dom";
 
 import RegisryInbox from "../../../components/RegistryInbox";
 
-function cleanObject(obj) {
-  for (const key in obj) {
-    if (obj.hasOwnProperty(key)) {
-      if (Array.isArray(obj[key])) {
-        if (obj[key].length === 0) {
-          delete obj[key];
-        }
-      } else if (obj[key] === undefined || obj[key] === null || obj[key] === false || obj[key] === '' || (typeof obj[key] === 'object' && Object.keys(obj[key]).length === 0)) {
-        delete obj[key];
-      }
-    }
-  }
-  return obj;
-}
-
 const FSMRegistry = () => {
   const { t } = useTranslation();
   const tenantId = Digit.ULBService.getCurrentTenantId();
-  const tenant = Digit.ULBService.getStateId();
   const [searchParams, setSearchParams] = useState({});
   const [sortParams, setSortParams] = useState([{ id: "createdTime", desc: true }]);
   const [pageOffset, setPageOffset] = useState(0);
@@ -40,12 +24,7 @@ const FSMRegistry = () => {
 
   const userInfo = Digit.UserService.getUser();
 
-  let paginationParms = {
-    limit: pageSize,
-    offset: pageOffset,
-    sortBy: sortParams?.[0]?.id,
-    sortOrder: sortParams?.[0]?.desc ? "DESC" : "ASC",
-  };
+  let paginationParms = { limit: pageSize, offset: pageOffset, sortBy: sortParams?.[0]?.id, sortOrder: sortParams?.[0]?.desc ? "DESC" : "ASC" };
   const { data: dsoData, isLoading: isLoading, isSuccess: isDsoSuccess, error: dsoError, refetch } =
     selectedTabs === "VEHICLE"
       ? Digit.Hooks.fsm.useVehiclesSearch({
@@ -67,22 +46,6 @@ const FSMRegistry = () => {
           },
           config: { enabled: false },
         })
-      : selectedTabs === "WORKER"
-      ? Digit.Hooks.fsm.useWorkerSearch({
-          tenantId,
-          details: {
-            Individual: {
-              roleCodes:["SANITATION_WORKER"],
-              ...searchParams,
-              tenantId
-            },
-          },
-          params: {
-            ...paginationParms,
-            name: searchParams?.name,
-          },
-          config: { enabled: false },
-        })
       : Digit.Hooks.fsm.useVendorSearch({
           tenantId,
           filters: {
@@ -93,18 +56,22 @@ const FSMRegistry = () => {
           config: { enabled: false },
         });
 
-  const { data: vendorData, isLoading: isVendorLoading, isSuccess: isVendorSuccess, error: vendorError, refetch: refetchVendor } = Digit.Hooks.fsm.useDsoSearch(
+  const {
+    data: vendorData,
+    isLoading: isVendorLoading,
+    isSuccess: isVendorSuccess,
+    error: vendorError,
+    refetch: refetchVendor,
+  } = Digit.Hooks.fsm.useDsoSearch(
     tenantId,
     {
       vehicleIds: vehicleIds,
       driverIds: driverIds,
-      status: "ACTIVE",
+      // status: "ACTIVE",
     },
-    { enabled: false },
-    t
+    { enabled: false }
   );
-  
-  const inboxTotalCount = dsoData?.TotalCount || dsoData?.totalCount ;
+  const inboxTotalCount = dsoData?.totalCount || 50;
 
   useEffect(() => {
     refetch();
@@ -117,7 +84,7 @@ const FSMRegistry = () => {
 
   useEffect(() => {
     refetch();
-  }, [sortParams, pageOffset, pageSize]);
+  }, [searchParams, sortParams, pageOffset, pageSize]);
 
   useEffect(() => {
     if (dsoData?.vehicle && selectedTabs === "VEHICLE") {
@@ -136,14 +103,6 @@ const FSMRegistry = () => {
       setDriverIds(driverIds);
       setTableData(dsoData?.driver);
     }
-    if (dsoData?.driver && selectedTabs === "WORKER") {
-      let driverIds = "";
-      dsoData.Individual.map((data) => {
-        driverIds += `${data.individualId},`;
-      });
-      setDriverIds(driverIds);
-      setTableData(dsoData?.driver);
-    }
     if (dsoData?.vendor && selectedTabs === "VENDOR") {
       const tableData = dsoData.vendor.map((dso) => ({
         mobileNumber: dso.owner?.mobileNumber,
@@ -154,8 +113,6 @@ const FSMRegistry = () => {
         activeDrivers: dso.drivers?.filter((driver) => driver.status === "ACTIVE"),
         allVehicles: dso.vehicles,
         dsoDetails: dso,
-        // activeWorkers: dso.workers?.filter((worker) => worker.vendorWorkerStatus === "ACTIVE"),
-        workers: dso.workers,
         vehicles: dso.vehicles
           ?.filter((vehicle) => vehicle.status === "ACTIVE")
           ?.map((vehicle) => ({
@@ -200,24 +157,10 @@ const FSMRegistry = () => {
         setTableData(drivers);
         setDriverIds("");
       }
-      if (selectedTabs === "WORKER") {
-        const drivers = dsoData?.Individual?.map((data) => {
-          let vendor = vendorData.find((ele) => ele.dsoDetails?.workers?.find((driver) => driver.individualId === data.id));
-          if (vendor) {
-            data.vendor = vendor.dsoDetails;
-          }else{
-            data.vendor = null
-          }
-          return data;
-        });
-        setTableData(drivers);
-        setDriverIds("");
-      }
     }
   }, [vendorData, dsoData]);
 
   const onSearch = (params = {}) => {
-    cleanObject(params)
     setSearchParams({ ...params });
   };
 
@@ -258,21 +201,6 @@ const FSMRegistry = () => {
             name: "name",
           },
         ]
-      : selectedTabs === "WORKER"
-      ? [
-          {
-            label: t("ES_FSM_REGISTRY_SEARCH_SW_ID"),
-            name: "individualId",
-          },
-          {
-            label: t("ES_FSM_REGISTRY_SEARCH_SW_NAME"),
-            name: "individualName",
-          },
-          {
-            label: t("ES_FSM_REGISTRY_SEARCH_SW_NUMBER"),
-            name: "mobileNumber",
-          },
-        ]
       : [
           {
             label: t("ES_FSM_REGISTRY_SEARCH_VENDOR_NAME"),
@@ -287,7 +215,7 @@ const FSMRegistry = () => {
   const onTabChange = (tab) => {
     setTab(tab);
     if (selectedTabs !== tab) {
-      history.push(`/${window?.contextPath}/employee/fsm/registry?selectedTabs=${tab}`);
+      history.push(`/digit-ui/employee/fsm/registry?selectedTabs=${tab}`);
     }
   };
 

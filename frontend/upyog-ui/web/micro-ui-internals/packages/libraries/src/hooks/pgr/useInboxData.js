@@ -53,7 +53,6 @@ const combineResponses = (complaintDetailsResponse, workflowInstances) => {
       data.push({
         serviceRequestId: complaint.service.serviceRequestId,
         complaintSubType: complaint.service.serviceCode,
-        priorityLevel : complaint.service.priority,
         locality: complaint.service.address.locality.code,
         status: complaint.service.applicationStatus,
         taskOwner: wfMap[complaint.service.serviceRequestId]?.assignes?.[0]?.name || "-",

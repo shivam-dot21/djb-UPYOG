@@ -2,7 +2,7 @@
     "name": "@nudmcdgnpm/upyog-ui-module-cnd",
     "description": "Construction & Demolition Module",
     "author": "Shivank Shukla",
-    "version": "1.0.1",
+    "version": "1.0.0",
     "license": "MIT",
     "main": "dist/index.js",
     "module": "dist/index.modern.js",
@@ -21,7 +21,7 @@
     },
     "dependencies": {
       "@nudmcdgnpm/digit-ui-libraries": "1.2.1",
-      "@nudmcdgnpm/digit-ui-react-components": "1.2.14",
+      "@nudmcdgnpm/digit-ui-react-components": "1.2.11",
       "jspdf": "^2.5.1",
       "jspdf-autotable": "^3.8.2",
       "lodash.merge": "^4.6.2",

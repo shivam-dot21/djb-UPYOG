@@ -1,5 +1,4 @@
-import { Header, Localities, Toast } from "@upyog/digit-ui-react-components";
-import PropertyType  from "../../utils/PropertyType";
+import { Header, Localities, Toast } from "@egovernments/digit-ui-react-components";
 import React, { memo, useCallback, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 
@@ -11,7 +10,7 @@ const PTSearchFields = {
       placeHolder: "PT_PROPERTY_UNIQUE_ID_PLACEHOLDER",
       validation: {
         pattern: {
-          value: "/[A-Za-z]{2}\-[A-Za-z]{2}\-[0-9]{4}\-[0-9]{4}\-[0-9]{2}\-[0-9]{2}\-[0-9]{6}|[A-Za-z]{2}\-[A-Za-z]{2}\-[0-9]{4}\-[0-9]{2}\-[0-9]{2}\-[0-9]{6}/,PG-PT-\d\d\d\d-\d\d\d\d-\d\d-\d\d-\d\d\d\d\d\d",
+          value: /[A-Za-z]{2}\-[A-Za-z]{2}\-[0-9]{4}\-[0-9]{2}\-[0-9]{2}\-[0-9]{6}/,
           message: "ERR_INVALID_PROPERTY_ID",
         },
       },
@@ -22,7 +21,7 @@ const PTSearchFields = {
       placeholder: "PT_EXISTING_PROPERTY_ID_PLACEHOLDER",
       validation: {
         pattern: {
-          value: "/[A-Za-z]{2}\-[A-Za-z]{2}\-[0-9]{4}\-[0-9]{4}\-[0-9]{2}\-[0-9]{2}\-[0-9]{6}|[A-Za-z]{2}\-[A-Za-z]{2}\-[0-9]{4}\-[0-9]{2}\-[0-9]{2}\-[0-9]{6}/,PG-PT-\d\d\d\d-\d\d\d\d-\d\d-\d\d-\d\d\d\d\d\d",
+          value: /[A-Za-z]{2}\-[A-Za-z]{2}\-[0-9]{4}\-[0-9]{2}\-[0-9]{2}\-[0-9]{6}/,
           message: "ERR_INVALID_PROPERTY_ID",
         },
       },
@@ -95,51 +94,13 @@ const PTSearchFields = {
           message: "PT_MIN_3CHAR",
         },
         pattern: {
-          value:  "^[a-zA-Z ]+$",
+          value:  "[A-Za-z .`'-]{3,63}",
           message: "PAYMENT_INVALID_NAME",
         },
       },
     },
   },
-  defaulterNotice:{
-    locality: {
-      type: "custom",
-      label: "PT_SEARCH_LOCALITY",
-      placeHolder: "PT_SEARCH_LOCALITY_PLACEHOLDER",
-      validation: {
-        required: "PTLOCALITYMANDATORY",
-      },
-      customComponent: Localities,
-      customCompProps: {
-        boundaryType: "revenue",
-        keepNull: false,
-        optionCardStyles: { height: "600px", overflow: "auto", zIndex: "10" },
-        disableLoader: true,
-      },
-    },
-    propertyType: {
-      type: "custom",
-      label: "PT_SEARCH_PROPERTY_TYPE",
-      placeHolder: "PT_SEARCH_PROPERTY_TYPE_PLACEHOLDER",
-      validation: {
-        required: "PTPROPERTYTYPEMANDATORY",
-      },
-      customComponent: PropertyType,
-      customCompProps: {
-        keepNull: false,
-        optionCardStyles: { height: "600px", overflow: "auto", zIndex: "10" },
-        disableLoader: true,
-      },
-    }
-    // propertyType: {
-    //   type: "propertyType",
-    //   label: "PT_SEARCHPROPERTY_TABEL_PROPERTY_TYPE",
-    //   placeHolder: "PT_SEARCH_DOOR_NO_PLACEHOLDER",
-     
-    // },
-  },
 };
-
 const defaultValues = {
   propertyIds: "",
   mobileNumber: "",
@@ -147,7 +108,6 @@ const defaultValues = {
   locality: "",
   name: "",
   doorNo: "",
-  propertyType:""
 };
 
 const Search = () => {
@@ -159,7 +119,6 @@ const Search = () => {
   const [showToast, setShowToast] = useState(null);
   const SearchComponent = memo(Digit.ComponentRegistryService.getComponent("PropertySearchForm"));
   const SearchResultComponent = memo(Digit.ComponentRegistryService.getComponent("PropertySearchResults"));
-  const SearchPTIDPropComponent = memo(Digit.ComponentRegistryService.getComponent("SearchPTIDProp"));
   const { data: ptSearchConfig, isLoading } = Digit.Hooks.pt.useMDMS(Digit.ULBService.getStateId(), "DIGIT-UI", "HelpText", {
     select: (data) => {
       return data?.["DIGIT-UI"]?.["HelpText"]?.[0]?.PT;
@@ -177,30 +136,17 @@ const Search = () => {
     }
   },[searchBy])
   const onSubmit = useCallback((_data) => {
-    console.log("_data",_data)
-    if(Object.keys(_data).includes("propertyType"))
-    {
-      setFormData(_data);
-      console.log("_data2",payload)
-      setPayload({locality:_data.locality.code, propertyType:_data.propertyType.code})
-      console.log("_data3",payload)
+    setFormData(_data);
+    if (Object.keys(_data).filter((k) => _data[k] && typeof _data[k] !== "object").length > 0) {
+      setPayload(
+        Object.keys(_data)
+          .filter((k) => _data[k])
+          .reduce((acc, key) => ({ ...acc, [key]: typeof _data[key] === "object" ? _data[key].code : _data[key] }), {})
+      );
+      setShowToast(null);
+    } else {
+      setShowToast({ warning: true, label: "ERR_PT_FILL_VALID_FIELDS" });
     }
-    else {
-      setFormData(_data);   
-      console.log("_data5",formData)  
-      if (Object.keys(_data).filter((k) => _data[k] && typeof _data[k] !== "object")) {
-        setPayload(
-          Object.keys(_data)
-            .filter((k) => _data[k])
-            .reduce((acc, key) => ({ ...acc, [key]: typeof _data[key] === "object" ? _data[key].code : _data[key] }), {})
-        );
-        console.log("_data4",payload)
-        setShowToast(null);
-      } else {
-        setShowToast({ warning: true, label: "ERR_PT_FILL_VALID_FIELDS" });
-      }
-    }
-  
   });
   return (
     <React.Fragment>
@@ -215,12 +161,9 @@ const Search = () => {
         onSubmit={onSubmit}
         onReset={onReset}
       />
-      
-      {Object.keys(payload).includes("propertyType") ?
-      <SearchPTIDPropComponent t={t} showToast={showToast} setShowToast={setShowToast} tenantId={tenantId} payload={payload} ptSearchConfig={{...ptSearchConfig}} />
-      : Object.keys(payload).length > 0 ? (
+      {Object.keys(payload).length > 0 && (
         <SearchResultComponent t={t} showToast={showToast} setShowToast={setShowToast} tenantId={tenantId} payload={payload} ptSearchConfig={{...ptSearchConfig}} />
-      ):""}
+      )}
       {showToast && (
         <Toast
           error={showToast.error}

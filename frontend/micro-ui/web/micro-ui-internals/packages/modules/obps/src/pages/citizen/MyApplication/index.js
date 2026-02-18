@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
-import { Card, KeyNote, Loader, SubmitBar, Header } from "@upyog/digit-ui-react-components";
+import { Card, KeyNote, Loader, SubmitBar, Header } from "@nudmcdgnpm/digit-ui-react-components";
 import { Fragment } from "react";
 import { Link, useHistory } from "react-router-dom";
 import { getBPAFormData } from "../../../utils/index";
@@ -169,7 +169,6 @@ const MyApplication = () => {
             <Card key={index}>
               <KeyNote keyValue={t("BPA_APPLICATION_NUMBER_LABEL")} note={application?.applicationNo} />
               <KeyNote keyValue={t("BPA_BASIC_DETAILS_APPLICATION_TYPE_LABEL")} note={application?.businessService !== "BPA_OC" ? t(`WF_BPA_BUILDING_PLAN_SCRUTINY`) : t(`WF_BPA_BUILDING_OC_PLAN_SCRUTINY`)} />
-              <KeyNote keyValue={t("BPA_IS_PREAPPROVED")} note={t(application?.additionalDetails?.isPreApproved ? application?.additionalDetails?.isPreApproved : application?.businessService==="BPA-PAP" ? true : false)} />
               <KeyNote keyValue={t("BPA_COMMON_SERVICE")} note={t(`BPA_SERVICETYPE_NEW_CONSTRUCTION`)} />
               <KeyNote keyValue={t("TL_COMMON_TABLE_COL_STATUS")} note={t(`WF_BPA_${application?.state}`)} noteStyle={application?.status === "APPROVED" ? { color: "#00703C" } : { color: "#D4351C" }} />
               <KeyNote keyValue={t("BPA_COMMON_SLA")} note={typeof(application?.sla) == "string" && application?.sla?.includes("NA") ? t(`${`CS_NA`}`) : application?.sla} />

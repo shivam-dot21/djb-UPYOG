@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { TextInput, CheckBox, CardLabel, LabelFieldPair, TextArea } from "@upyog/digit-ui-react-components";
+import { FormStep, TextInput, CheckBox, CardLabel, LabelFieldPair, TextArea } from "@egovernments/digit-ui-react-components";
 import { useLocation } from "react-router-dom";
 import Timeline from "../components/TLTimeline";
-import FormStep from "../../../../react-components/src/molecules/FormStep"
 
 const SelectOwnerAddress = ({ t, config, onSelect, userType, formData, ownerIndex = 0 }) => {
   const { pathname: url } = useLocation();

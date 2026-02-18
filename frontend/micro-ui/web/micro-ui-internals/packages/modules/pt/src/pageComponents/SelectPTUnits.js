@@ -1,4 +1,4 @@
-import { CardLabel, Dropdown, FormStep, LinkButton, Loader, TextInput, DeleteIcon } from "@upyog/digit-ui-react-components";
+import { CardLabel, Dropdown, FormStep, LinkButton, Loader, TextInput, DeleteIcon } from "@nudmcdgnpm/digit-ui-react-components";
 import React, { useEffect, useState ,Fragment} from "react";
 import Timeline from "../components/TLTimeline";
 
@@ -320,17 +320,9 @@ const SelectPTUnits = React.memo(({ t, config, onSelect, userType, formData }) =
   }
 
   function onChangeArea(i, e) {
-    if ( parseInt(e.target.value) > parseInt(formData?.landArea?.floorarea)) {
-      alert(t("PT_BUILTUPAREA_PLOTSIZE_ERROR_MSG"));
-    }
-    else{
-      const regex=/^(0|[1-9][0-9]{0,8}|)$/;
-      if(regex.test(e.target.value)|| e.target.value==" "){
-        let units = [...fields];
-        units[i].builtUpArea = e.target.value;
-        setFields(units);
-      }
-    }
+    let units = [...fields];
+    units[i].builtUpArea = e.target.value;
+    setFields(units);
   }
 
   const goNext = () => {
