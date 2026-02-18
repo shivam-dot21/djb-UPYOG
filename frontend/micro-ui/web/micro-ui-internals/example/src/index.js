@@ -31,6 +31,7 @@ import { initBillsComponents, BillsModule } from "@upyog/digit-ui-module-bills";
 // import { PGRModule, PGRLinks } from "@nudmcdgnpm/digit-ui-module-pgr";
 // import { Body, TopBar } from "@nudmcdgnpm/digit-ui-react-components";
 import "@djb25/digit-ui-css";
+import "@djb25/digit-ui-css/dist/index.css";
 
 // import { PTRModule, PTRLinks, PTRComponents } from "@nudmcdgnpm/upyog-ui-module-ptr";
 import { ASSETComponents, ASSETLinks, ASSETModule , initAssetComponents} from "@djb25/digit-ui-module-asset";

@@ -1,11 +1,10 @@
-import React, { useState, useEffect } from "react";
-import { EditPencilIcon, LogoutIcon } from "@nudmcdgnpm/digit-ui-react-components";
+import React, { useState } from "react";
+import { EditPencilIcon, LogoutIcon } from "@upyog/digit-ui-react-components";
 import TopBar from "./TopBar";
 import { useHistory } from "react-router-dom";
 import SideBar from "./SideBar";
 import LogoutDialog from "../Dialog/LogoutDialog";
-import { logoutV2 } from "./ApiCall";
-
+import { getKeycloak } from "../../pages/employee/Login/keyCloak";
 const TopBarSideBar = ({
   t,
   stateInfo,
@@ -22,60 +21,50 @@ const TopBarSideBar = ({
 }) => {
   const [isSidebarOpen, toggleSidebar] = useState(false);
   const [isSideBarScroll, setSideBarScrollTop] = useState(false);
-  const [roleOptions, setRoleOptions] = useState([]);
-  const [selectedRole, setSelectedRole] = useState(null);
   const history = useHistory();
   const [showDialog, setShowDialog] = useState(false);
-
-  useEffect(() => {
-    const sessionData = Digit.SessionStorage.get("User");
-    const userInfo = sessionData?.info;
-    const roles = userInfo?.roles || [];
-
-    const formattedRoles = roles.map((role) => ({
-      name: role.name,
-      code: role.code,
-      tenantId: role.tenantId,
-    }));
-
-    setRoleOptions(formattedRoles);
-
-    const selectedRoleCode = userInfo?.roles?.[0]?.code;
-    const currentRole = formattedRoles.find((r) => r.code === selectedRoleCode);
-    setSelectedRole(currentRole);
-  }, []);
-
   const handleLogout = () => {
     toggleSidebar(false);
     setShowDialog(true);
   };
-
-  const handleOnSubmit = () => {
-    Digit.UserService.logout();
-    logoutV2();
+  const handleOnSubmit = async () => {
+    if (!CITIZEN) {
+      try {
+        await Digit.UserService.logoutUser();
+        const kc = getKeycloak();
+        if (kc?.authenticated) {
+          window.sessionStorage.clear();
+          window.localStorage.clear();
+          kc.logout({
+            redirectUri: window.location.origin + "/digit-ui/employee/user/language-selection"
+          });
+          return;
+        }
+      } catch (e) {
+        console.error("Logout failed", e);
+      }
+      window.sessionStorage.clear();
+      window.localStorage.clear();
+      window.location.replace("/digit-ui/employee/user/language-selection");
+    } else {
+      Digit.UserService.logout();
+    }
     setShowDialog(false);
-  };
-
-
+  }
   const handleOnCancel = () => {
     setShowDialog(false);
-  };
-
+  }
   const userProfile = () => {
-    history.push("/digit-ui/employee/user/profile");
+    if (CITIZEN) {
+      history.push("/digit-ui/citizen/user/profile");
+    } else {
+      history.push("/digit-ui/employee/user/profile");
+    }
   };
-
-  const handleRoleChange = (selected) => {
-    setSelectedRole(selected);
-    console.log("Selected Role:", selected);
-    // Add your role change logic here
-  };
-
   const userOptions = [
     { name: t("EDIT_PROFILE"), icon: <EditPencilIcon className="icon" />, func: userProfile },
     { name: t("CORE_COMMON_LOGOUT"), icon: <LogoutIcon className="icon" />, func: handleLogout },
   ];
-
   return (
     <React.Fragment>
       <TopBar
@@ -91,14 +80,13 @@ const TopBarSideBar = ({
         cityDetails={cityDetails}
         mobileView={mobileView}
         userOptions={userOptions}
-        roleOptions={roleOptions}
-        selectedRole={selectedRole}
-        handleRoleChange={handleRoleChange}
         handleUserDropdownSelection={handleUserDropdownSelection}
         logoUrl={logoUrl}
         showLanguageChange={showLanguageChange}
       />
-      {showDialog && <LogoutDialog onSelect={handleOnSubmit} onCancel={handleOnCancel} onDismiss={handleOnCancel}></LogoutDialog>}
+      {showDialog && (
+        <LogoutDialog onSelect={handleOnSubmit} onCancel={handleOnCancel} onDismiss={handleOnCancel}></LogoutDialog>
+      )}
       {showSidebar && (
         <SideBar
           t={t}
@@ -117,5 +105,4 @@ const TopBarSideBar = ({
     </React.Fragment>
   );
 };
-
 export default TopBarSideBar;

@@ -114,6 +114,7 @@
 @import "./components/inboxv2/index.scss";
 @import "./components//sidebar.scss";
 @import "./components/moduleHeader.scss";
+@import "./components/VerticalTimeline.scss";
 
 .display-none {
   display: none;
@@ -632,8 +633,7 @@ input[type="number"] {
   }
 }
 
-.applications-list-container {
-}
+.applications-list-container {}
 
 .complaint-summary {
   @media (min-width: 780px) {
@@ -663,8 +663,8 @@ input[type="number"] {
 }
 
 @media (min-width: 780px) {
+
   .citizen-obps-wrapper,
-  .selection-card-wrapper,
   .pgr-citizen-wrapper,
   .pt-citizen,
   .bill-citizen,
@@ -680,9 +680,17 @@ input[type="number"] {
     padding-right: 16px;
     margin-top: 1rem;
   }
+
+  .selection-card-wrapper {
+    padding-left: 16px;
+    padding-right: 16px;
+    margin-top: 2rem;
+    width: 96%;
+  }
 }
 
 @media only screen and (max-width: 768px) {
+
   /* For mobile phones: */
   .error-boundary {
     height: 75vh;
