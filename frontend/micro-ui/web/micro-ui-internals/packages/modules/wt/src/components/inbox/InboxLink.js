@@ -1,13 +1,13 @@
-import { Card, CHBIcon, HomeIcon } from "@nudmcdgnpm/digit-ui-react-components";
+import { Card, CHBIcon } from "@nudmcdgnpm/digit-ui-react-components";
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 
 
-/*
-   Renders a card displaying dynamic links related to the Water Tanker.
-   Links are filtered based on the provided businessService and the user's roles.
- */
+ /*
+    Renders a card displaying dynamic links related to the Water Tanker.
+    Links are filtered based on the provided businessService and the user's roles.
+  */
 const InboxLinks = ({ parentRoute, businessService }) => {
   const { t } = useTranslation();
 
@@ -27,7 +27,7 @@ const InboxLinks = ({ parentRoute, businessService }) => {
   const GetLogo = () => (
     <div className="header">
       <span className="logo">
-        <HomeIcon />
+        <CHBIcon />
       </span>{" "}
       <span className="text">{t(businessService + "_REQUEST")}</span>
     </div>
@@ -36,7 +36,7 @@ const InboxLinks = ({ parentRoute, businessService }) => {
   return (
     // <Card style={{ paddingRight: 0, marginTop: 0 }} className="employeeCard filter inboxLinks">
     <Card className="employeeCard filter inboxLinks">
-      <div className="complaint-links-container" style={{ padding: "10px" }}>
+      <div className="complaint-links-container">
         {GetLogo()}
         {/* <div style={{ marginLeft: "unset", paddingLeft: "0px" }} className="body"> */}
         <div className="body">

@@ -9,7 +9,7 @@
     "dist"
   ],
   "scripts": {
-    "build": "microbundle-crl --compress --no-sourcemap --format cjs",
+    "build": "microbundle-crl --compress --no-sourcemap --format cjs --external react,react-dom,react-router-dom,react-table,react-query,react-i18next,react-redux,canvg,html2canvas,jspdf,pdfmake,dom-to-image,date-fns,xlsx",
     "start": "microbundle-crl watch --no-compress --format modern,cjs",
     "prepublish": "yarn build"
   },

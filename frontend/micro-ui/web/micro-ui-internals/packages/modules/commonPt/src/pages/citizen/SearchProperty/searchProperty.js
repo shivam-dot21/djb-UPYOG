@@ -38,7 +38,7 @@ const SearchProperty = ({ config: propsConfig, onSelect, redirectToUrl }) => {
     allCities = [
       {
           "i18nKey": "TENANT_TENANTS_PG_CITYA",
-          "code": Digit.ULBService.getCurrentTenantId(),
+          "code": "pg.citya",
           "name": "City A",
           "description": "City A",
           "pincode": [
@@ -63,7 +63,7 @@ const SearchProperty = ({ config: propsConfig, onSelect, redirectToUrl }) => {
               "localName": null,
               "districtCode": "CITYA",
               "districtName": null,
-              "districtTenantCode": Digit.ULBService.getCurrentTenantId(),
+              "districtTenantCode": "pg.citya",
               "regionName": null,
               "ulbGrade": "Municipal Corporation",
               "longitude": 75.5761829,
@@ -267,7 +267,7 @@ const SearchProperty = ({ config: propsConfig, onSelect, redirectToUrl }) => {
                 {...customProps}
                 selected={props.value}
                 select={(d) => {
-                  Digit.ULBService.getCurrentTenantId()             
+                  "pg.citya"              
                   if (d.code !== cityCode) props.setValue("locality", null);
                   props.onChange(d);
                 }}

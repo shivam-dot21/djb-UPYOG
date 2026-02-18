@@ -253,7 +253,7 @@ const ApplicationDetails = () => {
    
           let TokenReq = {
             pdfUrl:file,
-            tenantId: Digit.ULBService.getCurrentTenantId(),
+            tenantId: "pg.citya",
             module:"TL",
             redirectUrl:"",
             "fileStoreId":id,

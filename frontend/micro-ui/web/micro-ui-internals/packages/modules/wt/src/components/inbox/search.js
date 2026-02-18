@@ -85,12 +85,12 @@ const SearchApplication = ({ onSearch, type, onClose, searchFields, searchParams
       </LinkLabel>
     );
   };
-
+  
   return (
     <form onSubmit={handleSubmit(onSubmitInput)}>
       <React.Fragment>
         <div className="search-container" style={{ width: "auto", marginLeft: isInboxPage ? "24px" : "revert" }}>
-          <div className="search-complaint-container" style={{width: "100%"}}>
+          <div className="search-complaint-container">
             {(type === "mobile" || mobileView) && (
               <div className="complaint-header">
                 <h2>{t("ES_COMMON_SEARCH_BY")}</h2>
@@ -99,7 +99,7 @@ const SearchApplication = ({ onSearch, type, onClose, searchFields, searchParams
                 </span>
               </div>
             )}
-            <div className={"complaint-input-container for-pt " + (!isInboxPage ? "for-search" : "")} style={{ width: "100%", display: "grid" }}>
+            <div className={"complaint-input-container for-pt " + (!isInboxPage ? "for-search" : "")} style={{ width: "100%", display:"grid" }}>
               {searchFields
                 ?.filter((e) => true)
                 ?.map((input, index) => (
@@ -140,7 +140,7 @@ const SearchApplication = ({ onSearch, type, onClose, searchFields, searchParams
                 ))}
 
               {isInboxPage && (
-                <div style={{ gridColumn: "2/3", textAlign: "right", paddingTop: "10px", padding: "10px" }} className="input-fields">
+                <div style={{ gridColumn: "2/3", textAlign: "right", paddingTop: "10px" }} className="input-fields">
                   <div>{clearAll()}</div>
                 </div>
               )}

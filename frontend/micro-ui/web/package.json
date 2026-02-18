@@ -10,18 +10,17 @@
     "micro-ui-internals/packages/modules/core",
     "micro-ui-internals/packages/modules/dss",
     "micro-ui-internals/packages/modules/commonPt",
-    "micro-ui-internals/packages/modules/common",
-    "micro-ui-internals/packages/css"
+    "micro-ui-internals/packages/modules/common"
   ],
   "engines": {
     "node": ">=18"
   },
   "dependencies": {
-    "@djb25/digit-ui-css": "1.0.5",
-    "@djb25/digit-ui-module-asset": "1.0.3",
+    "@djb25/digit-ui-css": "1.0.1",
+    "@djb25/digit-ui-module-asset": "1.0.0",
     "@djb25/digit-ui-module-hrms": "1.0.0",
-    "@djb25/digit-ui-module-ws": "1.0.2",
-    "@djb25/digit-ui-module-wt": "1.0.1",
+    "@djb25/digit-ui-module-ws": "1.0.0",
+    "@djb25/digit-ui-module-wt": "1.0.0",
     "@nudmcdgnpm/upyog-ui-module-pgrai": "1.0.0",
     "@nudmcdgnpm/upyog-ui-module-vendor": "1.2.2",
     "@upyog/digit-ui-libraries": "3.0.0",

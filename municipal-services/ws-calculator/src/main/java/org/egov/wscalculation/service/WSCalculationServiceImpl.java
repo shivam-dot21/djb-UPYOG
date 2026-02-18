@@ -144,6 +144,7 @@ public class WSCalculationServiceImpl implements WSCalculationService {
 	public List<Calculation> getEstimation(CalculationReq request) {
 		Map<String, Object> masterData = masterDataService.loadExemptionMaster(request.getRequestInfo(),
 				request.getCalculationCriteria().get(0).getTenantId());
+		log.info("MDMS(getMasterMap) loaded keys in  getEstimation = {}", masterData.keySet());
 		List<Calculation> calculations = getFeeCalculation(request, masterData);
 		unsetWaterConnection(calculations);
 		return calculations;
