@@ -43,7 +43,7 @@ import { initBillsComponents } from "@upyog/digit-ui-module-bills";
 //   PTRLinks,
 //   PTRComponents,
 // } from "@nudmcdgnpm/upyog-ui-module-ptr";
-import { ASSETComponents, ASSETLinks, ASSETModule, initAssetComponents } from "@djb25/digit-ui-module-asset";
+import { ASSETComponents, ASSETLinks, ASSETModule } from "@djb25/digit-ui-module-asset";
 
 // import { 
 //   EWModule, 
@@ -149,7 +149,7 @@ initEngagementComponents();
 initCommonPTComponents();
 initBillsComponents();
 initFinanceComponents();
-initAssetComponents();
+// initAssetComponents();
 // initReportsComponents();
 // initCustomisationComponents();
 
