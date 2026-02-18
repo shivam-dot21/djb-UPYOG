@@ -16,7 +16,7 @@
     "node": ">=18"
   },
   "dependencies": {
-    "@djb25/digit-ui-css": "1.0.0",
+    "@djb25/digit-ui-css": "1.0.1",
     "@djb25/digit-ui-module-asset": "1.0.0",
     "@djb25/digit-ui-module-hrms": "1.0.0",
     "@djb25/digit-ui-module-ws": "1.0.0",
