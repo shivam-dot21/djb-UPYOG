@@ -19,7 +19,7 @@
     "node": ">=18"
   },
   "dependencies": {
-    "@djb25/digit-ui-css": "1.0.1",
+    "@djb25/digit-ui-css": "1.0.6",
     "@nudmcdgnpm/digit-ui-libraries": "1.2.1",
     "@upyog/digit-ui-module-bills": "1.8.0",
     "@upyog/digit-ui-module-common": "1.8.12",
@@ -35,6 +35,9 @@
     "@nudmcdgnpm/digit-ui-react-components": "1.2.13",
     "@nudmcdgnpm/digit-ui-module-pgr": "1.2.1",
     "@nudmcdgnpm/upyog-ui-module-vendor": "1.2.1",
+    "@djb25/digit-ui-module-wt": "1.0.1",
+    "@djb25/digit-ui-module-asset": "1.0.3",
+    "@djb25/digit-ui-module-ws": "1.0.2",
     "babel-loader": "9.1.2",
     "react": "17.0.2",
     "react-dom": "17.0.2",

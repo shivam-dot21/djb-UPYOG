@@ -9,7 +9,7 @@
       width: 56px;
       height: 56px;
       @apply bg-focus;
-      padding: 12px;
+      padding: 0px;
       border-radius: 4px;
 
       svg {
@@ -169,7 +169,6 @@
     }
 
     .search-complaint-container {
-      width: 100%;
       @apply items-center bg-white p-md;
 
       .complaint-input-container {
@@ -227,7 +226,7 @@
 
       .logo {
         @apply bg-focus;
-        padding: 12px;
+        padding: 0px;
         border-radius: 4px;
       }
 
@@ -317,6 +316,7 @@
       width: 874px;
 
       .search-complaint-container {
+        width: 100%;
         margin: auto;
         @apply flex flex-col items-start mb-md bg-white p-md;
 

@@ -97,32 +97,6 @@ const CustomUserDropdown = ({ userOptions, roleOptions = [], selectedRole, handl
               <span>{userOptions[0]?.name}</span>
             </div>
 
-            {/* Assigned Roles Trigger */}
-            <div
-              style={{
-                borderBottom: "1px solid #e0e0e0",
-                position: "relative",
-              }}
-            >
-              <div
-                onClick={() => setIsRoleDropdownOpen(!isRoleDropdownOpen)}
-                style={{
-                  padding: "12px 16px",
-                  display: "flex",
-                  alignItems: "center",
-                  gap: "12px",
-                  cursor: "pointer",
-                  borderBottom: "1px solid #e0e0e0",
-                  transition: "background-color 0.2s",
-                }}
-                onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "#f5f5f5")}
-                onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "white")}
-              >
-                <ArrowDown style={{ width: "20px", height: "20px" }} />
-                <span>{t("Assigned Roles") || "Assigned Roles"}</span>
-              </div>
-            </div>
-
             {/* Logout */}
             <div
               onClick={() => handleOptionClick(userOptions[1])}
@@ -141,52 +115,6 @@ const CustomUserDropdown = ({ userOptions, roleOptions = [], selectedRole, handl
               <span>{userOptions[1]?.name}</span>
             </div>
           </div>
-
-          {/* Separate Role Options Panel */}
-          {isRoleDropdownOpen && (
-            <div
-              style={{
-                position: "absolute",
-                top: "calc(100% + 64px)",
-                left: isMobile ? "28px" : "85px",
-                backgroundColor: "white",
-                boxShadow: "0 4px 12px rgba(0,0,0,0.15)",
-                borderRadius: "8px",
-                minWidth: "240px",
-                maxHeight: "400px",
-                overflowY: "auto",
-                zIndex: 999,
-              }}
-            >
-              {roleOptions.map((role, index) => (
-                <div
-                  key={role.code || index}
-                  onClick={() => handleRoleSelect(role)}
-                  style={{
-                    padding: "12px 16px",
-                    cursor: "pointer",
-                    fontSize: "14px",
-                    color: selectedRole?.code === role.code ? "#1976d2" : "#333",
-                    backgroundColor: selectedRole?.code === role.code ? "#e3f2fd" : "transparent",
-                    transition: "background-color 0.2s",
-                    borderBottom: index < roleOptions.length - 1 ? "1px solid #f0f0f0" : "none",
-                  }}
-                  onMouseEnter={(e) => {
-                    if (selectedRole?.code !== role.code) {
-                      e.currentTarget.style.backgroundColor = "#f5f5f5";
-                    }
-                  }}
-                  onMouseLeave={(e) => {
-                    if (selectedRole?.code !== role.code) {
-                      e.currentTarget.style.backgroundColor = "transparent";
-                    }
-                  }}
-                >
-                  {role.name}
-                </div>
-              ))}
-            </div>
-          )}
         </React.Fragment>
       )}
     </div>
