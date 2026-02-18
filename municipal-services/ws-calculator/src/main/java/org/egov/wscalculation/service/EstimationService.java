@@ -379,6 +379,9 @@ public class EstimationService {
 	 */
 	private List<TaxHeadEstimate> getTaxHeadForFeeEstimation(CalculationCriteria criteria,
 			Map<String, Object> masterData, RequestInfo requestInfo) {
+
+		log.info("MDMS(getMasterMap) loaded keys = {}", masterData.keySet());
+
 		JSONArray feeSlab = (JSONArray) masterData.getOrDefault(WSCalculationConstant.WC_FEESLAB_MASTER, null);
 		if (feeSlab == null)
 			throw new CustomException("FEE_SLAB_NOT_FOUND", "fee slab master data not found!!");
