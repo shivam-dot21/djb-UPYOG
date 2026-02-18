@@ -119,6 +119,7 @@ const initTokens = (stateCode) => {
 };
 
 const initDigitUI = () => {
+  window.contextPath = window?.globalConfigs?.getConfig("CONTEXT_PATH") || "digit-ui";
   window?.Digit.ComponentRegistryService.setupRegistry({
     ...pgrComponents,
     PaymentModule,
