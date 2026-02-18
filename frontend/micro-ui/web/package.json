@@ -57,8 +57,10 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "GENERATE_SOURCEMAP=false SKIP_PREFLIGHT_CHECK=true INLINE_RUNTIME_CHUNK=false NODE_OPTIONS=--openssl-legacy-provider react-scripts build",
-    "build:prepare": "./build.sh"
+    "build": "GENERATE_SOURCEMAP=false SKIP_PREFLIGHT_CHECK=true INLINE_RUNTIME_CHUNK=false NODE_OPTIONS=\"--openssl-legacy-provider --max-old-space-size=8192\" react-scripts build",
+    "build:prepare": "./build.sh",
+    "build:css": "cd micro-ui-internals/packages/css && yarn start",
+    "watch:css": "cd micro-ui-internals/packages/css && yarn watch"
   },
   "eslintConfig": {
     "extends": [
