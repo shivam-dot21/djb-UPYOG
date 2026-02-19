@@ -22,31 +22,31 @@ import { FormStep, CardLabel, Dropdown , Modal} from "@nudmcdgnpm/digit-ui-react
 };
 
 const ServiceTypes = ({ t, config, onSelect, userType, formData }) => {
+const tenantId=Digit.ULBService.getStateId();
+//Fetching service type data from MDMS
+    const { data: serviceTypeData} = Digit.Hooks.useCustomMDMS(tenantId, "request-service", [{ name: "ServiceType" }], {
+    select: (data) => {
+      const formattedData = data?.["request-service"]?.["ServiceType"];
+      return formattedData;
+    },
+  });
+  
   const user = Digit.UserService.getUser().info;
   const [serviceType, setServiceType] = useState(formData?.serviceType?.serviceType || "");
+
 
   // Function to proceed to the next step, updating selected service type in form data.
   const goNext = useCallback(() => {
     let serviceTypes = formData.serviceType;
     let ServiceType = { ...serviceTypes, serviceType };
+   
     onSelect(config.key, ServiceType, false);
   }, [formData.serviceType, serviceType, onSelect, config.key]);
 
-  const serviceTypeData = [
-    {
-      code: "WT",
-      i18nKey: "Water Tanker",
-      value: "Water Tanker"
-    },
-    {
-      code: "MobileToilet",
-      i18nKey: "Mobile Toilet",
-      value: "Mobile Toilet"
-    }
-  ];
-
+ 
   useEffect(() => {
     if (userType === "citizen") {
+      console.log('calling meeeeeee');
       goNext();
     }
   }, [serviceType, userType, goNext]);
@@ -55,7 +55,7 @@ const ServiceTypes = ({ t, config, onSelect, userType, formData }) => {
     <Modal
       headerBarMain={<Heading t={t}/>}
       headerBarEnd={<CloseBtn onClick={() => window.history.back()} />}
-      popupStyles={{ backgroundColor: "#fff", position: 'relative', maxHeight: '50vh', width: '50%', overflowY: 'auto' }}
+      popupStyles={{ backgroundColor: "#fff", position: 'relative', maxHeight: '50vh', width: '50%', overflowY: 'visible' }}
       popupModuleMianStyles={{ padding: "10px" }}
       hideSubmit={true}
       headerBarMainStyle={{ position: "sticky", top: 0, backgroundColor: "#f5f5f5" }}

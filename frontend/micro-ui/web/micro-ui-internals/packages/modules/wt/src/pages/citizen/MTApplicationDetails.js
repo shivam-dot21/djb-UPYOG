@@ -14,7 +14,7 @@ import {
       import get from "lodash/get";
       import WFApplicationTimeline from "../../pageComponents/WFApplicationTimeline";
       import { convertTo12HourFormat, formatDate } from "../../utils";
-      
+      import getMTAcknowledgementData from "../../utils/getMTAcknowledgementData";
       /**
        * `MTApplicationDetails` is a React component that fetches and displays detailed information for a specific Mobile Toilet (MT) service application.
        * It fetches data for the booking using the `useMobileToiletSearchAPI` hook and displays the details in sections such as:
@@ -49,25 +49,83 @@ import {
         const application = mt_details;
       
         sessionStorage.setItem("mt", JSON.stringify(application));
-      
-        const { isLoading: auditDataLoading, data: auditResponse } = Digit.Hooks.wt.useMobileToiletSearchAPI(
+
+        const mutation = Digit.Hooks.wt.useMobileToiletCreateAPI(tenantId,false); 
+        const { data: reciept_data, isLoading: recieptDataLoading } = Digit.Hooks.useRecieptSearch(
           {
-            tenantId,
-            filters: { bookingNo: mtId, audit: true },
+            tenantId: tenantId,
+            businessService: "request-service.mobile_toilet",
+            consumerCodes: acknowledgementIds,
+            isEmployee: false,
           },
-          {
-            enabled: true,
-          }
+          { enabled: acknowledgementIds ? true : false }
         );
       
-        let dowloadOptions = [];
-        let docs = application?.documents || [];
+      /**
+       * This function handles the receipt generation and updates the application details
+       * with the generated receipt's file store ID.
+       * 
+       * Steps:
+       * 1. Retrieve the first application from `mobileToiletBookingDetail`.
+       * 2. Check if the `paymentReceiptFilestoreId` already exists in the application.
+       *    - If it exists, no further action is taken.
+       *    - If it does not exist:
+       *      a. Generate a PDF receipt using the `Digit.PaymentService.generatePdf` method.
+       *      b. Update the application with the generated `paymentReceiptFilestoreId`.
+       *      c. Use the `mutation.mutateAsync` method to persist the updated application.
+       *      d. Refetch the data to ensure the UI reflects the latest state.
+       * 
+       * Parameters:
+       * - tenantId: The tenant ID for which the receipt is being generated.
+       * - payments: Payment details used to generate the receipt.
+       * - params: Additional parameters (not used in this function).
+       * 
+       * Returns:
+       * - None (the function performs asynchronous updates and refetches data).
+       */
+        async function getRecieptSearch({ tenantId, payments, ...params }) {
+          let application = mobileToiletBookingDetail[0] || {};
+          let fileStoreId = application?.paymentReceiptFilestoreId
+          if (!fileStoreId) {
+          let response = { filestoreIds: [payments?.fileStoreId] };
+          response = await Digit.PaymentService.generatePdf(tenantId, { Payments: [{ ...payments }] }, "request-service.mobile_toilet-receipt");
+          const updatedApplication = {
+            ...application,
+            paymentReceiptFilestoreId: response?.filestoreIds[0]
+          };
+          await mutation.mutateAsync({
+            mobileToiletBookingDetail: updatedApplication
+          });
+          fileStoreId = response?.filestoreIds[0];
+          refetch();
+          }
+          const fileStore = await Digit.PaymentService.printReciept(tenantId, { fileStoreIds: fileStoreId });
+          window.open(fileStore[fileStoreId], "_blank");
+        }
       
-        if (isLoading || auditDataLoading) {
+        let dowloadOptions = [];
+
+        dowloadOptions.push({
+          label: t("MT_DOWNLOAD_ACKNOWLEDGEMENT"),
+          onClick: () => getAcknowledgementData(),
+        });
+      
+        if (isLoading) {
           return <Loader />;
         }
-      console.log("application",application);
-      console.log("mt_details",mt_details);
+
+        if (reciept_data && reciept_data?.Payments.length > 0 && recieptDataLoading == false)
+          dowloadOptions.push({
+            label: t("MT_FEE_RECEIPT"),
+            onClick: () => getRecieptSearch({ tenantId: reciept_data?.Payments[0]?.tenantId, payments: reciept_data?.Payments[0] }),
+          });
+      const getAcknowledgementData = async () => {
+        const applications = application || {};
+        const tenantInfo = tenants.find((tenant) => tenant.code === applications.tenantId);
+        const acknowldgementDataAPI = await getMTAcknowledgementData({ ...applications }, tenantInfo, t);
+        Digit.Utils.pdf.generate(acknowldgementDataAPI);
+      };
+      
         return (
           <React.Fragment>
             <div>
@@ -97,19 +155,18 @@ import {
                   <Row className="border-none" label={t("MT_EMAIL_ID")} text={mt_details?.applicantDetail?.emailId || t("CS_NA")} />
                 </StatusTable>
       
-                {/* <CardSubHeader style={{ fontSize: "24px" }}>{t("MT_ADDRESS_DETAILS")}</CardSubHeader>
+                <CardSubHeader style={{ fontSize: "24px" }}>{t("ES_TITLE_ADDRESS_DETAILS")}</CardSubHeader>
                 <StatusTable>
-                  <Row className="border-none" label={t("MT_PINCODE")} text={mt_details?.address?.pincode || t("CS_NA")} />
-                  <Row className="border-none" label={t("MT_CITY")} text={mt_details?.address?.city || t("CS_NA")} />
-                  <Row className="border-none" label={t("MT_LOCALITY")} text={mt_details?.address?.locality || t("CS_NA")} />
-                  <Row className="border-none" label={t("MT_STREET_NAME")} text={mt_details?.address?.streetName || t("CS_NA")} />
-                  <Row className="border-none" label={t("MT_DOOR_NO")} text={mt_details?.address?.doorNo || t("CS_NA")} />
-                  <Row className="border-none" label={t("MT_HOUSE_NO")} text={mt_details?.address?.houseNo || t("CS_NA")} />
-                  <Row className="border-none" label={t("MT_ADDRESS_LINE1")} text={mt_details?.address?.addressLine1 || t("CS_NA")} />
-                  <Row className="border-none" label={t("MT_ADDRESS_LINE2")} text={mt_details?.address?.addressLine2 || t("CS_NA")} />
-                  <Row className="border-none" label={t("MT_LANDMARK")} text={mt_details?.address?.landmark || t("CS_NA")} />
+                  <Row className="border-none" label={t("PINCODE")} text={mt_details?.address?.pincode || t("CS_NA")} />
+                  <Row className="border-none" label={t("CITY")} text={mt_details?.address?.city || t("CS_NA")} />
+                  <Row className="border-none" label={t("LOCALITY")} text={mt_details?.address?.locality || t("CS_NA")} />
+                  <Row className="border-none" label={t("STREET_NAME")} text={mt_details?.address?.streetName || t("CS_NA")} />
+                  <Row className="border-none" label={t("HOUSE_NO")} text={mt_details?.address?.houseNo || t("CS_NA")} />
+                  <Row className="border-none" label={t("ADDRESS_LINE1")} text={mt_details?.address?.addressLine1 || t("CS_NA")} />
+                  <Row className="border-none" label={t("ADDRESS_LINE2")} text={mt_details?.address?.addressLine2 || t("CS_NA")} />
+                  <Row className="border-none" label={t("LANDMARK")} text={mt_details?.address?.landmark || t("CS_NA")} />
                 </StatusTable>
-       */}
+      
                 <CardSubHeader style={{ fontSize: "24px" }}>{t("ES_REQUEST_DETAILS")}</CardSubHeader>
                 <StatusTable>
                   <Row className="border-none" label={t("MT_NUMBER_OF_MOBILE_TOILETS")} text={mt_details?.noOfMobileToilet || t("CS_NA")} />

@@ -11,7 +11,11 @@ import { FinanceModule } from "@mcd89/digit-ui-module-finance";
 //   PTLinks,
 //   PTComponents,
 // } from "@upyog/digit-ui-module-pt";
-import { MCollectModule, MCollectLinks, initMCollectComponents } from "@upyog/digit-ui-module-mcollect";
+import {
+  MCollectModule,
+  MCollectLinks,
+  initMCollectComponents,
+} from "@upyog/digit-ui-module-mcollect";
 import { initDSSComponents } from "@upyog/digit-ui-module-dss";
 import {
   PaymentModule,
@@ -20,16 +24,16 @@ import {
 } from "@upyog/digit-ui-module-common";
 import { DigitUI } from "@upyog/digit-ui-module-core";
 import { initLibraries } from "@nudmcdgnpm/digit-ui-libraries";
-import {
-  HRMSModule,
-  initHRMSComponents,
-} from "@djb25/digit-ui-module-hrms";
+import { HRMSModule, initHRMSComponents } from "@djb25/digit-ui-module-hrms";
 // import {
 //   TLModule,
 //   TLLinks,
 //   initTLComponents,
 // } from "@upyog/digit-ui-module-tl";
-import { initReceiptsComponents, ReceiptsModule } from "@upyog/digit-ui-module-receipts";
+import {
+  initReceiptsComponents,
+  ReceiptsModule,
+} from "@upyog/digit-ui-module-receipts";
 // import { initOBPSComponents } from "@upyog/digit-ui-module-obps";
 // import { initNOCComponents } from "@upyog/digit-ui-module-noc";
 import { initEngagementComponents } from "@upyog/digit-ui-module-engagement";
@@ -43,19 +47,32 @@ import { initBillsComponents } from "@upyog/digit-ui-module-bills";
 //   PTRLinks,
 //   PTRComponents,
 // } from "@nudmcdgnpm/upyog-ui-module-ptr";
-import { ASSETComponents, ASSETLinks, ASSETModule } from "@djb25/digit-ui-module-asset";
+import {
+  ASSETComponents,
+  ASSETLinks,
+  ASSETModule,
+} from "@djb25/digit-ui-module-asset";
 
-// import { 
-//   EWModule, 
-//   EWLinks, 
+// import {
+//   EWModule,
+//   EWLinks,
 //   EWComponents }
 //   from "@nudmcdgnpm/upyog-ui-module-ew";
 
 // import { SVComponents, SVLinks, SVModule } from "@nudmcdgnpm/upyog-ui-module-sv";
 // import {CHBModule,CHBLinks,CHBComponents} from "@nudmcdgnpm/upyog-ui-module-chb";
 // import {ADSModule,ADSLinks,ADSComponents} from "@nudmcdgnpm/upyog-ui-module-ads";
-// import { WTModule, WTLinks, WTComponents } from "@nudmcdgnpm/upyog-ui-module-wt";
-import { VENDORComponents, VENDORLinks, VENDORModule } from "@nudmcdgnpm/upyog-ui-module-vendor";
+import {
+  WTModule,
+  WTLinks,
+  WTComponents,
+  initWTComponents,
+} from "@djb25/digit-ui-module-wt";
+import {
+  VENDORComponents,
+  VENDORLinks,
+  VENDORModule,
+} from "@nudmcdgnpm/upyog-ui-module-vendor";
 // import { initReportsComponents } from "@upyog/digit-ui-module-reports";
 
 initLibraries();
@@ -91,9 +108,9 @@ const enabledModules = [
   // "SV",
   // "EW",
   // "CHB",
-  // "WT",
+  "WT",
   "VENDOR",
-  "MT"
+  "MT",
 ];
 window.Digit.ComponentRegistryService.setupRegistry({
   ...paymentConfigs,
@@ -127,12 +144,12 @@ window.Digit.ComponentRegistryService.setupRegistry({
   // CHBModule,
   // CHBLinks,
   // ...CHBComponents,
-  // WTModule,
-  // WTLinks,
-  // ...WTComponents,
+  WTModule,
+  WTLinks,
+  ...WTComponents,
   VENDORModule,
   VENDORLinks,
-  ...VENDORComponents
+  ...VENDORComponents,
 });
 
 initPGRComponents();
@@ -149,6 +166,7 @@ initEngagementComponents();
 initCommonPTComponents();
 initBillsComponents();
 initFinanceComponents();
+initWTComponents();
 // initAssetComponents();
 // initReportsComponents();
 // initCustomisationComponents();

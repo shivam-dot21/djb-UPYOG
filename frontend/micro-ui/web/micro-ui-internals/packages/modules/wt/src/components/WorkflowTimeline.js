@@ -1,64 +1,99 @@
-import React, { Fragment } from 'react';
+import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { Card, CardSubHeader, StatusTable, Row, SubmitBar, LinkButton } from '@nudmcdgnpm/digit-ui-react-components';
+import { Card, CardSubHeader } from '@nudmcdgnpm/digit-ui-react-components';
+
+// --- Icons ---
+
+const CheckIcon = () => (
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+    <polyline points="20 6 9 17 4 12"></polyline>
+  </svg>
+);
+
+// UPDATED CLOCK ICON
+const ClockIcon = () => (
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <circle cx="12" cy="12" r="10"></circle>
+    {/* Added className 'clock-hands2' */}
+    <polyline className="clock-hands2" points="12 6 12 12 16 14"></polyline>
+  </svg>
+);
 
 const WorkflowTimeline = ({ workflowDetails }) => {
     const { t } = useTranslation();
 
-    if (!workflowDetails || !workflowDetails.data || !workflowDetails.data.timeline) {
+    if (!workflowDetails?.data?.timeline) {
         return null;
     }
 
     const timeline = workflowDetails.data.timeline;
 
+    // Updated to return status with '2' suffix
     const getStatusClass = (status, index) => {
-        if (index === 0) return 'current';
-        // Logic can be expanded based on specific status strings if needed
-        return 'completed';
+        if (index === 0) return 'current2';
+        return 'completed2';
     };
 
     const convertEpochToDate = (dateEpoch) => {
-        if (dateEpoch == null || dateEpoch == undefined || dateEpoch == "") {
-            return "NA";
-        }
-        const dateFromApi = new Date(dateEpoch);
-        let month = dateFromApi.getMonth() + 1;
-        let day = dateFromApi.getDate();
-        let year = dateFromApi.getFullYear();
-        month = (month > 9 ? "" : "0") + month;
-        day = (day > 9 ? "" : "0") + day;
-        return `${day}/${month}/${year}`;
+        if (!dateEpoch) return "N/A";
+        const date = new Date(dateEpoch);
+        const day = date.getDate().toString().padStart(2, '0');
+        const month = (date.getMonth() + 1).toString().padStart(2, '0');
+        const year = date.getFullYear().toString().slice(-2);
+        const hours = date.getHours().toString().padStart(2, '0');
+        const minutes = date.getMinutes().toString().padStart(2, '0');
+        return `${day}/${month}/${year} ${hours}:${minutes}`;
     };
 
     return (
-        <Card className="workflow-timeline-card">
-            <CardSubHeader>{t("WORKFLOW_TIMELINE")}</CardSubHeader>
-            <div className="timeline-container">
+        <Card className="workflow-timeline-card2 digit-form-composer" style={{ background: '#fafafa', padding: '16px' }}>
+            <CardSubHeader style={{ marginBottom: '16px', fontSize: '16px', fontWeight: '700', color: '#374151' }}>
+                {t("WORKFLOW_TIMELINE")}
+            </CardSubHeader>
+            
+            <div className="timeline-container2">
                 {timeline.map((checkpoint, index) => {
                     const statusClass = getStatusClass(checkpoint.status, index);
+                    // Hide line for last item
+                    const showLine = index !== timeline.length - 1 && timeline.length > 1;
 
                     return (
-                        <div key={index} className={`timeline-item ${statusClass}`}>
-                            <div className="timeline-marker">
-                                <div className="timeline-circle"></div>
-                                {index !== timeline.length - 1 && <div className="timeline-line"></div>}
+                        <div key={index} className={`timeline-item2 ${statusClass}`}>
+                            <div className="timeline-marker2">
+                                <div className="timeline-circle2">
+                                    {statusClass === 'completed2' ? <CheckIcon /> : <ClockIcon />}
+                                </div>
+                                {showLine && <div className="timeline-line2"></div>}
                             </div>
-                            <div className="timeline-content">
-                                <div className="timeline-title">
-                                    {t(`WF_${checkpoint?.performedAction === "REOPEN" ? checkpoint?.performedAction : checkpoint?.state}`)}
+
+                            <div className="timeline-content2">
+                                <div className="timeline-header2">
+                                    <div className="timeline-title2">
+                                        {t(`WF_${checkpoint?.performedAction === "REOPEN" ? checkpoint?.performedAction : checkpoint?.state}`)}
+                                    </div>
+                                    <span className="timeline-date2">
+                                        {convertEpochToDate(checkpoint?.auditDetails?.lastModified)}
+                                    </span>
                                 </div>
-                                <span className="timeline-date">
-                                    {convertEpochToDate(checkpoint?.auditDetails?.lastModified)}
-                                </span>
-                                <div className={`timeline-status-tag status-${statusClass}`}>
-                                    {t(checkpoint.status)}
+
+                                <div className="timeline-body2">
+                                    {/* statusClass is now 'completed2' or 'current2', creating 'status-completed2' etc */}
+                                    <div className={`timeline-status-tag2 status-${statusClass}`}>
+                                        {t(checkpoint.status)}
+                                    </div>
+                                    
+                                    {checkpoint?.comment && (
+                                       <div className="timeline-comment2">
+                                           {t(checkpoint.comment)}
+                                       </div>
+                                    )}
                                 </div>
-                                <div className="timeline-comment">
-                                    {checkpoint?.comment ? t(checkpoint.comment) : t("CS_COMMON_NO_COMMENT")}
-                                </div>
+
                                 {checkpoint?.assignes?.length > 0 && (
-                                    <div className="timeline-assignee">
-                                        <small>{t("ES_COMMON_ASSIGNED_TO")}: {checkpoint?.assignes?.[0]?.name}</small>
+                                    <div className="timeline-footer2">
+                                        <span>
+                                            {t("ES_COMMON_ASSIGNED_TO")}: <strong>{checkpoint?.assignes?.[0]?.name}</strong>
+                                        </span>
                                     </div>
                                 )}
                             </div>
