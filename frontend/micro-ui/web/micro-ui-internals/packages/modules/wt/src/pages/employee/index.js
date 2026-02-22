@@ -1,9 +1,10 @@
-import { AppContainer, ArrowLeft, HomeIcon, ModuleHeader, PrivateRoute } from "@nudmcdgnpm/digit-ui-react-components";
+import { AppContainer, PrivateRoute } from "@nudmcdgnpm/digit-ui-react-components";
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { Switch, useLocation } from "react-router-dom";
 import Inbox from "./Inbox";
 import SearchApp from "./SearchApp";
+import { ArrowLeft, HomeIcon, ModuleHeader } from "@nudmcdgnpm/digit-ui-react-components";
 
 const EmployeeApp = ({ path }) => {
   const { t } = useTranslation();
@@ -147,6 +148,7 @@ const EmployeeApp = ({ path }) => {
 
           {/* Booking Details */}
           <PrivateRoute path={`${path}/booking-details/:id`} component={() => <ApplicationDetails parentRoute={path} />} />
+
           <PrivateRoute path={`${path}/bookingsearch/booking-details/:id`} component={() => <ApplicationDetails parentRoute={path} />} />
 
           {/* My Bookings */}

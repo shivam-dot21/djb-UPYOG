@@ -34,18 +34,18 @@ import "@djb25/digit-ui-css";
 import "@djb25/digit-ui-css/dist/index.css";
 
 // import { PTRModule, PTRLinks, PTRComponents } from "@nudmcdgnpm/upyog-ui-module-ptr";
-import { ASSETComponents, ASSETLinks, ASSETModule , initAssetComponents} from "@djb25/digit-ui-module-asset";
+import { ASSETComponents, ASSETLinks, ASSETModule, initAssetComponents } from "@djb25/digit-ui-module-asset";
 
-// import { 
-//   EWModule, 
-//   EWLinks, 
+// import {
+//   EWModule,
+//   EWLinks,
 //   EWComponents }
 //   from "@nudmcdgnpm/upyog-ui-module-ew";
 
 // import { SVComponents, SVLinks, SVModule } from "@nudmcdgnpm/upyog-ui-module-sv";
 // import {CHBModule,CHBLinks,CHBComponents} from "@nudmcdgnpm/upyog-ui-module-chb";
 // import {ADSModule,ADSLinks,ADSComponents} from "@nudmcdgnpm/upyog-ui-module-ads";
-// import { WTModule, WTLinks, WTComponents } from "@nudmcdgnpm/upyog-ui-module-wt";
+import { WTModule, WTLinks, WTComponents, initWTComponents } from "@djb25/digit-ui-module-wt";
 import { VENDORComponents, VENDORLinks, VENDORModule } from "@nudmcdgnpm/upyog-ui-module-vendor";
 
 // import * as comps from "@nudmcdgnpm/digit-ui-react-components";
@@ -87,18 +87,18 @@ const enabledModules = [
   // "SV",
   // "EW",
   // "CHB",
-  // "WT",
+  "WT",
   "VENDOR",
-  "MT"
+  "MT",
 ];
 
 const initTokens = (stateCode) => {
   const userType = window.sessionStorage.getItem("userType") || process.env.REACT_APP_USER_TYPE || "CITIZEN";
 
-  const token = window.localStorage.getItem("token")|| process.env[`REACT_APP_${userType}_TOKEN`];
- 
-  const citizenInfo = window.localStorage.getItem("Citizen.user-info")
- 
+  const token = window.localStorage.getItem("token") || process.env[`REACT_APP_${userType}_TOKEN`];
+
+  const citizenInfo = window.localStorage.getItem("Citizen.user-info");
+
   const citizenTenantId = window.localStorage.getItem("Citizen.tenant-id") || stateCode;
 
   const employeeInfo = window.localStorage.getItem("Employee.user-info");
@@ -134,32 +134,32 @@ const initDigitUI = () => {
     FinanceModule,
     ReceiptsModule,
     BillsModule,
-    // PTRModule, 
-    // PTRLinks, 
+    // PTRModule,
+    // PTRLinks,
     // ...PTRComponents,
     // TLModule,
     // TLLinks,
     ASSETModule,
     ASSETLinks,
     ...ASSETComponents,
-  //   ADSLinks,
-  // ADSModule,
-  // ...ADSComponents,
-  // SVModule,
-  // SVLinks,
-  // ...SVComponents,
-  // EWModule,
-  // EWLinks,
-  // ...EWComponents,
-  // CHBModule,
-  // CHBLinks,
-  // ...CHBComponents,
-  // WTModule,
-  // WTLinks,
-  // ...WTComponents,
-  VENDORModule,
-  VENDORLinks,
-  ...VENDORComponents
+    //   ADSLinks,
+    // ADSModule,
+    // ...ADSComponents,
+    // SVModule,
+    // SVLinks,
+    // ...SVComponents,
+    // EWModule,
+    // EWLinks,
+    // ...EWComponents,
+    // CHBModule,
+    // CHBLinks,
+    // ...CHBComponents,
+    WTModule,
+    WTLinks,
+    ...WTComponents,
+    VENDORModule,
+    VENDORLinks,
+    ...VENDORComponents,
   });
 
   initFSMComponents();
@@ -178,6 +178,7 @@ const initDigitUI = () => {
   initBillsComponents();
   initFinanceComponents();
   initAssetComponents();
+  initWTComponents();
 
   // initCustomisationComponents();
 

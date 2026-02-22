@@ -1,9 +1,9 @@
-import React from "react";
+import React, { use } from "react";
 import { useTranslation } from "react-i18next";
 import { useQueryClient } from "react-query";
 import { Redirect, Route, Switch, useHistory, useLocation, useRouteMatch } from "react-router-dom";
 import { commonConfig } from "../../../config/config";
-import { Timeline } from "@nudmcdgnpm/digit-ui-react-components";
+import VerticalTimeline from "../../../components/VerticalTimeline"; // Import the new component
 
 
 const WTCreate = () => {
@@ -15,6 +15,41 @@ const WTCreate = () => {
 
   let config = [];
   const [params, setParams, clearParams] = Digit.Hooks.useSessionStorage("WT_Create", {});
+
+  // Sets the serviceType in case of employee side for WT, MT, and TP
+  if ((!params.serviceType || Object.keys(params.serviceType).length === 0) && pathname.includes("employee")) {
+    if (pathname.includes("mt")) {
+      console.log("MT Create");
+      setParams({
+        "serviceType": {
+          "serviceType": {
+            "code": "MobileToilet",
+            "i18nKey": "Mobile Toilet",
+            "value": "Mobile Toilet"
+          }
+        }
+      })
+    } else if (pathname.includes("tp")) {
+      setParams({
+        "serviceType": {
+          "serviceType": {
+            "code": "TREE_PRUNING",
+            "i18nKey": "Tree Pruning",
+            "value": "Tree Pruning"
+          }
+        }
+      })
+    }
+    else {
+      setParams({
+        "serviceType": {
+          "serviceType": {
+            "code": "WT", "i18nKey": "Water Tanker", "value": "Water Tanker"
+          }
+        }
+      })
+    }
+  }
 
   const goNext = (skipStep, index, isAddMultiple, key) => {
     let currentPath = pathname.split("/").pop(),
@@ -47,8 +82,13 @@ const WTCreate = () => {
       nextStep = key;
     }
     // Change next step to "toiletRequest-details" if the current step is "request-details" and the service type code is not "WT".
-    if(nextStep === "request-details" && params?.serviceType?.serviceType?.code !== "WT"){
-      nextStep= "toiletRequest-details";
+    if (nextStep === "request-details") {
+      const code = params?.serviceType?.serviceType?.code;
+      if (code === "MobileToilet") {
+        nextStep = "toiletRequest-details";
+      } else if (code === "TREE_PRUNING") {
+        nextStep = "treePruningRequest-details";
+      }
     }
     if (nextStep === null) {
       return redirectWithHistory(`${match.path}/check`);
@@ -63,20 +103,23 @@ const WTCreate = () => {
     redirectWithHistory(nextPage);
   };
 
- 
 
-  if(params && Object.keys(params).length>0 && window.location.href.includes("/service-type") && sessionStorage.getItem("docReqScreenByBack") !== "true")
-    {
-      clearParams();
-      queryClient.invalidateQueries("WT_Create");
-    }
+
+  if (params && Object.keys(params).length > 0 && window.location.href.includes("/service-type") && sessionStorage.getItem("docReqScreenByBack") !== "true") {
+    clearParams();
+    queryClient.invalidateQueries("WT_Create");
+  }
 
   const wt_create = async () => {
-    if(params?.serviceType?.serviceType?.code === "WT"){
+
+    if (params?.serviceType?.serviceType?.code === "WT") {
       history.push(`${match.path}/wt-acknowledgement`);
     }
-    if(params?.serviceType?.serviceType?.code === "MobileToilet"){
+    if (params?.serviceType?.serviceType?.code === "MobileToilet") {
       history.push(`${match.path}/mt-acknowledgement`);
+    }
+    if (params?.serviceType?.serviceType?.code === "TREE_PRUNING") {
+      history.push(`${match.path}/tp-acknowledgement`);
     }
   };
 
@@ -102,49 +145,59 @@ const WTCreate = () => {
     queryClient.invalidateQueries("WT_Create");
   };
 
-
-
   let commonFields = commonConfig;
   commonFields.forEach((obj) => {
     config = config.concat(obj.body.filter((a) => !a.hideInCitizen));
   });
 
-  config.indexRoute = "service-type";
+  // Changes the indexRoute based on the pathname
+  config.indexRoute = pathname.includes("citizen") ? "service-type" : "info";
 
   const CheckPage = Digit?.ComponentRegistryService?.getComponent("WTCheckPage");
   const WTAcknowledgement = Digit?.ComponentRegistryService?.getComponent("WTAcknowledgement");
   const MTAcknowledgement = Digit?.ComponentRegistryService?.getComponent("MTAcknowledgement");
-
+  const TPAcknowledgement = Digit?.ComponentRegistryService?.getComponent("TPAcknowledgement");
 
 
 
 
   return (
     <React.Fragment>
-    <Timeline config={config}/>
-    <Switch>
-      {config.map((routeObj, index) => {
-        const { component, texts, inputs, key,additionaFields } = routeObj;
-        const Component = typeof component === "string" ? Digit.ComponentRegistryService.getComponent(component) : component;
-        return (
-          <Route path={`${match.path}/${routeObj.route}`} key={index}>
-            <Component config={{ texts, inputs, key,additionaFields }} onSelect={handleSelect} t={t} formData={params}/>
-          </Route>
-        );
-      })}
-      <Route path={`${match.path}/check`}>
-        <CheckPage onSubmit={wt_create} value={params} />
-      </Route>
-      <Route path={`${match.path}/wt-acknowledgement`}>
-        <WTAcknowledgement data={params} onSuccess={onSuccess} />
-      </Route>
-      <Route path={`${match.path}/mt-acknowledgement`}>
-        <MTAcknowledgement data={params} onSuccess={onSuccess} />
-      </Route>
-      <Route>
-        <Redirect to={`${match.path}/${config.indexRoute}`} />
-      </Route>
-    </Switch>
+      <div style={{ display: "flex", width: "100%", gap: "24px" }}>
+        {!pathname.includes("/info") && (
+          <div style={{ flex: "0 0 280px", background: "#fff", padding: "20px 0", boxShadow: "0 2px 4px rgba(0,0,0,0.1)", borderRadius: "4px" }}>
+            <VerticalTimeline config={config} />
+          </div>
+        )}
+        <div style={{ flex: "1", overflowY: "auto" }}>
+          <Switch>
+            {config.map((routeObj, index) => {
+              const { component, texts, inputs, key, additionaFields } = routeObj;
+              const Component = typeof component === "string" ? Digit.ComponentRegistryService.getComponent(component) : component;
+              return (
+                <Route path={`${match.path}/${routeObj.route}`} key={index}>
+                  <Component config={{ texts, inputs, key, additionaFields }} onSelect={handleSelect} t={t} formData={params} />
+                </Route>
+              );
+            })}
+            <Route path={`${match.path}/check`}>
+              <CheckPage onSubmit={wt_create} value={params} />
+            </Route>
+            <Route path={`${match.path}/wt-acknowledgement`}>
+              <WTAcknowledgement data={params} onSuccess={onSuccess} />
+            </Route>
+            <Route path={`${match.path}/mt-acknowledgement`}>
+              <MTAcknowledgement data={params} onSuccess={onSuccess} />
+            </Route>
+            <Route path={`${match.path}/tp-acknowledgement`}>
+              <TPAcknowledgement data={params} onSuccess={onSuccess} />
+            </Route>
+            <Route>
+              <Redirect to={`${match.path}/${config.indexRoute}`} />
+            </Route>
+          </Switch>
+        </div>
+      </div>
     </React.Fragment>
   );
 };
