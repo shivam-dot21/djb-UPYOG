@@ -1,10 +1,9 @@
-import { AppContainer, PrivateRoute } from "@nudmcdgnpm/digit-ui-react-components";
+import { AppContainer, PrivateRoute, ModuleHeader, ArrowLeft, HomeIcon } from "@upyog/digit-ui-react-components";
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { Switch, useLocation } from "react-router-dom";
 import Inbox from "./Inbox";
 import SearchApp from "./SearchApp";
-import { ArrowLeft, HomeIcon, ModuleHeader } from "@nudmcdgnpm/digit-ui-react-components";
 
 const EmployeeApp = ({ path }) => {
   const { t } = useTranslation();

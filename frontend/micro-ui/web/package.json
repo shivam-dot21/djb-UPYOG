@@ -20,10 +20,10 @@
   },
   "dependencies": {
     "@djb25/digit-ui-css": "1.0.6",
-    "@nudmcdgnpm/digit-ui-libraries": "1.2.1",
+    "@upyog/digit-ui-libraries": "3.0.5",
     "@upyog/digit-ui-module-bills": "1.8.0",
     "@upyog/digit-ui-module-common": "1.8.12",
-    "@upyog/digit-ui-module-core": "1.8.2",
+    "@upyog/digit-ui-module-core": "3.0.5",
     "@upyog/digit-ui-module-engagement": "1.8.0",
     "@upyog/digit-ui-module-dss": "1.8.11",
     "@upyog/digit-ui-module-fsm": "3.0.1",
@@ -32,7 +32,7 @@
     "@upyog/digit-ui-module-mcollect": "1.8.8",
     "@upyog/digit-ui-module-commonpt": "1.8.1",
     "@upyog/digit-ui-module-receipts": "1.8.0",
-    "@nudmcdgnpm/digit-ui-react-components": "1.2.13",
+    "@upyog/digit-ui-react-components": "3.0.2",
     "@nudmcdgnpm/digit-ui-module-pgr": "1.2.1",
     "@nudmcdgnpm/upyog-ui-module-vendor": "1.2.1",
     "@djb25/digit-ui-module-wt": "1.0.1",
@@ -55,7 +55,8 @@
     "**/@babel/preset-env": "7.14.0",
     "**/@babel/plugin-transform-modules-commonjs": "7.14.0",
     "glob": "7.2.3",
-    "minimatch": "3.1.2"
+    "minimatch": "3.1.2",
+    "filelist": "1.0.4"
   },
   "scripts": {
     "start": "react-scripts start",

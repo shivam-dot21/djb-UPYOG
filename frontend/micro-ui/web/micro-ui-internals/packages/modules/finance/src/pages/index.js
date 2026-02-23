@@ -3,7 +3,7 @@
  * Created On : 13-05-2025
  * Purpose : FinanceApp component for routing
  */
-import { PrivateRoute } from "@nudmcdgnpm/digit-ui-react-components";
+import { PrivateRoute } from "@upyog/digit-ui-react-components";
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { Link, Switch, useLocation } from "react-router-dom";

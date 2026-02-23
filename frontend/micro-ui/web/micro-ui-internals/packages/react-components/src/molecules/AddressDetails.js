@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { useForm, Controller } from "react-hook-form";
-import { CardLabel, TextInput,TextArea,Dropdown,FormStep } from "@nudmcdgnpm/digit-ui-react-components";  //imported all from our common library
+import { CardLabel, TextInput,TextArea,Dropdown,FormStep } from "@upyog/digit-ui-react-components";  //imported all from our common library
 import { useLocation } from "react-router-dom";
 
 
@@ -9,7 +9,7 @@ import { useLocation } from "react-router-dom";
  * all cities data is fetching from common Tenants hook and locality data is fetched in the same way.
  * 
  * Steps to Use it in your Module/Application  :-
- *    1. Import it in your Module.js file of your Application/Module from  @nudmcdgnpm/digit-ui-react-components library.
+ *    1. Import it in your Module.js file of your Application/Module from  @upyog/digit-ui-react-components library.
  *    2. Insert it inside your componet registry Function in the same Module.js file.
  *    3. Then simply In your Config.js file which is present in your comfig folder inside src, add the component name "AddressDetails" in components and key should be "address"
  * 

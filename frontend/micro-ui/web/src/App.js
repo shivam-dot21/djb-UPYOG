@@ -23,7 +23,7 @@ import {
   paymentConfigs,
 } from "@upyog/digit-ui-module-common";
 import { DigitUI } from "@upyog/digit-ui-module-core";
-import { initLibraries } from "@nudmcdgnpm/digit-ui-libraries";
+import { initLibraries } from "@upyog/digit-ui-libraries";
 import { HRMSModule, initHRMSComponents } from "@djb25/digit-ui-module-hrms";
 // import {
 //   TLModule,
