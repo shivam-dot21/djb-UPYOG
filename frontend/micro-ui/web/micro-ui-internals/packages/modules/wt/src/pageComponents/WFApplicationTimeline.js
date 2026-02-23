@@ -1,4 +1,4 @@
-import { CardSectionHeader, CheckPoint, ConnectingCheckPoints, Loader, SubmitBar } from "@nudmcdgnpm/digit-ui-react-components";
+import { CardSectionHeader, CheckPoint, ConnectingCheckPoints, Loader, SubmitBar } from "@upyog/digit-ui-react-components";
 import React, { Fragment } from "react";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
@@ -9,8 +9,23 @@ import { APPLICATION_PATH } from "../utils";
 const WFApplicationTimeline = (props) => {
   let bookingCode=props?.application?.bookingNo.split("-")[0]; // for selecting the Module code from booking number
   const { t } = useTranslation();
-  const businessService = bookingCode=="WT" ? "watertanker" : "mobileToilet"; // for selecting the Module code from booking number
-  const moduleName = bookingCode=="WT" ? "request-service.water_tanker" : "request-service.mobile_toilet"; // for selecting the Module code from booking number
+  const businessService = bookingCode=="WT" 
+        ? "watertanker"
+          : bookingCode === "MT"
+          ? "mobileToilet"
+          : bookingCode === "TP"
+          ? "treePruning"
+          : "unknown"; // for selecting the Module code from booking number
+
+  // const moduleName = bookingCode=="WT" ? "request-service.water_tanker" : "request-service.mobile_toilet"; // for selecting the Module code from booking number
+  const moduleName =
+  bookingCode === "WT"
+    ? "request-service.water_tanker"
+    : bookingCode === "MT"
+    ? "request-service.mobile_toilet"
+    : bookingCode === "TP"
+    ? "request-service.tree_pruning"
+    : "request-service.unknown";
   
 
   const { isLoading, data } = Digit.Hooks.useWorkflowDetails({

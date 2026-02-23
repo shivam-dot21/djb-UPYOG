@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Dropdown, RadioButtons, ActionBar, RemoveableTag, CloseSvg, CheckBox, Localities, SubmitBar } from "@nudmcdgnpm/digit-ui-react-components";
+import { Dropdown, RadioButtons, ActionBar, RemoveableTag, CloseSvg, CheckBox, Localities, SubmitBar } from "@upyog/digit-ui-react-components";
 import { useQueryClient } from "react-query";
 import { useTranslation } from "react-i18next";
 
@@ -22,7 +22,7 @@ const Filter = ({ searchParams, onFilterChange, defaultSearchParams, statusMap, 
   };
 
   const applyLocalFilters = () => {
-    if (_searchParams.services.length === 0) onFilterChange({ ..._searchParams, services: ApplicationTypeMenu.map((e) => e.value) });
+    if (_searchParams.services.length === 0) onFilterChange({ ..._searchParams, services:defaultSearchParams.services });
     else onFilterChange(_searchParams);
   };
 

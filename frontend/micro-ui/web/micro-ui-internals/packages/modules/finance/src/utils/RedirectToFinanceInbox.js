@@ -1,5 +1,5 @@
 import React from "react";
-import { Loader } from "@nudmcdgnpm/digit-ui-react-components";
+import { Loader } from "@upyog/digit-ui-react-components";
 
 const RedirectToFinanceInbox = () => {
 

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { EmployeeModuleCard,CHBIcon } from "@nudmcdgnpm/digit-ui-react-components";
+import { EmployeeModuleCard,CHBIcon } from "@upyog/digit-ui-react-components";
 import { APPLICATION_PATH } from "../utils";
 
 /**
@@ -45,6 +45,10 @@ const MTCard = () => {
     {
       label: t("ES_COMMON_APPLICATION_SEARCH"),
       link: `${APPLICATION_PATH}/employee/wt/mt/my-bookings`,
+    },
+    {
+      label: t("MT_APPLICATION_CREATE"),
+      link: `${APPLICATION_PATH}/employee/wt/mt/request-service`,
     }
   ]
   const MT_CEMP = Digit.UserService.hasAccess(["MT_CEMP"]) || false;

@@ -1,4 +1,4 @@
-import { AppContainer, ArrowLeft, HomeIcon, ModuleHeader, PrivateRoute } from "@nudmcdgnpm/digit-ui-react-components";
+import { AppContainer, PrivateRoute, ModuleHeader, ArrowLeft, HomeIcon } from "@upyog/digit-ui-react-components";
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { Switch, useLocation } from "react-router-dom";
@@ -147,6 +147,7 @@ const EmployeeApp = ({ path }) => {
 
           {/* Booking Details */}
           <PrivateRoute path={`${path}/booking-details/:id`} component={() => <ApplicationDetails parentRoute={path} />} />
+
           <PrivateRoute path={`${path}/bookingsearch/booking-details/:id`} component={() => <ApplicationDetails parentRoute={path} />} />
 
           {/* My Bookings */}

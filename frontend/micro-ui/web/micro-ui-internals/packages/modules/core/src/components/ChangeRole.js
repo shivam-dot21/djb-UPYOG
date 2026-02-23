@@ -5,7 +5,7 @@
  * Code Status : Closed
  */
 import React, { useEffect, useState } from "react";
-import { Dropdown } from "@nudmcdgnpm/digit-ui-react-components";
+import { Dropdown } from "@upyog/digit-ui-react-components";
 import { useHistory } from "react-router-dom";
 
 const ChangeRole = ({ t }) => {

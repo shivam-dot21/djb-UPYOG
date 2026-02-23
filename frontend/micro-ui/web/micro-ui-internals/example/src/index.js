@@ -1,7 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom";
 
-import { initLibraries } from "@nudmcdgnpm/digit-ui-libraries";
+import { initLibraries } from "@upyog/digit-ui-libraries";
 import { PGRReducers } from "@nudmcdgnpm/digit-ui-module-pgr";
 // import { PTModule, PTLinks, PTComponents } from "@upyog/digit-ui-module-pt";
 import { MCollectModule, MCollectLinks } from "@upyog/digit-ui-module-mcollect";
@@ -29,28 +29,28 @@ import { initBillsComponents, BillsModule } from "@upyog/digit-ui-module-bills";
 // import {initCustomisationComponents} from "./customisations";
 
 // import { PGRModule, PGRLinks } from "@nudmcdgnpm/digit-ui-module-pgr";
-// import { Body, TopBar } from "@nudmcdgnpm/digit-ui-react-components";
+// import { Body, TopBar } from "@upyog/digit-ui-react-components";
 import "@djb25/digit-ui-css";
 import "@djb25/digit-ui-css/dist/index.css";
 
 // import { PTRModule, PTRLinks, PTRComponents } from "@nudmcdgnpm/upyog-ui-module-ptr";
-import { ASSETComponents, ASSETLinks, ASSETModule , initAssetComponents} from "@djb25/digit-ui-module-asset";
+import { ASSETComponents, ASSETLinks, ASSETModule, initAssetComponents } from "@djb25/digit-ui-module-asset";
 
-// import { 
-//   EWModule, 
-//   EWLinks, 
+// import {
+//   EWModule,
+//   EWLinks,
 //   EWComponents }
 //   from "@nudmcdgnpm/upyog-ui-module-ew";
 
 // import { SVComponents, SVLinks, SVModule } from "@nudmcdgnpm/upyog-ui-module-sv";
 // import {CHBModule,CHBLinks,CHBComponents} from "@nudmcdgnpm/upyog-ui-module-chb";
 // import {ADSModule,ADSLinks,ADSComponents} from "@nudmcdgnpm/upyog-ui-module-ads";
-// import { WTModule, WTLinks, WTComponents } from "@nudmcdgnpm/upyog-ui-module-wt";
+import { WTModule, WTLinks, WTComponents, initWTComponents } from "@djb25/digit-ui-module-wt";
 import { VENDORComponents, VENDORLinks, VENDORModule } from "@nudmcdgnpm/upyog-ui-module-vendor";
 
-// import * as comps from "@nudmcdgnpm/digit-ui-react-components";
+// import * as comps from "@upyog/digit-ui-react-components";
 
-// import { subFormRegistry } from "@nudmcdgnpm/digit-ui-libraries";
+// import { subFormRegistry } from "@upyog/digit-ui-libraries";
 
 import { pgrCustomizations, pgrComponents } from "./pgr";
 
@@ -87,18 +87,18 @@ const enabledModules = [
   // "SV",
   // "EW",
   // "CHB",
-  // "WT",
+  "WT",
   "VENDOR",
-  "MT"
+  "MT",
 ];
 
 const initTokens = (stateCode) => {
   const userType = window.sessionStorage.getItem("userType") || process.env.REACT_APP_USER_TYPE || "CITIZEN";
 
-  const token = window.localStorage.getItem("token")|| process.env[`REACT_APP_${userType}_TOKEN`];
- 
-  const citizenInfo = window.localStorage.getItem("Citizen.user-info")
- 
+  const token = window.localStorage.getItem("token") || process.env[`REACT_APP_${userType}_TOKEN`];
+
+  const citizenInfo = window.localStorage.getItem("Citizen.user-info");
+
   const citizenTenantId = window.localStorage.getItem("Citizen.tenant-id") || stateCode;
 
   const employeeInfo = window.localStorage.getItem("Employee.user-info");
@@ -134,32 +134,32 @@ const initDigitUI = () => {
     FinanceModule,
     ReceiptsModule,
     BillsModule,
-    // PTRModule, 
-    // PTRLinks, 
+    // PTRModule,
+    // PTRLinks,
     // ...PTRComponents,
     // TLModule,
     // TLLinks,
     ASSETModule,
     ASSETLinks,
     ...ASSETComponents,
-  //   ADSLinks,
-  // ADSModule,
-  // ...ADSComponents,
-  // SVModule,
-  // SVLinks,
-  // ...SVComponents,
-  // EWModule,
-  // EWLinks,
-  // ...EWComponents,
-  // CHBModule,
-  // CHBLinks,
-  // ...CHBComponents,
-  // WTModule,
-  // WTLinks,
-  // ...WTComponents,
-  VENDORModule,
-  VENDORLinks,
-  ...VENDORComponents
+    //   ADSLinks,
+    // ADSModule,
+    // ...ADSComponents,
+    // SVModule,
+    // SVLinks,
+    // ...SVComponents,
+    // EWModule,
+    // EWLinks,
+    // ...EWComponents,
+    // CHBModule,
+    // CHBLinks,
+    // ...CHBComponents,
+    WTModule,
+    WTLinks,
+    ...WTComponents,
+    VENDORModule,
+    VENDORLinks,
+    ...VENDORComponents,
   });
 
   initFSMComponents();
@@ -178,6 +178,7 @@ const initDigitUI = () => {
   initBillsComponents();
   initFinanceComponents();
   initAssetComponents();
+  initWTComponents();
 
   // initCustomisationComponents();
 

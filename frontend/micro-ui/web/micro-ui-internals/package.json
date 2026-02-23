@@ -89,6 +89,7 @@
     "**/@babel/preset-env": "7.14.0",
     "**/@babel/plugin-transform-modules-commonjs": "7.14.0",
     "glob": "7.2.3",
-    "minimatch": "3.1.2"
+    "minimatch": "3.1.2",
+    "filelist": "1.0.4"
   }
 }
