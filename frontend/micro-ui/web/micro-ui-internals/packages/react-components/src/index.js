@@ -232,6 +232,8 @@ import AddressDetails from "./molecules/AddressDetails";
 import ApplicantDetails from "./molecules/ApplicantDetails";
 import Timeline from "./molecules/Timeline";
 import ModuleHeader from "./atoms/ModuleHeader";
+import ExpandedViewContext from "./atoms/ExpandedViewContext";
+import ExpandedViewPage from "./atoms/ExpandedViewPage";
 
 export {
   Phone,
@@ -473,4 +475,6 @@ export {
   ApplicantDetails,
   Timeline,
   ModuleHeader,
+  ExpandedViewContext,
+  ExpandedViewPage,
 };
