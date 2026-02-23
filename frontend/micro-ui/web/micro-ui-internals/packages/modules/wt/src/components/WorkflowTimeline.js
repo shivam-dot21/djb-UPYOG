@@ -1,6 +1,6 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { Card, CardSubHeader } from '@nudmcdgnpm/digit-ui-react-components';
+import { Card, CardSubHeader } from '@upyog/digit-ui-react-components';
 
 // --- Icons ---
 

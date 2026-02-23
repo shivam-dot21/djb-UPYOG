@@ -191,6 +191,7 @@ import WhatsNewCard from "./atoms/WhatsNewCard";
 import EventCalendarView from "./atoms/EventCalendarView";
 import InboxLinks from "./atoms/InboxLinks";
 import PopupHeadingLabel from "./atoms/PopupHeadingLabel";
+import ModuleHeader from "./atoms/ModuleHeader";
 
 import { FormComposer } from "./hoc/FormComposer";
 import Modal from "./hoc/Modal";
@@ -231,7 +232,6 @@ import CitizenConsentForm from "./atoms/CitizenConsentForm";
 import AddressDetails from "./molecules/AddressDetails";
 import ApplicantDetails from "./molecules/ApplicantDetails";
 import Timeline from "./molecules/Timeline";
-import ModuleHeader from "./atoms/ModuleHeader";
 import ExpandedViewContext from "./atoms/ExpandedViewContext";
 import ExpandedViewPage from "./atoms/ExpandedViewPage";
 

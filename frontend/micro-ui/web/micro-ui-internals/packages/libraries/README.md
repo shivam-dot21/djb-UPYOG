@@ -4,7 +4,7 @@
 ## Install
 
 ```bash
-npm install --save @nudmcdgnpm/digit-ui-libraries
+npm install --save @upyog/digit-ui-libraries
 ```
 
 ## Limitation
@@ -22,7 +22,7 @@ frontend/micro-ui/web/package.json
 ```
 
 ```json
-"@nudmcdgnpm/digit-ui-libraries":"1.8.0",
+"@upyog/digit-ui-libraries":"1.8.0",
 ```
 
 then navigate to App.js
@@ -36,7 +36,7 @@ then navigate to App.js
 
 ```jsx
 import React from "react";
-import initLibraries from "@nudmcdgnpm/digit-ui-libraries";
+import initLibraries from "@upyog/digit-ui-libraries";
 
 import defaultConfig from "./config";
 

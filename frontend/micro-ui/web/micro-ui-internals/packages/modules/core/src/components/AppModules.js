@@ -7,7 +7,7 @@ import EmployeeLogin from "../pages/employee/Login/index";
 import ChangePassword from "../pages/employee/ChangePassword/index";
 import ForgotPassword from "../pages/employee/ForgotPassword/index";
 import LanguageSelection from "../pages/employee/LanguageSelection";
-import { ExpandedViewContext, ExpandedViewPage } from "@nudmcdgnpm/digit-ui-react-components";
+import { ExpandedViewContext, ExpandedViewPage } from "@upyog/digit-ui-react-components";
 // import UserProfile from "./userProfile";
 
 const getTenants = (codes, tenants) => {

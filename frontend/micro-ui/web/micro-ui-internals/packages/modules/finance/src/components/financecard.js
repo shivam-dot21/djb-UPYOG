@@ -5,7 +5,7 @@
  * Code status : open
  */
 import React from "react";
-import { EmployeeModuleCard, FinanceChartIcon } from "@nudmcdgnpm/digit-ui-react-components";
+import { EmployeeModuleCard, FinanceChartIcon } from "@upyog/digit-ui-react-components";
 import { useTranslation } from "react-i18next";
 
 const FinanceCard = () => {

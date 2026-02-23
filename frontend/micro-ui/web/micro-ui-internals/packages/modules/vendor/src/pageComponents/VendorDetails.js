@@ -9,7 +9,7 @@ import {
   Menu,
   MobileNumber,
   TextArea,
-} from "@nudmcdgnpm/digit-ui-react-components";
+} from "@upyog/digit-ui-react-components";
 import { useLocation, useRouteMatch } from "react-router-dom";
 import { Controller, useForm } from "react-hook-form";
 import Timeline from "../components/VENDORTimeline";
