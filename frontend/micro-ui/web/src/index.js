@@ -1,6 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import { initLibraries } from "@upyog/digit-ui-libraries";
+import { initLibraries } from "@djb25/digit-ui-libraries";
 import "./index.css";
 import App from "./App";
 

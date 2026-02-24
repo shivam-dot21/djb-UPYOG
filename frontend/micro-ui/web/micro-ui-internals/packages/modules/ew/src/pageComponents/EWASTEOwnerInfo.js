@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { FormStep, TextInput, CardLabel, MobileNumber } from "@upyog/digit-ui-react-components";
+import { FormStep, TextInput, CardLabel, MobileNumber } from "@djb25/digit-ui-react-components";
 import Timeline from "../components/EWASTETimeline";
 
 /**

@@ -17,7 +17,7 @@ import {
   Loader,
   CardText,
   Header,
-} from "@upyog/digit-ui-react-components";
+} from "@djb25/digit-ui-react-components";
 import { Link } from "react-router-dom";
 
 const VendorSearchApplication = ({ tenantId, isLoading, t, onSubmit, data, count, setShowToast, vendorData }) => {

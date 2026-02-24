@@ -1,4 +1,4 @@
-import { Header, Loader, Card, CardLabel, TextInput, SubmitBar } from "@upyog/digit-ui-react-components";
+import { Header, Loader, Card, CardLabel, TextInput, SubmitBar } from "@djb25/digit-ui-react-components";
 import React, { useState,useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";

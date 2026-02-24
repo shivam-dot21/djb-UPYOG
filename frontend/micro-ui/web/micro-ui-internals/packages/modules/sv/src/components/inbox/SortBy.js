@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import { RadioButtons } from "@upyog/digit-ui-react-components";
+import { RadioButtons } from "@djb25/digit-ui-react-components";
 import { useTranslation } from "react-i18next";
-import { CloseSvg } from "@upyog/digit-ui-react-components";
+import { CloseSvg } from "@djb25/digit-ui-react-components";
 
 /**
  * This SortBy component creates a filtering interface that allows users to sort by date (ascending or descending). 

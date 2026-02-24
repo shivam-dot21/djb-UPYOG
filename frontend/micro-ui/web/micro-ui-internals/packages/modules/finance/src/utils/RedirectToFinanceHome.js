@@ -1,5 +1,5 @@
 import React from "react";
-import { Loader } from "@upyog/digit-ui-react-components";
+import { Loader } from "@djb25/digit-ui-react-components";
 
 const RedirectToFinanceHome = () => {
 

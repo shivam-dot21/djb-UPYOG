@@ -2,20 +2,20 @@ FROM delhijalboard/alpine-node-builder-18:yarn AS build
 #FROM ghcr.io/egovernments/alpine-node-builder-14:yarn AS build
 RUN apk update && apk upgrade
 RUN apk add --no-cache git>2.30.0
-RUN yarn add @upyog/digit-ui-libraries
-RUN yarn add @upyog/digit-ui-module-fsm
-RUN yarn add @upyog/digit-ui-module-dss
-RUN yarn add @upyog/digit-ui-module-mcollect
-RUN yarn add @upyog/digit-ui-module-engagement
+RUN yarn add @djb25/digit-ui-libraries
+RUN yarn add @djb25/digit-ui-module-fsm
+RUN yarn add @djb25/digit-ui-module-dss
+RUN yarn add @djb25/digit-ui-module-mcollect
+RUN yarn add @djb25/digit-ui-module-engagement
 RUN yarn add @djb25/digit-ui-module-hrms
-RUN yarn add @upyog/digit-ui-module-core
-RUN yarn add @upyog/digit-ui-module-common
-RUN yarn add @upyog/digit-ui-module-commonpt
-RUN yarn add @upyog/digit-ui-module-bills
-RUN yarn add @nudmcdgnpm/upyog-ui-module-cm
+RUN yarn add @djb25/digit-ui-module-core
+RUN yarn add @djb25/digit-ui-module-common
+RUN yarn add @djb25/digit-ui-module-commonpt
+RUN yarn add @djb25/digit-ui-module-bills
+RUN yarn add @djb25/digit-ui-module-cm
 RUN yarn add @djb25/digit-ui-module-asset
-RUN yarn add @nudmcdgnpm/upyog-ui-module-vendor
-RUN yarn add @nudmcdgnpm/digit-ui-module-pgr
+RUN yarn add @djb25/digit-ui-module-vendor
+RUN yarn add @djb25/digit-ui-module-pgr
 
 ARG WORK_DIR
 WORKDIR /app

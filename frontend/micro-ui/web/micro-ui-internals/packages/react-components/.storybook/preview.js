@@ -1,5 +1,5 @@
 import "@djb25/digit-ui-css/example/index.css";
-import { initLibraries } from "@upyog/digit-ui-libraries";
+import { initLibraries } from "@djb25/digit-ui-libraries";
 
 // TODO: It should be removed bcz we should not use any library in components
 initLibraries();

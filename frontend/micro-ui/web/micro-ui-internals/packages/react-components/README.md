@@ -4,7 +4,7 @@
 ## Install
 
 ```bash
-npm install --save @upyog/digit-ui-react-components
+npm install --save @djb25/digit-ui-react-components
 ```
 
 ## Limitation
@@ -22,7 +22,7 @@ frontend/micro-ui/web/package.json
 ```
 
 ```json
-"@upyog/digit-ui-react-components":"1.5.24",
+"@djb25/digit-ui-react-components":"1.0.0",
 ```
 
 then navigate to App.js
@@ -35,7 +35,7 @@ Syntax for importing any component;
 
 ```jsx
 import React, { Component } from "react";
-import MyComponent from "@upyog/digit-ui-react-components";
+import MyComponent from "@djb25/digit-ui-react-components";
 
 class Example extends Component {
   render() {

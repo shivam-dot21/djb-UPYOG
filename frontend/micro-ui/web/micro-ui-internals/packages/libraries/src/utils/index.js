@@ -5,7 +5,7 @@ import * as locale from "./locale";
 import * as obps from "./obps";
 import * as pt from "./pt";
 import * as privacy from "./privacy";
-import PDFUtil, { downloadReceipt ,downloadPDFFromLink,downloadBill ,getFileUrl} from "./pdf";
+import PDFUtil, { downloadReceipt, downloadPDFFromLink, downloadBill, getFileUrl } from "./pdf";
 import getFileTypeFromFileStoreURL from "./fileType";
 
 const GetParamFromUrl = (key, fallback, search) => {
@@ -153,9 +153,7 @@ const NOCAccess = () => {
   const userInfo = Digit.UserService.getUser();
   const userRoles = userInfo?.info?.roles?.map((roleData) => roleData?.code);
 
-  const NOC_ROLES = [
-    "FIRE_NOC_APPROVER"
-  ]
+  const NOC_ROLES = ["FIRE_NOC_APPROVER"];
 
   const NOC_ACCESS = userRoles?.filter((role) => NOC_ROLES?.includes(role));
 
@@ -203,7 +201,7 @@ const BPAAccess = () => {
 
 const ptAccess = () => {
   const userInfo = Digit.UserService.getUser();
-  console.log("userInfo",userInfo);
+  console.log("userInfo", userInfo);
   const userRoles = userInfo?.info?.roles?.map((roleData) => roleData?.code);
   const ptRoles = ["PT_APPROVER", "PT_CEMP", "PT_DOC_VERIFIER", "PT_FIELD_INSPECTOR"];
   const PT_ACCESS = userRoles?.filter((role) => ptRoles?.includes(role));
@@ -245,7 +243,7 @@ const adsAccess = () => {
 const wtAccess = () => {
   const userInfo = Digit.UserService.getUser();
   const userRoles = userInfo?.info?.roles?.map((roleData) => roleData?.code);
-  const wtRoles = ["WT_CEMP","WT_VENDOR"];
+  const wtRoles = ["WT_CEMP", "WT_VENDOR"];
   const WT_ACCESS = userRoles?.filter((role) => wtRoles?.includes(role));
   return WT_ACCESS?.length > 0;
 };
@@ -253,14 +251,14 @@ const wtAccess = () => {
 const mtAccess = () => {
   const userInfo = Digit.UserService.getUser();
   const userRoles = userInfo?.info?.roles?.map((roleData) => roleData?.code);
-  const mtRoles = ["MT_CEMP","MT_VENDOR"];
+  const mtRoles = ["MT_CEMP", "MT_VENDOR"];
   const MT_ACCESS = userRoles?.filter((role) => mtRoles?.includes(role));
   return MT_ACCESS?.length > 0;
 };
 
 const ptrAccess = () => {
   const userInfo = Digit.UserService.getUser();
-  
+
   const userRoles = userInfo?.info?.roles?.map((roleData) => roleData?.code);
   const ptrRoles = ["PTR_APPROVER", "PTR_CEMP", "PTR_VERIFIER"];
 
@@ -272,7 +270,7 @@ const ptrAccess = () => {
 const assetAccess = () => {
   const userInfo = Digit.UserService.getUser();
   const userRoles = userInfo?.info?.roles?.map((roleData) => roleData?.code);
-  const assetRoles = ["ASSET_INITIATOR","ASSET_VERIFIER", "ASSET_APPROVER"];
+  const assetRoles = ["ASSET_INITIATOR", "ASSET_VERIFIER", "ASSET_APPROVER"];
   const ASSET_ACCESS = userRoles?.filter((role) => assetRoles?.includes(role));
   return ASSET_ACCESS?.length > 0;
 };
@@ -312,7 +310,7 @@ const hrmsAccess = () => {
   return HRMS_ACCESS?.length > 0;
 };
 
-const dashboardAccess = () =>{
+const dashboardAccess = () => {
   const userInfo = Digit.UserService.getUser();
   const userRoles = userInfo?.info?.roles?.map((roleData) => roleData?.code);
   const dashboardRoles = ["DASHBOARD_EMPLOYEE"];
@@ -323,7 +321,7 @@ const dashboardAccess = () =>{
 const wsAccess = () => {
   const userInfo = Digit.UserService.getUser();
   const userRoles = userInfo?.info?.roles?.map((roleData) => roleData?.code);
-  const waterRoles = ["WS_CEMP", "WS_APPROVER", "WS_FIELD_INSPECTOR", "WS_DOC_VERIFIER","WS_CLERK"];
+  const waterRoles = ["WS_CEMP", "WS_APPROVER", "WS_FIELD_INSPECTOR", "WS_DOC_VERIFIER", "WS_CLERK"];
 
   const WS_ACCESS = userRoles?.filter((role) => waterRoles?.includes(role));
 
@@ -333,7 +331,7 @@ const wsAccess = () => {
 const swAccess = () => {
   const userInfo = Digit.UserService.getUser();
   const userRoles = userInfo?.info?.roles?.map((roleData) => roleData?.code);
-  const sewerageRoles = ["SW_CEMP", "SW_APPROVER", "SW_FIELD_INSPECTOR", "SW_DOC_VERIFIER","SW_CLERK"];
+  const sewerageRoles = ["SW_CEMP", "SW_APPROVER", "SW_FIELD_INSPECTOR", "SW_DOC_VERIFIER", "SW_CLERK"];
 
   const SW_ACCESS = userRoles?.filter((role) => sewerageRoles?.includes(role));
 
@@ -347,7 +345,6 @@ const vendorAccess = () => {
   const VENDOR_ACCESS = userRoles?.filter((role) => vendorRoles?.includes(role));
   return VENDOR_ACCESS?.length > 0;
 };
-
 
 export default {
   pdf: PDFUtil,
@@ -393,5 +390,5 @@ export default {
   svAccess,
   vendorAccess,
   dashboardAccess,
-  ...privacy
+  ...privacy,
 };

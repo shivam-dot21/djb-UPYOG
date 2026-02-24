@@ -1,5 +1,5 @@
 import React,{useState,useEffect} from "react";
-import { Modal, Card,SubmitBar} from "@upyog/digit-ui-react-components";
+import { Modal, Card,SubmitBar} from "@djb25/digit-ui-react-components";
 import {useForm } from "react-hook-form";
 import { ExistingBookingDetails } from "./ExistingBookingDetails";
 
