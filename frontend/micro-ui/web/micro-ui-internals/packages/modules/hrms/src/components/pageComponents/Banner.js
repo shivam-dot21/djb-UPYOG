@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { CardLabel, LabelFieldPair } from "@upyog/digit-ui-react-components";
+import { CardLabel, LabelFieldPair } from "@djb25/digit-ui-react-components";
 const HRBanner = ({ t, config }) => {
   return (
     <LabelFieldPair>

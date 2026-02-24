@@ -1,6 +1,6 @@
-import { ActionBar, Button, Dropdown } from "@upyog/digit-ui-react-components";
+import { ActionBar, Button, Dropdown } from "@djb25/digit-ui-react-components";
 import React, { useState } from "react";
-import { CustomButton, Menu } from "@upyog/digit-ui-react-components";
+import { CustomButton, Menu } from "@djb25/digit-ui-react-components";
 
 const ChangeLanguage = (prop) => {
   const isDropdown = prop.dropdown || false;

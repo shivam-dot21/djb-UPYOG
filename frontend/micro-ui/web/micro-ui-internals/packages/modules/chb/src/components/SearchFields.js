@@ -1,6 +1,6 @@
 import React, {Fragment} from "react"
 import { Controller, useWatch } from "react-hook-form";
-import { TextInput, SubmitBar, LinkLabel, ActionBar, CloseSvg, DatePicker, CardLabelError, SearchForm, SearchField, Dropdown, Table, Card, MobileNumber, Loader, CardText, Header } from "@upyog/digit-ui-react-components";
+import { TextInput, SubmitBar, LinkLabel, ActionBar, CloseSvg, DatePicker, CardLabelError, SearchForm, SearchField, Dropdown, Table, Card, MobileNumber, Loader, CardText, Header } from "@djb25/digit-ui-react-components";
 
 /**
  * SearchFields Component

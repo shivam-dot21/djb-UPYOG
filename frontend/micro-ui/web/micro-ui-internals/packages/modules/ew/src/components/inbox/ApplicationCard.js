@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { Card, DetailsCard, Loader, PopUp, SearchAction } from "@upyog/digit-ui-react-components";
-import { FilterAction } from "@upyog/digit-ui-react-components";
+import { Card, DetailsCard, Loader, PopUp, SearchAction } from "@djb25/digit-ui-react-components";
+import { FilterAction } from "@djb25/digit-ui-react-components";
 import SearchApplication from "./search";
 import SortBy from "./SortBy";
 

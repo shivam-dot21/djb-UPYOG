@@ -1,6 +1,6 @@
 {
-    "name": "@mcd89/digit-ui-module-finance",
-    "version": "1.0.8",
+    "name": "@djb25/digit-ui-module-finance",
+    "version": "1.0.0",
     "description": "Digit Finance Module",
     "license": "MIT",
     "main": "dist/index.js",
@@ -15,7 +15,7 @@
       "prepublish": "yarn build"
     },
     "dependencies": {
-      "@upyog/digit-ui-react-components": "3.0.2",
+      "@djb25/digit-ui-react-components": "1.0.0",
       "microbundle-crl": "^0.13.11",
       "react": "17.0.2",
       "react-dom": "17.0.2",

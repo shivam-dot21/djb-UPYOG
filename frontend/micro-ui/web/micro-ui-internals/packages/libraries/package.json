@@ -1,6 +1,6 @@
 {
-  "name": "@upyog/digit-ui-libraries",
-  "version": "3.0.5",
+  "name": "@djb25/digit-ui-libraries",
+  "version": "1.0.0",
   "main": "dist/index.js",
   "module": "dist/index.modern.js",
   "source": "src/index.js",

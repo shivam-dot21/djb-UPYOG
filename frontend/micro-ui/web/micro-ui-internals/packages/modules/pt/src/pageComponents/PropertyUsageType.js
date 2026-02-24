@@ -7,7 +7,7 @@ import {
   CardLabel,
   Dropdown,
   CardLabelError,
-} from "@upyog/digit-ui-react-components";
+} from "@djb25/digit-ui-react-components";
 import { cardBodyStyle } from "../utils";
 import { useLocation } from "react-router-dom";
 

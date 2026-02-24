@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { FormStep, TextInput, CardLabel, MobileNumber, Card,CardSubHeader } from "@upyog/digit-ui-react-components";
+import { FormStep, TextInput, CardLabel, MobileNumber, Card,CardSubHeader } from "@djb25/digit-ui-react-components";
 import { useLocation} from "react-router-dom";
 import Timeline from "../components/CHBTimeline";
 import ChbCancellationPolicy from "../components/ChbCancellationPolicy";

@@ -16,7 +16,7 @@ import {
   Row,
   EditIcon,
   LinkButton
-} from "@upyog/digit-ui-react-components";
+} from "@djb25/digit-ui-react-components";
 import React, { useEffect, useState, Fragment } from "react";
 import { useTranslation } from "react-i18next";
 import { useHistory } from "react-router-dom";

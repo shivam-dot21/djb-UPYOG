@@ -11,7 +11,7 @@ import {
   MobileNumber,
   Loader,
   Header,
-} from "@upyog/digit-ui-react-components";
+} from "@djb25/digit-ui-react-components";
 import { Link } from "react-router-dom";
 import { APPLICATION_PATH } from "../utils";
 import CollapsibleCardPage from "./CollapseCard";

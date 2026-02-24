@@ -13,7 +13,7 @@ import {
   EditIcon,
   ViewsIcon,
   DeleteIcon,
-} from "@upyog/digit-ui-react-components";
+} from "@djb25/digit-ui-react-components";
 import { values } from "lodash";
 import React, { Fragment, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";

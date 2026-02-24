@@ -1,4 +1,4 @@
-import { AppContainer, PrivateRoute, ModuleHeader, ArrowLeft, HomeIcon } from "@upyog/digit-ui-react-components";
+import { AppContainer, PrivateRoute, ModuleHeader, ArrowLeft, HomeIcon } from "@djb25/digit-ui-react-components";
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { Switch, useLocation } from "react-router-dom";

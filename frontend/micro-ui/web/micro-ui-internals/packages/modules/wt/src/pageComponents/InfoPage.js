@@ -1,4 +1,4 @@
-import { Card, CardHeader, CardText, SubmitBar } from "@upyog/digit-ui-react-components";
+import { Card, CardHeader, CardText, SubmitBar } from "@djb25/digit-ui-react-components";
 import React, { useState } from "react";
 import BookingPopup from "../components/BookingPopup";
 

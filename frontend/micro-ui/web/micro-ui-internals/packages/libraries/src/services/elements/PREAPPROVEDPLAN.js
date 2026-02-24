@@ -1,4 +1,4 @@
-import { DateRange, Details } from "@upyog/digit-ui-react-components";
+import { DateRange, Details } from "@djb25/digit-ui-react-components";
 import Urls from "../atoms/urls";
 import { Request } from "../atoms/Utils/Request";
 

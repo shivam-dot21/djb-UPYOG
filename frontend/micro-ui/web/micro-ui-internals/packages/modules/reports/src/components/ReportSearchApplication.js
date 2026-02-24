@@ -14,7 +14,7 @@ import {
     Toast,
     MultiLink,
     Header
-} from "@upyog/digit-ui-react-components";
+} from "@djb25/digit-ui-react-components";
 
 
 const ReportSearchApplication = ({ onSubmit, isLoading, data, tableData, isTableDataLoading, Count, searchData, reportName }) => {

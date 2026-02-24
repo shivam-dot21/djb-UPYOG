@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { Modal, Card, SubmitBar } from "@upyog/digit-ui-react-components";
+import { Modal, Card, SubmitBar } from "@djb25/digit-ui-react-components";
 import { ExistingBookingDetails } from "./ExistingBookingDetails";
 import Heading from "./Heading";
 const Close = () => (

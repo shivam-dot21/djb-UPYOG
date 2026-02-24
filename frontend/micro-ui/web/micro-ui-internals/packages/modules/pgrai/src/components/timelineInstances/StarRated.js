@@ -1,5 +1,5 @@
 import React from "react";
-import { Rating } from "@upyog/digit-ui-react-components";
+import { Rating } from "@djb25/digit-ui-react-components";
 
 /**
  * Component developed for Ratings

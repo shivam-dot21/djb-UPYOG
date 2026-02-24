@@ -12,7 +12,7 @@ import {
     RadioButtons,
     Card,
     InfoBannerIcon
-} from "@upyog/digit-ui-react-components";
+} from "@djb25/digit-ui-react-components";
 import _ from "lodash";
 import React, { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";

@@ -1,4 +1,4 @@
-import { Header, CitizenHomeCard, PTIcon } from "@upyog/digit-ui-react-components";
+import { Header, CitizenHomeCard, PTIcon } from "@djb25/digit-ui-react-components";
 import React, { useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { useRouteMatch } from "react-router-dom";
@@ -71,10 +71,10 @@ import PTRegistrationDocument from "./pageComponents/Mutate/RegistrationDocument
 import TransferProof from "./pageComponents/Mutate/transferReasonDocument";
 import UpdateNumber from "./pages/citizen/MyProperties/updateNumber";
 import EmployeeUpdateOwnerNumber from "./pages/employee/updateNumber";
-//import PTCitizenFeedback from "@upyog/digit-ui-module-core/src/components/PTCitizenFeedback";
+//import PTCitizenFeedback from "@djb25/digit-ui-module-coresrc/components/PTCitizenFeedback";
 import PTSelectLandmark from "./pageComponents/PTSelectLandmark";
 import PropertyStructureDetails from "./pageComponents/PropertyStructureDetails";
-//import PTCitizenFeedback from "@upyog/digit-ui-module-core/src/components/PTCitizenFeedback";
+//import PTCitizenFeedback from "@djb25/digit-ui-module-coresrc/components/PTCitizenFeedback";
 
 import EmployeeApp from "./pages/employee";
 import PTCard from "./components/PTCard";
@@ -92,7 +92,7 @@ import DocsRequired from "./pages/employee/PropertyMutation/docsRequired";
 import SelectOtp from "../../core/src/pages/citizen/Login/SelectOtp";
 import CitizenFeedback from "../../core/src/components/CitizenFeedback";
 import AcknowledgementCF from "../../core/src/components/AcknowledgementCF";
-// PTAcknowledgementCF from "@upyog/digit-ui-module-core/src/components/PTAcknowledgementCF";
+// PTAcknowledgementCF from "@djb25/digit-ui-module-coresrc/components/PTAcknowledgementCF";
 //import PTCitizenFeedbackPopUp from "./pageComponents/PTCitizenFeedbackPopUp";
 
 const componentsToRegister = {

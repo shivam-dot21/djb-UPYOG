@@ -26,9 +26,9 @@ import {
   EditPencilIcon,
   LanguageIcon,
   LoginIcon,
-  PTRIcon
+  PTRIcon,
 } from "./svgindex";
-import { BirthIcon, DeathIcon, FirenocIcon } from "..";
+import { BirthIcon, DeathIcon, FirenocIcon } from "./svgindex";
 
 const IconsObject = {
   CommonPTIcon: <PTIcon className="icon" />,
@@ -63,18 +63,17 @@ const IconsObject = {
   Phone: <Phone className="icon" />,
   LanguageIcon: <LanguageIcon className="icon" />,
   LoginIcon: <LoginIcon className="icon" />,
-  PTRIcon: <PTRIcon />
+  PTRIcon: <PTRIcon />,
 };
-const NavBar = ({ open, toggleSidebar, profileItem, menuItems, onClose, Footer, isEmployee, search, setSearch,isSideBarScroll }) => {
+const NavBar = ({ open, toggleSidebar, profileItem, menuItems, onClose, Footer, isEmployee, search, setSearch, isSideBarScroll }) => {
   const node = useRef();
   const location = useLocation();
   const { pathname } = location;
   const { t } = useTranslation();
   Digit.Hooks.useClickOutside(node, open ? onClose : null, open);
 
-  if(isSideBarScroll &&  !Digit.clikOusideFired)
-  {
-    document.getElementById("sideBarMenu").scrollTo(0,0);
+  if (isSideBarScroll && !Digit.clikOusideFired) {
+    document.getElementById("sideBarMenu").scrollTo(0, 0);
   }
 
   const MenuItem = ({ item }) => {
