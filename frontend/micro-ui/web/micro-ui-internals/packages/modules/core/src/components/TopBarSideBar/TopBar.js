@@ -111,6 +111,7 @@ const TopBar = ({
           <img
             className="city"
             src="https://objectstorage.ap-hyderabad-1.oraclecloud.com/n/axn3czn1s06y/b/djb-dev-asset-bucket/o/DJB_integrated_logo_without_bg_dark.png"
+            alt="DJB LOGO"
           />
 
           {!mobileView && (
@@ -124,7 +125,7 @@ const TopBar = ({
                     userOptions={userOptions}
                     roleOptions={[]}
                     selectedRole={null}
-                    handleRoleChange={() => { }}
+                    handleRoleChange={() => {}}
                     profilePic={profilePic}
                     userName={userDetails?.info?.name || userDetails?.info?.userInfo?.name || "Citizen"}
                     t={t}
@@ -132,7 +133,11 @@ const TopBar = ({
                 </div>
               )}
 
-              <img className="state" src="https://objectstorage.ap-hyderabad-1.oraclecloud.com/n/axn3czn1s06y/b/djb-dev-asset-bucket/o/SBM_IMG.png" />
+              <img
+                className="state"
+                src="https://objectstorage.ap-hyderabad-1.oraclecloud.com/n/axn3czn1s06y/b/djb-dev-asset-bucket/o/SBM_IMG.png"
+                alt="SBM Img"
+              />
             </div>
           )}
         </span>
@@ -143,10 +148,11 @@ const TopBar = ({
   return (
     <div className="topbar">
       {mobileView ? <Hamburger handleClick={toggleSidebar} color="#9E9E9E" /> : null}
-      <span style={{ display: "flex", alignItems: "center", justifyContent: "space-between", width: "100%", marginRight:"40px", marginLeft:"-20px" }}>
+      <span className="topbar-content">
         <img
           className="city"
           src="https://objectstorage.ap-hyderabad-1.oraclecloud.com/n/axn3czn1s06y/b/djb-dev-asset-bucket/o/DJB_integrated_logo_without_bg_dark.png"
+          alt="DJB LOGO"
         />
 
         {!loggedin && (
@@ -178,7 +184,11 @@ const TopBar = ({
                 />
               </div>
             )}
-            <img className="state" src="https://objectstorage.ap-hyderabad-1.oraclecloud.com/n/axn3czn1s06y/b/djb-dev-asset-bucket/o/SBM_IMG.png" />
+            <img
+              className="spect-icon"
+              src="https://objectstorage.ap-hyderabad-1.oraclecloud.com/n/axn3czn1s06y/b/djb-dev-asset-bucket/o/SBM_IMG.png"
+              alt="Swatch Bharat Icon"
+            />
           </div>
         )}
       </span>

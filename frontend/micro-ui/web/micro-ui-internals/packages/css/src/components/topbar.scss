@@ -2,7 +2,7 @@
   position: fixed;
   top: 0;
   width: 100%;
-  padding: 10px 24px;
+  padding: 10px 30px;
   background: white;
   box-shadow: rgba(0, 0, 0, 0.24) 0 1px 4px;
   z-index: 9999999;
@@ -12,7 +12,6 @@
     display: inline;
 
     &.city {
-      margin-right: 8px;
       height: 60px;
     }
 
@@ -30,7 +29,6 @@
 
   .right {
     float: right;
-    margin-top: 12px;
     position: relative;
 
     svg {
@@ -38,9 +36,9 @@
     }
 
     .user-img-txt {
-      background: #a82227;
+      background: theme(colors.primary.main);
       padding: 10px 15px;
-      border-radius: 2px;
+      border-radius: 8px;
       color: white;
       height: 43px;
       width: 43px;

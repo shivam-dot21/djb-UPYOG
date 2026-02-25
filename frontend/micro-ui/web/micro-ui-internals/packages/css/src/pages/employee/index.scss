@@ -36,13 +36,24 @@
     box-shadow: rgba(0, 0, 0, 0.24) 0 1px 4px;
     z-index: 9999;
 
+    .topbar-content {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      width: 100%;
+    }
+
     img {
       display: inline;
 
       &.city {
-        margin-right: 8px;
         height: 60px;
-        margin-left: 53px;
+      }
+
+      &.spect-icon {
+        width: auto;
+        max-height: 50px;
+        margin-right: 10px;
       }
 
       &.state {
@@ -58,14 +69,6 @@
 
     .right {
       float: right;
-
-      .user-img-txt {
-        background: theme(colors.primary.main);
-        padding: 10px 15px;
-        border-radius: 50%;
-        color: white;
-        font-weight: 700;
-      }
     }
   }
 
@@ -259,7 +262,8 @@
       &.active {
         border-left: 4px solid theme(colors.primary.main);
 
-        &.level-0 {}
+        &.level-0 {
+        }
 
         &.level-1 {
           border-left: 8.5px solid theme(colors.primary.main);
@@ -269,7 +273,8 @@
           border-left: 4px solid theme(colors.primary.main);
         }
 
-        &.level-3 {}
+        &.level-3 {
+        }
 
         color: theme(colors.primary.main) !important;
         border-right: none;
@@ -514,7 +519,6 @@
       display: flex;
       flex-wrap: wrap;
       gap: 10px;
-
     }
 
     .breadcrumb {
@@ -561,7 +565,8 @@
       justify-content: center;
     }
 
-    .center-container {}
+    .center-container {
+    }
   }
 }
 
