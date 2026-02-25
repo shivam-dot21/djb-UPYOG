@@ -692,7 +692,7 @@
 
 /* --- LEFT SIDEBAR --- */
 .expanded-sidebar {
-  width: 280px;
+  width: 20%;
   background-color: #ffffff;
   border-right: 1px solid #e5e7eb;
   display: flex;
@@ -752,6 +752,7 @@
   /* Match the Property Tax highlight */
   color: #ffffff;
   box-shadow: 0 4px 6px rgba(0, 173, 239, 0.2);
+  padding: 6px;
 }
 
 .sidebar-icon-placeholder {
@@ -884,7 +885,7 @@
 
 /* --- LEFT SIDEBAR --- */
 .expanded-sidebar {
-  width: 280px;
+  width: 20%;
   background-color: #ffffff;
   display: flex;
   flex-direction: column;
@@ -1007,8 +1008,10 @@
 }
 
 .content-links-list {
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 20px;
+  margin-top: 16px;
 }
 
 /* Link Wrapper to handle <a> or <Link> tags */
@@ -1018,53 +1021,314 @@
   display: block;
 }
 
-.content-link-row {
+.module-link-card {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 18px 10px;
-  border-bottom: 1px solid #f3f4f6;
+  padding: 24px 20px;
+  background-color: #ffffff;
+  border-radius: 12px;
+  border: 1px solid #f3f4f6;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
   cursor: pointer;
-  transition: background-color 0.2s, color 0.2s;
-  border-radius: 4px;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
 }
 
-.content-link-row:hover {
-  background-color: #f9fafb;
-  color: #00adef;
+.module-link-card::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 4px;
+  background: linear-gradient(135deg, #00adef, #2563eb);
+  opacity: 0;
+  transition: opacity 0.3s ease;
 }
 
-.link-label {
-  font-size: 0.95rem;
-  font-weight: 500;
-  color: #374151;
+.module-link-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  border-color: #dbeafe;
 }
 
-.content-link-row:hover .link-label {
-  color: #00adef;
+.module-link-card:hover::before {
+  opacity: 1;
 }
 
-.link-count {
-  font-size: 0.85rem;
-  color: #9ca3af;
-  margin-left: 6px;
+.link-card-info {
+  display: flex;
+  gap: 6px;
 }
 
-.link-arrow {
+.link-card-label {
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: #1f2937;
+  transition: color 0.3s ease;
+}
+
+.module-link-card:hover .link-card-label {
+  color: #2563eb;
+}
+
+.link-card-count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #eff6ff;
+  color: #2563eb;
+  font-size: 0.8rem;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 9999px;
+  width: fit-content;
+}
+
+.link-card-arrow {
   display: flex;
   align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background-color: #f3f4f6;
+  color: #9ca3af;
+  transition: all 0.3s ease;
 }
 
-.link-arrow svg {
-  stroke: #9ca3af;
-}
-
-.content-link-row:hover .link-arrow svg {
-  stroke: #00adef;
+.module-link-card:hover .link-card-arrow {
+  background-color: #dbeafe;
+  color: #2563eb;
+  transform: translateX(4px);
 }
 
 .no-links-msg {
   color: #9ca3af;
   font-style: italic;
   padding: 20px 0;
+}
+
+
+
+
+
+:root {
+  /* Dimensions */
+  --sidebar-expanded: 280px;
+  --sidebar-collapsed: 80px;
+
+  /* Colors */
+  --bg-color: #ffffff;
+  --border-color: #f1f5f9;
+  --text-main: #0f172a;
+  --text-muted: #64748b;
+  --hover-bg: #f8fafc;
+  --active-bg: #eff6ff;
+  --active-text: #2563eb;
+
+  /* Animations */
+  --transition-slow: 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+  /* Slow, elegant easing curve */
+  --transition-fast: 0.3s ease;
+}
+
+/* --- Base Sidebar --- */
+.premium-sidebar {
+  display: flex;
+  flex-direction: column;
+  height: stretch;
+  background-color: var(--bg-color);
+  border-right: 1px solid var(--border-color);
+  transition: width var(--transition-slow);
+  overflow-x: hidden;
+  box-sizing: border-box;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  box-shadow: 4px 0 24px rgba(0, 0, 0, 0.02);
+}
+
+/* Width Control */
+.premium-sidebar.expanded {
+  width: var(--sidebar-expanded);
+  margin-left: -29px;
+}
+
+.premium-sidebar.collapsed {
+  width: var(--sidebar-collapsed);
+  margin-left: -29px;
+
+}
+
+/* --- Header & Brand --- */
+.sidebar-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 24px 20px;
+  margin-bottom: 12px;
+  position: relative;
+  white-space: nowrap;
+}
+
+.brand-container {
+  display: flex;
+  align-items: center;
+  /* Gap removed to allow for smooth width reduction */
+}
+
+.brand-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #2563eb, #3b82f6);
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-shrink: 0;
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
+}
+
+.brand-name {
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: var(--text-main);
+  margin: 0 0 0 16px;
+  /* Spacing applied here instead of flex gap */
+  transition: opacity var(--transition-fast), width var(--transition-fast), margin var(--transition-fast);
+  overflow: hidden;
+  /* Prevents text squishing */
+}
+
+.collapse-toggle {
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.2s, color 0.2s;
+  flex-shrink: 0;
+}
+
+.collapse-toggle:hover {
+  background-color: var(--hover-bg);
+  color: var(--text-main);
+}
+
+/* --- Navigation --- */
+.sidebar-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 0 16px;
+}
+
+.nav-link {
+  text-decoration: none;
+  display: block;
+  border-radius: 10px;
+  color: var(--text-muted);
+  transition: all 0.2s ease;
+  overflow: hidden;
+}
+
+.nav-item-content {
+  display: flex;
+  align-items: center;
+  padding: 12px;
+  /* Gap removed here as well */
+}
+
+.nav-icon-wrapper {
+  width: 24px;
+  height: 24px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.fallback-initial {
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  background-color: var(--border-color);
+  /* Added a subtle background circle for initials */
+  color: var(--text-muted);
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.nav-text {
+  font-size: 0.95rem;
+  font-weight: 500;
+  white-space: nowrap;
+  margin-left: 16px;
+  /* Spacing applied here */
+  opacity: 1;
+  transition: opacity 0.2s ease, width 0.3s ease, margin 0.3s ease;
+  overflow: hidden;
+}
+
+/* Hover & Active States */
+.nav-link:hover {
+  background-color: var(--hover-bg);
+  color: var(--text-main);
+}
+
+.nav-item.active .nav-link {
+  background-color: var(--active-bg);
+  color: var(--active-text);
+}
+
+.nav-item.active .nav-text {
+  font-weight: 600;
+}
+
+.nav-item.active .fallback-initial {
+  background-color: var(--active-text);
+  color: #ffffff;
+}
+
+/* --- COLLAPSED STATE STYLES --- */
+
+/* Smoothly shrink and hide text */
+.collapsed .brand-name,
+.collapsed .nav-text {
+  opacity: 0;
+  width: 0;
+  margin-left: 0;
+  pointer-events: none;
+}
+
+/* Re-stack header elements to center */
+.collapsed .sidebar-header {
+  padding: 24px 0;
+  flex-direction: column;
+  gap: 24px;
+  justify-content: center;
+}
+
+.collapsed .brand-container {
+  justify-content: center;
+}
+
+/* Re-center navigation icons */
+.collapsed .sidebar-nav {
+  padding: 0 12px;
+}
+
+.collapsed .nav-item-content {
+  justify-content: center;
+  padding: 12px 0;
 }

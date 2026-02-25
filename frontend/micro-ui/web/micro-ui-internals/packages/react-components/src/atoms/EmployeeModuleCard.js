@@ -1,12 +1,13 @@
 import React, { Fragment, useContext } from "react";
-import { useHistory , Link} from "react-router-dom";
+import { useHistory, Link } from "react-router-dom";
 import { ArrowRightInbox } from "./svgindex";
 import ExpandedViewContext from "./ExpandedViewContext";
 import ModuleLinksView from "./ModuleLinksView";
+import CollapsibleModuleSidebar from "./CollapsibleModuleSidebar";
 
 const EmployeeModuleCard = ({ Icon, moduleName, kpis = [], links = [], className, styles }) => {
   const history = useHistory();
-  const { isExpandedView } = useContext(ExpandedViewContext);
+  const { isExpandedView, isModuleSidebar } = useContext(ExpandedViewContext) || {};
 
   const handleDetailsClick = () => {
     history.push("/digit-ui/employee/module/details", {
@@ -19,13 +20,17 @@ const EmployeeModuleCard = ({ Icon, moduleName, kpis = [], links = [], className
     return <ModuleLinksView links={links} moduleName={moduleName} />;
   }
 
+  if (isModuleSidebar) {
+    return <CollapsibleModuleSidebar links={links} moduleName={moduleName} Icon={Icon} />;
+  }
+
   const mainKpi = kpis.length > 0 ? kpis[0] : null;
   const secondaryKpis = kpis.length > 1 ? kpis.slice(1) : [];
 
   return (
     <Fragment>
       {/* Card */}
-      <div className={`new-employee-card ${className || ''}`} style={styles}>
+      <div className={`new-employee-card ${className || ''}`}>
         {/* Header */}
         <div className="card-header-row">
           <h2 className="module-title">{moduleName}</h2>
@@ -69,10 +74,6 @@ const EmployeeModuleCard = ({ Icon, moduleName, kpis = [], links = [], className
             Details
           </button>
         </div>
-
-        {/* <button className="mc-cta-btn" onClick={handleDetailsClick}>
-          Details
-        </button> */}
       </div>
     </Fragment>
   );
@@ -110,7 +111,7 @@ const ModuleCardFullWidth = ({ moduleName, links = [], isCitizen = false, classN
           <div className="links-wrapper" style={{ width: "100%", display: "flex", flexWrap: "wrap" }}>
             {links.map(({ count, label, link }, index) => (
               <span className="link full-employee-card-link" key={index}>
-                {link ? (link?.includes('digit-ui/')?<Link to={link}>{label}</Link>:<a href={link}>{label}</a>) : null}
+                {link ? (link?.includes('digit-ui/') ? <Link to={link}>{label}</Link> : <a href={link}>{label}</a>) : null}
               </span>
             ))}
           </div>

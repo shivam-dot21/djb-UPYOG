@@ -234,6 +234,7 @@ import ApplicantDetails from "./molecules/ApplicantDetails";
 import Timeline from "./molecules/Timeline";
 import ExpandedViewContext from "./atoms/ExpandedViewContext";
 import ExpandedViewPage from "./atoms/ExpandedViewPage";
+import CollapsibleModuleSidebar from "./atoms/CollapsibleModuleSidebar";
 
 export {
   Phone,
@@ -477,4 +478,5 @@ export {
   ModuleHeader,
   ExpandedViewContext,
   ExpandedViewPage,
+  CollapsibleModuleSidebar,
 };
