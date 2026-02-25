@@ -9,7 +9,7 @@
     "node": ">=18"
   },
   "dependencies": {
-    "@djb25/digit-ui-css": "1.0.7",
+    "@djb25/digit-ui-css": "1.0.8",
     "@djb25/digit-ui-libraries": "1.0.0",
     "@djb25/digit-ui-module-bills": "1.0.1",
     "@djb25/digit-ui-module-common": "1.0.1",
@@ -22,7 +22,7 @@
     "@djb25/digit-ui-module-mcollect": "1.0.0",
     "@djb25/digit-ui-module-commonpt": "1.0.0",
     "@djb25/digit-ui-module-receipts": "1.0.0",
-    "@djb25/digit-ui-react-components": "1.0.0",
+    "@djb25/digit-ui-react-components": "1.0.1",
     "@djb25/digit-ui-module-pgr": "1.0.0",
     "@djb25/digit-ui-module-vendor": "1.0.0",
     "@djb25/digit-ui-module-wt": "1.0.2",
