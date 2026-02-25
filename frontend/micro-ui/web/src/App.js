@@ -1,9 +1,6 @@
 import React from "react";
 
-import {
-  initPGRComponents,
-  PGRReducers,
-} from "@djb25/digit-ui-module-pgr";
+import { initPGRComponents, PGRReducers } from "@djb25/digit-ui-module-pgr";
 import { initFSMComponents } from "@djb25/digit-ui-module-fsm";
 import { FinanceModule } from "@djb25/digit-ui-module-finance";
 // import {
@@ -37,7 +34,7 @@ import {
 // import { initOBPSComponents } from "@djb25/digit-ui-module-obps";
 // import { initNOCComponents } from "@djb25/digit-ui-module-noc";
 import { initEngagementComponents } from "@djb25/digit-ui-module-engagement";
-// import { initWSComponents } from "@djb25/digit-ui-module-ws";
+import { initWSComponents } from "@djb25/digit-ui-module-ws";
 import { initFinanceComponents } from "@djb25/digit-ui-module-finance";
 // import { initCustomisationComponents } from "./Customisations";
 import { initCommonPTComponents } from "@djb25/digit-ui-module-commonpt";
@@ -94,7 +91,7 @@ const enabledModules = [
   "Engagement",
   "Finance",
   "CommonPT",
-  // "WS",
+  "WS",
   "Reports",
   "Bills",
   // "SW",
@@ -162,7 +159,7 @@ initReceiptsComponents();
 // initOBPSComponents();
 // initNOCComponents();
 initEngagementComponents();
-// initWSComponents();
+initWSComponents();
 initCommonPTComponents();
 initBillsComponents();
 initFinanceComponents();

@@ -2,11 +2,18 @@
   position: fixed;
   top: 0;
   width: 100%;
-  padding: 10px 30px;
+  padding: 10px 24px;
   background: white;
   box-shadow: rgba(0, 0, 0, 0.24) 0 1px 4px;
   z-index: 9999999;
   @apply flex items-center;
+
+  .topbar-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+  }
 
   img {
     display: inline;
@@ -18,7 +25,6 @@
     &.state {
       height: 50px;
       width: auto;
-      object-fit: contain;
     }
   }
 
