@@ -136,6 +136,9 @@ const CitizenHome = ({ modules, getCitizenMenu, fetchedCitizen, isLoading }) => 
 };
 
 const EmployeeHome = ({ modules }) => {
+  const { t } = useTranslation();
+  const userInfo = JSON.parse(localStorage.getItem("Employee.user-info"));
+  const name = userInfo?.name;
   const dashboardCemp = Digit.UserService.hasAccess(["DASHBOARD_EMPLOYEE"]) ? true : false;
   if (window.Digit.SessionStorage.get("PT_CREATE_EMP_TRADE_NEW_FORM")) window.Digit.SessionStorage.set("PT_CREATE_EMP_TRADE_NEW_FORM", {});
   const { data: dashboardConfig } = Digit.Hooks.useCustomMDMS(Digit.ULBService.getStateId(), "common-masters", [{ name: "CommonConfig" }], {
@@ -151,7 +154,8 @@ const EmployeeHome = ({ modules }) => {
       {dashboardConfig && dashboardCemp ? <EmployeeDashboard modules={modules} /> : null}
       <div className="home-header">
         <div className="header-top-section">
-          <p className="title">Available Modules To Access</p>
+          <span className="title">{t("MY_WORKSPACE")}</span>
+          <span className="subtitle">{name}</span>
         </div>
       </div>
       <div className="ground-container moduleCardWrapper gridModuleWrapper">

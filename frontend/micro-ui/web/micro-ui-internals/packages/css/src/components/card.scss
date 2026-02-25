@@ -472,15 +472,17 @@
 
 
 .new-employee-card {
-  background-color: #ffffff;
+  background-image: url("https://objectstorage.ap-hyderabad-1.oraclecloud.com/n/axn3czn1s06y/b/djb-dev-asset-bucket/o/dashboard_card_img.png");
+  background-size: cover;
+  background-position: center;
   border: 1px solid #f3f4f6;
   border-radius: 12px;
-  padding: 24px;
+  padding: 15px;
   display: flex;
   flex-direction: column;
   gap: 24px;
   width: 100%;
-  max-width: 400px;
+  max-width: 426px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
   font-family: 'Inter', -apple-system, sans-serif;
 }
