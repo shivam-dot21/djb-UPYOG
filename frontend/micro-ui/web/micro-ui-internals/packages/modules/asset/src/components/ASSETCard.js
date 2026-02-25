@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { EmployeeModuleCard } from "@djb25/digit-ui-react-components";
+import { EmployeeModuleCard, PropertyHouse } from "@djb25/digit-ui-react-components";
 
 const ASSETCard = () => {
   const { t } = useTranslation();
@@ -45,7 +45,7 @@ const ASSETCard = () => {
   ];
   const ASSETRole = Digit.UserService.hasAccess(["ASSET_INITIATOR"]) || false;
   const propsForModuleCard = {
-    // Icon: <PropertyHouse />,
+    Icon: <PropertyHouse />,
     moduleName: t("TITLE_ASSET_MANAGEMENT"),
     kpis: [
       {

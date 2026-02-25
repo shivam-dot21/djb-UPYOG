@@ -1,5 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom";
+import "@djb25/digit-ui-css";
 
 import { initLibraries } from "@djb25/digit-ui-libraries";
 import { PGRReducers } from "@djb25/digit-ui-module-pgr";
@@ -21,7 +22,7 @@ import { FinanceModule } from "@djb25/digit-ui-module-finance";
 // import { initOBPSComponents } from "@djb25/digit-ui-module-obps";
 import { initEngagementComponents } from "@djb25/digit-ui-module-engagement";
 // import { initNOCComponents } from "@djb25/digit-ui-module-noc";
-// import { initWSComponents } from "@djb25/digit-ui-module-ws";@djb25/djb25-ui-module-ads
+import { initWSComponents } from "@djb25/digit-ui-module-ws";
 import { DigitUI } from "@djb25/digit-ui-module-core";
 import { initCommonPTComponents } from "@djb25/digit-ui-module-commonpt";
 import { initBillsComponents, BillsModule } from "@djb25/digit-ui-module-bills";
@@ -30,7 +31,6 @@ import { initBillsComponents, BillsModule } from "@djb25/digit-ui-module-bills";
 
 // import { PGRModule, PGRLinks } from "@djb25/digit-ui-module-pgr";
 // import { Body, TopBar } from "@djb25/digit-ui-react-components";
-import "@djb25/digit-ui-css";
 import "@djb25/digit-ui-css/dist/index.css";
 
 // import { PTRModule, PTRLinks, PTRComponents } from "@djb25/djb25-ui-module-ptr";
@@ -71,7 +71,7 @@ const enabledModules = [
   // "OBPS",
   "Engagement",
   // "NOC",
-  // "WS",
+  "WS",
   "CommonPT",
   "NDSS",
   "Bills",
@@ -173,7 +173,7 @@ const initDigitUI = () => {
   // initOBPSComponents();
   initEngagementComponents();
   // initNOCComponents();
-  // initWSComponents();
+  initWSComponents();
   initCommonPTComponents();
   initBillsComponents();
   initFinanceComponents();
