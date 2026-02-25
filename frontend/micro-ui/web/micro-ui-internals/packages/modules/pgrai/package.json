@@ -20,7 +20,7 @@
   },
   "dependencies": {
     "@djb25/digit-ui-libraries": "1.0.0",
-     "@djb25/digit-ui-react-components": "1.0.1",
+     "@djb25/digit-ui-react-components": "1.0.0",
     "jspdf": "^2.5.1",
     "jspdf-autotable": "^3.8.2",
     "lodash.merge": "^4.6.2",
