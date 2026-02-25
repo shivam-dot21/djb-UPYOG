@@ -18,15 +18,16 @@ const ModuleLinksView = ({ links = [], moduleName }) => {
                         const url = linkItem.link;
 
                         const Content = (
-                            <div className="content-link-row">
-                                <span className="link-label">
-                                    {label} {count ? <span className="link-count">({count})</span> : ""}
-                                </span>
-                                <span className="link-arrow">
-                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1a365d" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                            <div className="module-link-card">
+                                <div className="link-card-info">
+                                    <span className="link-card-label">{label}</span>
+                                    {count ? <span className="link-card-count">{count}</span> : ""}
+                                </div>
+                                <div className="link-card-arrow">
+                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                                         <polyline points="9 18 15 12 9 6"></polyline>
                                     </svg>
-                                </span>
+                                </div>
                             </div>
                         );
 

@@ -36,28 +36,62 @@ export const AppModules = ({ stateCode, userType, modules, appTenants }) => {
     </Route>;
   });
 
-  return (
-    <div className="ground-container">
-      <Switch>
-        {appRoutes}
-        <Route path={`${path}/login`}>
-          <Redirect to={{ pathname: "/digit-ui/employee/user/login", state: { from: location.pathname + location.search } }} />
-        </Route>
-        <Route path={`${path}/forgot-password`}>
-          <ForgotPassword />
-        </Route>
-        <Route path={`${path}/change-password`}>
-          <ChangePassword />
-        </Route>
-        <Route path={`${path}/module/details`}>
-          <ExpandedViewPage modules={modules} />
-        </Route>
+  const renderSidebar = () => {
+    const pathname = location.pathname;
+    const isTopLevelPage = pathname.includes("/login") || pathname.includes("/forgot-password") || pathname.includes("/change-password") || pathname.endsWith("/employee") || pathname.includes("/module/details");
 
-        <Route>
-          <AppHome userType={userType} modules={modules} />
-        </Route>
-        {/* <Route path={`${path}/user-profile`}> <UserProfile /></Route> */}
-      </Switch>
+    if (isTopLevelPage) return null;
+
+    const modulePrefix = `/digit-ui/employee/`;
+    const modulePathPart = pathname.replace(modulePrefix, "").split("/")[0];
+    const activeModule = modules.find(m => m.code.toLowerCase() === modulePathPart.toLowerCase());
+
+    if (!activeModule) return null;
+
+    let CardComponent = Digit.ComponentRegistryService.getComponent(`${activeModule.code}Card`);
+
+    if (CardComponent) {
+      if (window.Digit.Utils.browser.isMobile()) {
+        return null;
+      }
+      return (
+        <div className=" collapsible-sidebar-container" style={{ lexShrink: 0, borderRight: "1px solid #e0e0e0", background: "#f8f9fa", transition: "width 0.3s ease" }}>
+          <ExpandedViewContext.Provider value={{ isModuleSidebar: true }}>
+            <CardComponent />
+          </ExpandedViewContext.Provider>
+        </div>
+      );
+    }
+    return null;
+  };
+
+  const sidebarContent = renderSidebar();
+
+  return (
+    <div className="ground-container" style={{ display: "flex", width: "100%", minHeight: "calc(100vh - 90px)" }}>
+      {sidebarContent}
+      <div style={{ flex: 1, overflowX: "hidden" }}>
+        <Switch>
+          {appRoutes}
+          <Route path={`${path}/login`}>
+            <Redirect to={{ pathname: "/digit-ui/employee/user/login", state: { from: location.pathname + location.search } }} />
+          </Route>
+          <Route path={`${path}/forgot-password`}>
+            <ForgotPassword />
+          </Route>
+          <Route path={`${path}/change-password`}>
+            <ChangePassword />
+          </Route>
+          <Route path={`${path}/module/details`}>
+            <ExpandedViewPage modules={modules} />
+          </Route>
+
+          <Route>
+            <AppHome userType={userType} modules={modules} />
+          </Route>
+          {/* <Route path={`${path}/user-profile`}> <UserProfile /></Route> */}
+        </Switch>
+      </div>
     </div>
   );
 };

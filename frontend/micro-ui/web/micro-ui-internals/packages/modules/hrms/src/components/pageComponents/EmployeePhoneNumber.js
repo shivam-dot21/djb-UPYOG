@@ -39,17 +39,17 @@ const SelectEmployeePhoneNumber = ({ t, config, onSelect, formData = {}, userTyp
               {t(input.label)}
               {input.isMandatory ? " * " : null}
             </CardLabel>
-            <div className="field-container" style={{ width:isMobile? "100%":"50%", display: "block" }}>
+            <div className="field-container" style={{ width: isMobile ? "100%" : "50%", display: "block" }}>
               <div>
                 <div style={{ display: "flex" }}>
                   <div className="employee-card-input employee-card-input--front">+91</div>
                   <TextInput
                     className="field desktop-w-full"
                     key={input.name}
-                    value={formData && formData[config.key] ? formData[config.key][input.name] : undefined}
-                    onChange={(e) =>{ setValue(e.target.value, input.name,validate(e.target.value, input))}}
+                    value={(formData && formData[config.key] && formData[config.key][input.name]) || ""}
+                    onChange={(e) => { setValue(e.target.value, input.name, validate(e.target.value, input)) }}
                     disable={false}
-                    defaultValue={undefined}
+                    defaultValue={""}
                     onBlur={(e) => validate(e.target.value, input)}
                     {...input.validation}
                   />

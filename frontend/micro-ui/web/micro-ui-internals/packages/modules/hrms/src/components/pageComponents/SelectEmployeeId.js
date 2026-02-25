@@ -33,10 +33,10 @@ const SelectEmployeeId = ({ t, config, onSelect, formData = {}, userType, regist
             <div className="field">
               <TextInput
                 key={input.name}
-                value={formData && formData[config.key] ? formData[config.key][input.name] : undefined}
+                value={(formData && formData[config.key] && formData[config.key][input.name]) || ""}
                 onChange={(e) => setValue(e.target.value, input.name)}
                 disable={isEdit}
-                defaultValue={undefined}
+                defaultValue={""}
                 {...input.validation}
               />
             </div>
