@@ -53,7 +53,6 @@
       &.spect-icon {
         width: auto;
         max-height: 50px;
-        margin-right: 10px;
       }
 
       &.state {
@@ -434,32 +433,32 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  padding-left: 30px;
+  padding-right: 30px;
   .header-top-section {
+    display: flex;
     width: 100%;
     background: linear-gradient(98deg, rgba(110, 192, 221, 0.71) -24.44%, rgba(97, 119, 236, 0.9) 93.53%);
     padding: 14px;
     border-radius: 11px;
 
-    display: flex;
+    justify-content: space-between;
     align-items: center;
-    justify-content: center;
 
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
 
     .title {
       margin: 0;
-      font-size: 17px;
-      font-weight: 500;
-      color: #fff;
-      letter-spacing: 0.3px;
+      font-size: 25px;
+      font-weight: 700;
+      color: #0f172a;
+    }
 
-      @media (min-width: 768px) {
-        font-size: 18px;
-      }
-
-      @media (min-width: 1024px) {
-        font-size: 28px;
-      }
+    .subtitle {
+      margin: 0;
+       font-size: 20px;
+      font-weight: 700;
+      color: #0f172a;
     }
   }
 
@@ -516,9 +515,6 @@
   .employee {
     .ground-container {
       /* @apply block; */
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
     }
 
     .breadcrumb {

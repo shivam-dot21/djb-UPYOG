@@ -9,7 +9,7 @@
     "node": ">=18"
   },
   "dependencies": {
-    "@djb25/digit-ui-css": "1.0.6",
+    "@djb25/digit-ui-css": "1.0.7",
     "@djb25/digit-ui-libraries": "1.0.0",
     "@djb25/digit-ui-module-bills": "1.0.1",
     "@djb25/digit-ui-module-common": "1.0.1",
