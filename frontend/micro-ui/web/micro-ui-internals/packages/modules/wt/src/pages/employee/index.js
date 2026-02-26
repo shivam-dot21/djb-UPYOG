@@ -15,25 +15,44 @@ const EmployeeApp = ({ path }) => {
   /*                            DYNAMIC BREADCRUMBS                             */
   /* -------------------------------------------------------------------------- */
 
-  const getBreadcrumbLabel = () => {
+  const getDynamicBreadcrumbs = () => {
     const pathname = location.pathname;
 
-    if (pathname.includes("/mt/inbox")) return "ES_COMMON_INBOX";
-    if (pathname.includes("/tp/inbox")) return "TP_INBOX";
-    if (pathname.includes("/wt/inbox")) return "ES_COMMON_INBOX";
+    let moduleName = "WT";
+    if (pathname.includes("/mt/")) moduleName = "MT";
+    if (pathname.includes("/tp/")) moduleName = "TP";
 
-    if (pathname.includes("/mt/my-bookings")) return "MT_SEARCH_BOOKINGS";
-    if (pathname.includes("/tp/my-bookings")) return "TP_SEARCH_BOOKINGS";
-    if (pathname.includes("/my-bookings")) return "WT_SEARCH_BOOKINGS";
+    let crumbs = [
+      { icon: HomeIcon, label: t("HOME"), path: "/digit-ui/employee" },
+      { label: t("MODULE_DETAILS"), path: `/digit-ui/employee/module/details?moduleName=${moduleName}` }
+    ];
 
-    if (pathname.includes("/request-service")) return "WT_REQUEST_SERVICE";
+    if (pathname.includes("/inbox")) {
+      let label = "ES_COMMON_INBOX";
+      if (pathname.includes("/tp/inbox")) label = "TP_INBOX";
+      crumbs.push({ label: t(label) });
+    }
+    else if (pathname.includes("/my-bookings")) {
+      let label = "WT_SEARCH_BOOKINGS";
+      if (pathname.includes("/mt/my-bookings")) label = "MT_SEARCH_BOOKINGS";
+      if (pathname.includes("/tp/my-bookings")) label = "TP_SEARCH_BOOKINGS";
+      crumbs.push({ label: t(label) });
+    }
+    else if (pathname.includes("/request-service")) {
+      crumbs.push({ label: t("WT_REQUEST_SERVICE") });
+    }
+    else if (pathname.includes("/booking-details") || pathname.includes("/bookingsearch/booking-details")) {
+      const isSearch = pathname.includes("/bookingsearch");
+      if (isSearch) {
+        crumbs.push({ label: t("WT_SEARCH_BOOKINGS"), path: `${path}/my-bookings` });
+      } else {
+        crumbs.push({ label: t("ES_COMMON_INBOX"), path: `${path}/inbox` });
+      }
+      crumbs.push({ label: t("WT_BOOKING_DETAILS") });
+    }
 
-    if (pathname.includes("/booking-details")) return "WT_BOOKING_DETAILS";
-
-    return "";
+    return crumbs;
   };
-
-  const breadcrumbs = [{ icon: HomeIcon, label: t("HOME") }, { label: t(getBreadcrumbLabel()) }];
 
   /* -------------------------------------------------------------------------- */
   /*                               INBOX STATES                                 */
@@ -87,7 +106,7 @@ const EmployeeApp = ({ path }) => {
               </React.Fragment>
             }
             onLeftClick={() => window.history.back()}
-            breadcrumbs={breadcrumbs}
+            breadcrumbs={getDynamicBreadcrumbs()}
           />
 
           {/* ----------------------------- ROUTES ----------------------------- */}
