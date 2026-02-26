@@ -12,7 +12,6 @@ RUN yarn add @djb25/digit-ui-module-core
 RUN yarn add @djb25/digit-ui-module-common
 RUN yarn add @djb25/digit-ui-module-commonpt
 RUN yarn add @djb25/digit-ui-module-bills
-RUN yarn add @djb25/digit-ui-module-cm
 RUN yarn add @djb25/digit-ui-module-asset
 RUN yarn add @djb25/digit-ui-module-vendor
 RUN yarn add @djb25/digit-ui-module-pgr
