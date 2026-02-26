@@ -1,13 +1,14 @@
-import { PrivateRoute } from "@djb25/digit-ui-react-components";
+import { PrivateRoute, AppContainer, ModuleHeader, ArrowLeft, HomeIcon } from "@djb25/digit-ui-react-components";
 import React from "react";
 import { useTranslation } from "react-i18next";
-import { Link, Switch, useLocation } from "react-router-dom";
+import { Switch, useLocation } from "react-router-dom";
 
 const EmployeeApp = ({ path, url, userType }) => {
   const { t } = useTranslation();
   const location = useLocation();
-  const mobileView = innerWidth <= 640;
+  const mobileView = window.innerWidth <= 640;
   const tenantId = Digit.ULBService.getCurrentTenantId();
+
   const inboxInitialState = {
     searchParams: {
       tenantId: tenantId,
@@ -19,16 +20,74 @@ const EmployeeApp = ({ path, url, userType }) => {
   const Inbox = Digit?.ComponentRegistryService?.getComponent("HRInbox");
   const CreateEmployee = Digit?.ComponentRegistryService?.getComponent("HRCreateEmployee");
   const EditEmpolyee = Digit?.ComponentRegistryService?.getComponent("HREditEmpolyee");
+
+  // Dynamic Breadcrumb Generator
+  const getDynamicBreadcrumbs = () => {
+    // 1. Base steps that are always present
+    let crumbs = [
+      { icon: HomeIcon, label: t("HOME"), path: "/digit-ui/employee" },
+      { label: t("MODULE_DETAILS"), path: "/digit-ui/employee/module/details?moduleName=HRMS" }
+    ];
+
+    const currentPath = location.pathname;
+
+    // 2. Build the history based on the current route
+    if (currentPath.includes("/inbox")) {
+      crumbs.push({ label: t("HR_INBOX") }); // No path = current location (unclickable)
+    }
+    else if (currentPath.includes("/create")) {
+      crumbs.push({ label: t("HR_INBOX"), path: `${path}/inbox` }); // Where I came from
+      crumbs.push({ label: t("HR_CREATE_EMPLOYEE") });              // Where I am currently
+    }
+    else if (currentPath.includes("/details")) {
+      crumbs.push({ label: t("HR_INBOX"), path: `${path}/inbox` });
+      crumbs.push({ label: t("HR_EMPLOYEE_DETAILS") });
+    }
+    else if (currentPath.includes("/edit")) {
+      crumbs.push({ label: t("HR_INBOX"), path: `${path}/inbox` });
+
+      // Extract IDs from the URL to create a functional "Back to Details" link
+      const pathSegments = currentPath.split("/");
+      const editIndex = pathSegments.indexOf("edit");
+
+      if (editIndex !== -1 && pathSegments.length >= editIndex + 3) {
+        const urlTenantId = pathSegments[editIndex + 1];
+        const urlId = pathSegments[editIndex + 2];
+        // Add details page as the previous step
+        crumbs.push({
+          label: t("HR_EMPLOYEE_DETAILS"),
+          path: `${path}/details/${urlTenantId}/${urlId}`
+        });
+      }
+
+      crumbs.push({ label: t("HR_EDIT_EMPLOYEE") }); // Where I am currently
+    }
+    else if (currentPath.includes("/response")) {
+      crumbs.push({ label: t("HR_INBOX"), path: `${path}/inbox` });
+      crumbs.push({ label: t("HR_RESPONSE") });
+    }
+    else {
+      // Fallback
+      crumbs.push({ label: t("HR_COMMON_HEADER") });
+    }
+
+    return crumbs;
+  };
+
   return (
     <Switch>
-      <React.Fragment>
-        <div className="" style={{ width: "100%", padding: "20px" }}>
-          <p className="breadcrumb" style={{ marginLeft: mobileView ? "1vw" : "15px" }}>
-            <Link to="/digit-ui/employee" style={{ cursor: "pointer", color: "#666" }}>
-              {t("HR_COMMON_BUTTON_HOME")}
-            </Link>{" "}
-            / <span>{location.pathname === "/digit-ui/employee/hrms/inbox" ? t("HR_COMMON_HEADER") : t("HR_COMMON_HEADER")}</span>
-          </p>
+      <AppContainer>
+        <div className="ground-container employee-app-container">
+          <ModuleHeader
+            leftContent={
+              <React.Fragment>
+                <ArrowLeft className="icon" />
+                Back
+              </React.Fragment>
+            }
+            onLeftClick={() => window.history.back()}
+            breadcrumbs={getDynamicBreadcrumbs()} // Use the dynamic function here
+          />
           <PrivateRoute
             path={`${path}/inbox`}
             component={() => (
@@ -40,7 +99,7 @@ const EmployeeApp = ({ path, url, userType }) => {
           <PrivateRoute path={`${path}/details/:tenantId/:id`} component={() => <HRMSDetails />} />
           <PrivateRoute path={`${path}/edit/:tenantId/:id`} component={() => <EditEmpolyee />} />
         </div>
-      </React.Fragment>
+      </AppContainer>
     </Switch>
   );
 };
