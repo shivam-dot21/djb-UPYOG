@@ -1,0 +1,138 @@
+.ekyc-employee-container {
+    .inbox-main-container {
+        flex: 1;
+        padding-right: -24px;
+        background-color: #f4f7f9;
+    }
+
+    .inbox-wrapper {
+        min-width: 100%;
+        padding: 24px;
+        background-color: rgb(241 241 241);
+    }
+
+    .ekyc-header-container {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 24px;
+    }
+
+    .ekyc-status-container {
+        display: flex;
+        gap: 24px;
+        margin-bottom: 32px;
+    }
+
+    .ekyc-status-card {
+        flex: 1;
+        text-align: center;
+        padding: 24px;
+        border: 1px solid #EAECF0;
+        border-radius: 12px;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+
+        .count {
+            font-size: 32px;
+            font-weight: 700;
+            color: #101828;
+
+            &.pending {
+                color: #B54708;
+            }
+
+            &.completed {
+                color: #027A48;
+            }
+        }
+
+        .label {
+            color: #667085;
+            margin-top: 8px;
+            font-size: 14px;
+            font-weight: 500;
+        }
+    }
+
+    .ekyc-search-card {
+        margin-bottom: 24px;
+        padding: 20px;
+        background-color: #fff;
+    }
+
+    .ekyc-search-container {
+        flex: 1;
+
+        .search-inner {
+            padding: 0px;
+            background-color: #fff;
+            border: none;
+        }
+
+        .input-grid {
+            display: grid;
+            gap: 20px;
+            align-items: end;
+            grid-template-columns: repeat(auto-fill, minmax(700px, 1fr));
+        }
+
+        .submit-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            height: 40px;
+        }
+    }
+
+    .ekyc-table-card {
+        padding: 0px;
+        overflow: hidden;
+    }
+
+    .ekyc-status-tag {
+        padding: 6px 12px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 600;
+        text-transform: uppercase;
+
+        &.ALL {
+            background-color: #F4F4F4;
+            color: #505A5F;
+        }
+
+        &.COMPLETED {
+            background-color: #E7F4E9;
+            color: #0B6623;
+        }
+
+        &.PENDING {
+            background-color: #FFF5E6;
+            color: #945700;
+        }
+
+        &.REJECTED {
+            background-color: #FBEAE9;
+            color: #AF1E11;
+        }
+
+        &.DEFAULT {
+            background-color: #F4F4F4;
+            color: #505A5F;
+        }
+    }
+
+    .ekyc-metrics-section {
+        margin-bottom: 24px;
+    }
+
+    .ekyc-table-cell {
+        padding: 20px 18px;
+        font-size: 16px;
+    }
+
+    .ekyc-application-link {
+        font-weight: 600;
+        color: #F47738;
+    }
+}
