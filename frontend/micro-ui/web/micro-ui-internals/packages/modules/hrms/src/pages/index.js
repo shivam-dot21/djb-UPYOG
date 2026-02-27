@@ -26,7 +26,7 @@ const EmployeeApp = ({ path, url, userType }) => {
     // 1. Base steps that are always present
     let crumbs = [
       { icon: HomeIcon, label: t("HOME"), path: "/digit-ui/employee" },
-      { label: t("MODULE_DETAILS"), path: "/digit-ui/employee/module/details?moduleName=HRMS" },
+      { label: t("ACTION_TEST_HRMS"), path: "/digit-ui/employee/module/details?moduleName=HRMS" },
     ];
 
     const currentPath = location.pathname;
