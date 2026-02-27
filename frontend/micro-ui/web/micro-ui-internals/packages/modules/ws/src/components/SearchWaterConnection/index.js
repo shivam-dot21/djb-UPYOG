@@ -250,7 +250,7 @@ const SearchWaterConnection = ({ tenantId, onSubmit, data, count, resultOk, busi
   const generateDemand = async (row) => {
     const payload = {
       BulkBillCriteria: {
-        tenantId: "pg.citya",
+        tenantId: Digit.ULBService.getCurrentTenantId(),
         consumerCode: row.original["connectionNo"],
       },
     };
