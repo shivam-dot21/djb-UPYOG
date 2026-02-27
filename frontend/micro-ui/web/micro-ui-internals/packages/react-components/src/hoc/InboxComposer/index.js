@@ -1,19 +1,18 @@
-import React, { Fragment, useCallback, useEffect, useMemo, useReducer } from "react";
+import React, { useCallback, useEffect, useReducer } from "react";
 import InboxLinks from "../../atoms/InboxLinks";
 import Table from "../../atoms/Table";
 import { SearchField, SearchForm } from "../../molecules/SearchForm";
-import { FilterForm, FilterFormField } from "../../molecules/FilterForm";
+import { FilterForm } from "../../molecules/FilterForm";
 import SubmitBar from "../../atoms/SubmitBar";
 import { useTranslation } from "react-i18next";
 import Card from "../../atoms/Card";
 import { Loader } from "../../atoms/Loader";
-import { useForm, Controller } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import SearchAction from "../../molecules/SearchAction";
 import FilterAction from "../../molecules/FilterAction";
 import SortAction from "../../molecules/SortAction";
 import DetailsCard from "../../molecules/DetailsCard";
 import PopUp from "../../atoms/PopUp";
-import { CloseSvg } from "../../atoms/svgindex";
 import MobileComponentDirectory from "./MobileComponentDirectory";
 
 const InboxComposer = ({
@@ -23,14 +22,14 @@ const InboxComposer = ({
   searchFormDefaultValues,
   onSearchFormSubmit,
   onSearchFormReset,
-  resetSearchFormDefaultValues,
   FilterFormFields,
   filterFormDefaultValues,
   propsForInboxTable,
   propsForInboxMobileCards,
   onFilterFormSubmit,
   onFilterFormReset,
-  resetFilterFormDefaultValues,
+  // resetSearchFormDefaultValues,
+  // resetFilterFormDefaultValues,
   onMobileSortOrderData,
   sortFormDefaultValues,
   onSortFormReset,
@@ -258,14 +257,16 @@ const InboxComposer = ({
         {isInboxLoading ? (
           <Loader />
         ) : (
-          <div className="flex-box-center round-medium bc-white">
-            {propsForInboxTable?.data?.length < 1 ? (
-              <Card className="margin-unset text-align-center inboxLinks">
-                {propsForInboxTable.noResultsMessage ? t(propsForInboxTable.noResultsMessage) : t("CS_MYAPPLICATIONS_NO_APPLICATION")}
-              </Card>
-            ) : (
-              <Table t={t} {...propsForInboxTable} />
-            )}
+          <div className="result">
+            <div style={{ background: "#fff", height: "inherit" }}>
+              {propsForInboxTable?.data?.length < 1 ? (
+                <Card className="margin-unset text-align-center inboxLinks">
+                  {propsForInboxTable.noResultsMessage ? t(propsForInboxTable.noResultsMessage) : t("CS_MYAPPLICATIONS_NO_APPLICATION")}
+                </Card>
+              ) : (
+                <Table t={t} {...propsForInboxTable} />
+              )}
+            </div>
           </div>
         )}
       </div>

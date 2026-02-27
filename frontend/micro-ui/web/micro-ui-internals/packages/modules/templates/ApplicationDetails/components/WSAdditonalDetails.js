@@ -1,6 +1,7 @@
 import { StatusTable, Row, CardSubHeader } from "@djb25/digit-ui-react-components";
 import React, { Fragment } from "react";
 import { useTranslation } from "react-i18next";
+import { getQueryStringParams } from "../../../ws/src/utils";
 
 const cardSubHeaderStyles = () => {
   return { fontSize: "24px", marginBottom: "16px", marginTop: "32px" };
@@ -8,7 +9,8 @@ const cardSubHeaderStyles = () => {
 
 const WSAdditonalDetails = ({ wsAdditionalDetails, oldValue }) => {
   const { t } = useTranslation();
-  let filters = window.Digit.Utils.getQueryStringParams(location.search);
+
+  let filters = getQueryStringParams(location.search);
   const isModify = filters?.mode;
 
   var { connectionDetails, plumberDetails, roadCuttingDetails, activationDetails } = wsAdditionalDetails?.additionalDetails || {
