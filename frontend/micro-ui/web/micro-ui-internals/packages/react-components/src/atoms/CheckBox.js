@@ -2,14 +2,14 @@ import React from "react";
 import { CheckSvg } from "./svgindex";
 import PropTypes from "prop-types";
 
-const CheckBox = ({ onChange, label, value, disable, ref, checked, inputRef, pageType, style, index, isLabelFirst,  ...props }) => {
+const CheckBox = ({ onChange, label, value, disable, ref, checked, inputRef, pageType, style, index, isLabelFirst, ...props }) => {
   const userType = pageType || Digit.SessionStorage.get("userType");
   let wrkflwStyle = props.styles;
   if (isLabelFirst) {
     return (
       <div className="checkbox-wrap" style={wrkflwStyle ? wrkflwStyle : {}}>
-        <p style={style ? style : null}> {index+1}.</p>
-        <p className="label" style={{maxWidth: "80%", marginLeft: "10px"}}>
+        <p style={style ? style : null}> {index + 1}.</p>
+        <p className="label" style={{ maxWidth: "80%", marginLeft: "10px" }}>
           {label}
         </p>
         <div>
@@ -24,7 +24,7 @@ const CheckBox = ({ onChange, label, value, disable, ref, checked, inputRef, pag
             disabled={disable}
             checked={checked}
           />
-          <p className={userType === "employee" ? "custom-checkbox-emp" : "custom-checkbox"} style={disable ? { opacity: 0.5 } : {left: "90%"}}>
+          <p className={userType === "employee" ? "custom-checkbox-emp" : "custom-checkbox"} style={disable ? { opacity: 0.5 } : { left: "90%" }}>
             <CheckSvg />
           </p>
         </div>
@@ -46,7 +46,10 @@ const CheckBox = ({ onChange, label, value, disable, ref, checked, inputRef, pag
             // {(checked ? (checked = { checked }) : null)}
             checked={checked}
           />
-          <p className={userType === "employee" ? "custom-checkbox-emp" : "custom-checkbox"} style={disable ? { opacity: 0.5 } : (props?.checkboxWidth ? {...props?.checkboxWidth} : null)}>
+          <p
+            className={userType === "employee" ? "custom-checkbox-emp" : "custom-checkbox"}
+            style={disable ? { opacity: 0.5 } : props?.checkboxWidth ? { ...props?.checkboxWidth } : null}
+          >
             {/* <img src={check} alt="" /> */}
             <CheckSvg />
           </p>
@@ -57,7 +60,6 @@ const CheckBox = ({ onChange, label, value, disable, ref, checked, inputRef, pag
       </div>
     );
   }
-  
 };
 
 CheckBox.propTypes = {
