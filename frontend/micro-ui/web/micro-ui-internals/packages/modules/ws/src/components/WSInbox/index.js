@@ -250,12 +250,6 @@ const WSInbox = ({ parentRoute }) => {
 
   return (
     <React.Fragment>
-      <div className="wt-inbox">
-        <div className="header">
-          {t("ES_COMMON_INBOX")}
-          {totalCount ? <p className="inbox-count">{totalCount}</p> : null}
-        </div>
-      </div>
       <InboxComposer
         {...{
           isInboxLoading,

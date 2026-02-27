@@ -61,29 +61,8 @@ const WSDocsRequired = ({ onSelect, userType, onSkip, config }) => {
     );
   }
 
-  const printDiv = () => {
-    let content = document.getElementById("documents-div").innerHTML;
-    //APK button to print required docs
-    if (window.mSewaApp && window.mSewaApp.isMsewaApp()) {
-      window.mSewaApp.downloadBase64File(window.btoa(content), t("WS_REQ_DOCS"));
-    } else {
-      let printWindow = window.open("", "");
-      printWindow.document.write(`<html><body>${content}</body></html>`);
-      printWindow.document.close();
-      printWindow.focus();
-      printWindow.print();
-    }
-  };
-
   return (
     <div>
-      <div className="header" style={{ display: "flex" }}>
-        <div>{t("WS_WATER_AND_SEWERAGE_NEW_CONNECTION_LABEL")}</div>
-        <div onClick={printDiv} style={{ cursor: "pointer", display: "flex" }}>
-          <PrintBtnCommon />
-          <div style={{ fontSize: "24px", fontWeight: "400", color: "#0B0C0C" }}>{"Print"}</div>
-        </div>
-      </div>
       <Card>
         {wsDocsLoading ? (
           <Loader />

@@ -24,24 +24,21 @@ const EmployeeApp = ({ path }) => {
 
     let crumbs = [
       { icon: HomeIcon, label: t("HOME"), path: "/digit-ui/employee" },
-      { label: t("MODULE_DETAILS"), path: `/digit-ui/employee/module/details?moduleName=${moduleName}` }
+      { label: t("MODULE_DETAILS"), path: `/digit-ui/employee/module/details?moduleName=${moduleName}` },
     ];
 
     if (pathname.includes("/inbox")) {
       let label = "ES_COMMON_INBOX";
       if (pathname.includes("/tp/inbox")) label = "TP_INBOX";
       crumbs.push({ label: t(label) });
-    }
-    else if (pathname.includes("/my-bookings")) {
+    } else if (pathname.includes("/my-bookings")) {
       let label = "WT_SEARCH_BOOKINGS";
       if (pathname.includes("/mt/my-bookings")) label = "MT_SEARCH_BOOKINGS";
       if (pathname.includes("/tp/my-bookings")) label = "TP_SEARCH_BOOKINGS";
       crumbs.push({ label: t(label) });
-    }
-    else if (pathname.includes("/request-service")) {
+    } else if (pathname.includes("/request-service")) {
       crumbs.push({ label: t("WT_REQUEST_SERVICE") });
-    }
-    else if (pathname.includes("/booking-details") || pathname.includes("/bookingsearch/booking-details")) {
+    } else if (pathname.includes("/booking-details") || pathname.includes("/bookingsearch/booking-details")) {
       const isSearch = pathname.includes("/bookingsearch");
       if (isSearch) {
         crumbs.push({ label: t("WT_SEARCH_BOOKINGS"), path: `${path}/my-bookings` });

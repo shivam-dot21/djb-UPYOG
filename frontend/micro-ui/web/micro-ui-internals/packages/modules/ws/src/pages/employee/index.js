@@ -1,7 +1,7 @@
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { Switch, useLocation } from "react-router-dom";
-import { PrivateRoute, BreadcrumbHeader } from "@djb25/digit-ui-react-components";
+import { PrivateRoute, BreadcrumbHeader, PrintBtnCommon } from "@djb25/digit-ui-react-components";
 
 import WSResponse from "./WSResponse";
 import Response from "./Response";
@@ -31,6 +31,20 @@ const BILLSBreadCrumbs = ({ location }) => {
     return finalIndex;
   }
 
+  const printDiv = () => {
+    let content = document.getElementById("documents-div").innerHTML;
+    //APK button to print required docs
+    if (window.mSewaApp && window.mSewaApp.isMsewaApp()) {
+      window.mSewaApp.downloadBase64File(window.btoa(content), t("WS_REQ_DOCS"));
+    } else {
+      let printWindow = window.open("", "");
+      printWindow.document.write(`<html><body>${content}</body></html>`);
+      printWindow.document.close();
+      printWindow.focus();
+      printWindow.print();
+    }
+  };
+
   let crumbs = [
     {
       path: "/digit-ui/employee",
@@ -43,6 +57,12 @@ const BILLSBreadCrumbs = ({ location }) => {
       path: "/digit-ui/employee/ws/create-application",
       content: t("ES_COMMON_WS_DOCUMENTS_REQUIRED"),
       show: location.pathname.includes("/create-application") ? true : false,
+      rightContent: (
+        <div onClick={printDiv} style={{ cursor: "pointer", display: "flex" }}>
+          <PrintBtnCommon />
+          <div style={{ fontSize: "24px", fontWeight: "400", color: "#0B0C0C" }}>{"Print"}</div>
+        </div>
+      ),
     },
     {
       path: "/digit-ui/employee/water/inbox",
