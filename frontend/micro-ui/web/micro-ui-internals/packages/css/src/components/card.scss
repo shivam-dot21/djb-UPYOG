@@ -180,7 +180,6 @@
 }
 
 @screen dt {
-
   .submit-bar,
   .submit-bar-disabled {
     width: 240px;
@@ -343,7 +342,7 @@
     }
 
     /* Remove any default margins that might interfere */
-    .label-field-pair>* {
+    .label-field-pair > * {
       margin: 0;
     }
 
@@ -374,7 +373,8 @@
       margin-right: auto;
     }
 
-    .header-content {}
+    .header-content {
+    }
 
     .header-end {
       margin-left: auto;
@@ -415,7 +415,8 @@
     margin-bottom: 24px;
   }
 
-  .info-banner-wrap-citizen-override {}
+  .info-banner-wrap-citizen-override {
+  }
 
   .oc-aknowledgement-screen {
     width: auto;
@@ -468,9 +469,6 @@
   width: 100% !important;
 }
 
-
-
-
 .new-employee-card {
   background-image: url("https://objectstorage.ap-hyderabad-1.oraclecloud.com/n/axn3czn1s06y/b/djb-dev-asset-bucket/o/dashboard_card_img.png");
   background-size: cover;
@@ -484,7 +482,7 @@
   width: 100%;
   max-width: 426px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
-  font-family: 'Inter', -apple-system, sans-serif;
+  font-family: "Inter", -apple-system, sans-serif;
 }
 
 .card-header-row {
@@ -631,7 +629,6 @@
   align-items: center;
   justify-content: center;
   text-align: center;
-
 }
 
 .pill-link:hover {
@@ -655,13 +652,8 @@
   background-color: #0f172a;
 }
 
-
-
-
-
 /* --- EXISTING CARD STYLES (Keep your existing styles) --- */
 /* Ensure .new-employee-card, .card-header-row, etc. remain as they were */
-
 
 /* --- NEW: EXPANDED VIEW OVERLAY --- */
 .expanded-overlay {
@@ -840,9 +832,6 @@
   padding: 20px 0;
 }
 
-
-
-
 /* --- EXPANDED VIEW OVERLAY --- */
 .expanded-page-container {
   display: flex;
@@ -975,7 +964,6 @@
   opacity: 1;
 }
 
-
 /* --- RIGHT CONTENT --- */
 .expanded-content {
   flex: 1;
@@ -1037,7 +1025,7 @@
 }
 
 .module-link-card::before {
-  content: '';
+  content: "";
   position: absolute;
   left: 0;
   top: 0;
@@ -1111,10 +1099,6 @@
   padding: 20px 0;
 }
 
-
-
-
-
 :root {
   /* Dimensions */
   --sidebar-expanded: 280px;
@@ -1137,28 +1121,25 @@
 
 /* --- Base Sidebar --- */
 .premium-sidebar {
+  height: 100%;
   display: flex;
   flex-direction: column;
-  height: stretch;
   background-color: var(--bg-color);
   border-right: 1px solid var(--border-color);
   transition: width var(--transition-slow);
   overflow-x: hidden;
   box-sizing: border-box;
-  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  font-family: "Inter", system-ui, -apple-system, sans-serif;
   box-shadow: 4px 0 24px rgba(0, 0, 0, 0.02);
 }
 
 /* Width Control */
 .premium-sidebar.expanded {
   width: var(--sidebar-expanded);
-  margin-left: -29px;
 }
 
 .premium-sidebar.collapsed {
   width: var(--sidebar-collapsed);
-  margin-left: -29px;
-
 }
 
 /* --- Header & Brand --- */

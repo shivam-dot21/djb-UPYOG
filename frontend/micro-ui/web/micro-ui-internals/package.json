@@ -14,7 +14,9 @@
     "packages/modules/dss",
     "packages/modules/engagement",
     "packages/modules/asset",
-    "packages/modules/vendor"
+    "packages/modules/vendor",
+    "packages/modules/ws",
+    "packages/modules/wt"
   ],
   "license": "MIT",
   "private": true,
@@ -35,6 +37,7 @@
     "dev:commonPt": "cd packages/modules/commonPt && yarn start",
     "dev:pgr": "cd packages/modules/pgr && yarn start",
     "dev:core": "cd packages/modules/core && yarn start",
+    "dev:wt": "cd packages/modules/wt && yarn start",
     "dev:fsm": "cd packages/modules/fsm && yarn start",
     "dev:dss": "cd packages/modules/dss && yarn start",
     "dev:mcollect": "cd packages/modules/mCollect && yarn start",

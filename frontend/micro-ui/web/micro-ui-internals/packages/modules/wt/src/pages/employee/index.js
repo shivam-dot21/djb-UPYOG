@@ -77,7 +77,7 @@ const EmployeeApp = ({ path }) => {
   return (
     <Switch>
       <AppContainer>
-        <div className="ground-container employee-app-container">
+        <div className="form-container">
           {/* -------------------------- MODULE HEADER -------------------------- */}
           <ModuleHeader
             leftContent={
@@ -89,9 +89,7 @@ const EmployeeApp = ({ path }) => {
             onLeftClick={() => window.history.back()}
             breadcrumbs={breadcrumbs}
           />
-
           {/* ----------------------------- ROUTES ----------------------------- */}
-
           {/* WT Inbox */}
           <PrivateRoute
             path={`${path}/inbox`}
@@ -107,7 +105,6 @@ const EmployeeApp = ({ path }) => {
               />
             )}
           />
-
           {/* MT Inbox */}
           <PrivateRoute
             path={`${path}/mt/inbox`}
@@ -123,7 +120,6 @@ const EmployeeApp = ({ path }) => {
               />
             )}
           />
-
           {/* TP Inbox */}
           <PrivateRoute
             path={`${path}/tp/inbox`}
@@ -139,22 +135,16 @@ const EmployeeApp = ({ path }) => {
               />
             )}
           />
-
           {/* Request Service */}
           <PrivateRoute path={`${path}/request-service`} component={WTCreate} />
           <PrivateRoute path={`${path}/mt/request-service`} component={WTCreate} />
           <PrivateRoute path={`${path}/tp/request-service`} component={WTCreate} />
-
           {/* Booking Details */}
           <PrivateRoute path={`${path}/booking-details/:id`} component={() => <ApplicationDetails parentRoute={path} />} />
-
           <PrivateRoute path={`${path}/bookingsearch/booking-details/:id`} component={() => <ApplicationDetails parentRoute={path} />} />
-
           {/* My Bookings */}
           <PrivateRoute path={`${path}/my-bookings`} component={(props) => <SearchApp {...props} parentRoute={path} moduleCode="WT" />} />
-
           <PrivateRoute path={`${path}/mt/my-bookings`} component={(props) => <SearchApp {...props} parentRoute={path} moduleCode="MT" />} />
-
           <PrivateRoute path={`${path}/tp/my-bookings`} component={(props) => <SearchApp {...props} parentRoute={path} moduleCode="TP" />} />
         </div>
       </AppContainer>

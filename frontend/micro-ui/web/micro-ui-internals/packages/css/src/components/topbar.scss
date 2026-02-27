@@ -22,8 +22,15 @@
       height: 60px;
     }
 
+    &.spect-icon {
+      width: auto;
+      padding-right: 20px;
+      max-height: 50px;
+    }
+
     &.state {
       height: 50px;
+      max-height: 20px;
       width: auto;
     }
   }
@@ -49,6 +56,7 @@
       height: 43px;
       width: 43px;
       font-weight: 700;
+      text-align: center;
     }
   }
 
