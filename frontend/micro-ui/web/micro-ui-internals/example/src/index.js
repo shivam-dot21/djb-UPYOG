@@ -25,7 +25,14 @@ import { initEngagementComponents } from "@djb25/digit-ui-module-engagement";
 import { DigitUI } from "@djb25/digit-ui-module-core";
 import { initCommonPTComponents } from "@djb25/digit-ui-module-commonpt";
 import { initBillsComponents, BillsModule } from "@djb25/digit-ui-module-bills";
-
+// import { initFormioComponents } from "@djb25/digit-ui-module-formio";
+import { initEkycComponents } from "@djb25/digit-ui-module-ekyc";
+// import { initOBPSComponents } from "@upyog/digit-ui-module-obps";
+// import { FormioModule } from "@djb25/digit-ui-module-formio";
+import { EkycModule } from "@djb25/digit-ui-module-ekyc";
+// import { initEngagementComponents } from "@upyog/digit-ui-module-engagement";
+// import { initNOCComponents } from "@upyog/digit-ui-module-noc";
+// import { initWSComponents } from "@upyog/digit-ui-module-ws";@nudmcdgnpm/upyog-ui-module-ads
 // import {initCustomisationComponents} from "./customisations";
 
 // import { PGRModule, PGRLinks } from "@djb25/digit-ui-module-pgr";
@@ -66,6 +73,8 @@ const enabledModules = [
   "MCollect",
   "HRMS",
   // "TL",
+  // "FORMIO",
+  "EKYC",
   "Receipts",
   "Reports",
   // "OBPS",
@@ -132,6 +141,8 @@ const initDigitUI = () => {
     MCollectModule,
     HRMSModule,
     FinanceModule,
+    // FormioModule,
+    EkycModule,
     ReceiptsModule,
     BillsModule,
     // PTRModule,
@@ -171,6 +182,8 @@ const initDigitUI = () => {
   initMCollectComponents();
   initHRMSComponents();
   // initTLComponents();
+  // initFormioComponents();
+  initEkycComponents();
   initReceiptsComponents();
   // initReportsComponents();
   // initOBPSComponents();
