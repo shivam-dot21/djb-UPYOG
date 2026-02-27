@@ -72,7 +72,7 @@ const EmployeeApp = ({ path, url, userType }) => {
   return (
     <Switch>
       <AppContainer>
-        <div className="ground-container employee-app-container">
+        <div className="ground-container employee-app-container form-container">
           <ModuleHeader
             leftContent={
               <React.Fragment>
