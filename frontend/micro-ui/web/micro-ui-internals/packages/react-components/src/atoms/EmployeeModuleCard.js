@@ -30,7 +30,7 @@ const EmployeeModuleCard = ({ Icon, moduleName, kpis = [], links = [], className
   return (
     <Fragment>
       {/* Card */}
-      <div className={`new-employee-card ${className || ''}`}>
+      <div className={`new-employee-card ${className || ""}`}>
         {/* Header */}
         <div className="card-header-row">
           <h2 className="module-title">{moduleName}</h2>
@@ -56,20 +56,16 @@ const EmployeeModuleCard = ({ Icon, moduleName, kpis = [], links = [], className
             {secondaryKpis.map((kpi, index) => {
               const isHeader = !kpi.count && kpi.label === kpi.label.toUpperCase();
               return (
-                <div key={index} className={`secondary-kpi-item ${isHeader ? 'sec-kpi-header' : ''}`}>
+                <div key={index} className={`secondary-kpi-item ${isHeader ? "sec-kpi-header" : ""}`}>
                   <span className="sec-kpi-label">{kpi.label}</span>
-                  {!isHeader && (
-                    <span className="sec-kpi-value">
-                      {kpi.count ? kpi.count : <span className="sec-kpi-dot"></span>}
-                    </span>
-                  )}
+                  {!isHeader && <span className="sec-kpi-value">{kpi.count ? kpi.count : <span className="sec-kpi-dot"></span>}</span>}
                 </div>
               );
             })}
           </div>
         </div>
 
-        <div className="card-footer-row" style={{ justifyContent: 'flex-end', marginTop: 'auto' }}>
+        <div className="card-footer-row" style={{ justifyContent: "flex-end", marginTop: "auto" }}>
           <button className="details-btn" onClick={handleDetailsClick}>
             Details
           </button>
@@ -79,14 +75,13 @@ const EmployeeModuleCard = ({ Icon, moduleName, kpis = [], links = [], className
   );
 };
 
-
 const ModuleCardFullWidth = ({ moduleName, links = [], isCitizen = false, className, styles, headerStyle, subHeader, subHeaderLink }) => {
   const history = useHistory();
 
   const handleDetailsClick = () => {
     history.push("/digit-ui/employee/module/details", {
       moduleName,
-      links
+      links,
     });
   };
 
@@ -111,7 +106,7 @@ const ModuleCardFullWidth = ({ moduleName, links = [], isCitizen = false, classN
           <div className="links-wrapper" style={{ width: "100%", display: "flex", flexWrap: "wrap" }}>
             {links.map(({ count, label, link }, index) => (
               <span className="link full-employee-card-link" key={index}>
-                {link ? (link?.includes('digit-ui/') ? <Link to={link}>{label}</Link> : <a href={link}>{label}</a>) : null}
+                {link ? link?.includes("digit-ui/") ? <Link to={link}>{label}</Link> : <a href={link}>{label}</a> : null}
               </span>
             ))}
           </div>

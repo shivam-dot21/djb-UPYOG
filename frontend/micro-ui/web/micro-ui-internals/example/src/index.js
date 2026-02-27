@@ -22,7 +22,6 @@ import { FinanceModule } from "@djb25/digit-ui-module-finance";
 // import { initOBPSComponents } from "@djb25/digit-ui-module-obps";
 import { initEngagementComponents } from "@djb25/digit-ui-module-engagement";
 // import { initNOCComponents } from "@djb25/digit-ui-module-noc";
-import { initWSComponents } from "@djb25/digit-ui-module-ws";
 import { DigitUI } from "@djb25/digit-ui-module-core";
 import { initCommonPTComponents } from "@djb25/digit-ui-module-commonpt";
 import { initBillsComponents, BillsModule } from "@djb25/digit-ui-module-bills";
@@ -46,6 +45,7 @@ import { ASSETComponents, ASSETLinks, ASSETModule, initAssetComponents } from "@
 // import {CHBModule,CHBLinks,CHBComponents} from "@djb25/djb25-ui-module-chb";
 // import {ADSModule,ADSLinks,ADSComponents} from "@djb25/djb25-ui-module-ads";
 import { WTModule, WTLinks, WTComponents, initWTComponents } from "@djb25/digit-ui-module-wt";
+import { WSModule, WSLinks, WSComponents, initWSComponents } from "@djb25/digit-ui-module-ws";
 import { VENDORComponents, VENDORLinks, VENDORModule } from "@djb25/digit-ui-module-vendor";
 
 // import * as comps from "@djb25/digit-ui-react-components";
@@ -154,6 +154,9 @@ const initDigitUI = () => {
     // CHBModule,
     // CHBLinks,
     // ...CHBComponents,
+    WSModule,
+    WSLinks,
+    ...WSComponents,
     WTModule,
     WTLinks,
     ...WTComponents,

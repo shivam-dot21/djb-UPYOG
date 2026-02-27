@@ -9,6 +9,8 @@ const CheckBox = ({ onChange, label, value, disable, ref, checked, inputRef, pag
     return (
       <div className="checkbox-wrap" style={wrkflwStyle ? wrkflwStyle : {}}>
         <p style={style ? style : null}> {index + 1}.</p>
+
+        <p style={style ? style : null}> {index + 1}.</p>
         <p className="label" style={{ maxWidth: "80%", marginLeft: "10px" }}>
           {label}
         </p>
@@ -24,6 +26,7 @@ const CheckBox = ({ onChange, label, value, disable, ref, checked, inputRef, pag
             disabled={disable}
             checked={checked}
           />
+
           <p className={userType === "employee" ? "custom-checkbox-emp" : "custom-checkbox"} style={disable ? { opacity: 0.5 } : { left: "90%" }}>
             <CheckSvg />
           </p>
@@ -33,30 +36,27 @@ const CheckBox = ({ onChange, label, value, disable, ref, checked, inputRef, pag
   } else {
     return (
       <div className="checkbox-wrap" style={wrkflwStyle ? wrkflwStyle : {}}>
-        <div>
-          <input
-            type="checkbox"
-            className={userType === "employee" ? "input-emp" : ""}
-            onChange={onChange}
-            style={{ cursor: "pointer" }}
-            value={value || label}
-            {...props}
-            ref={inputRef}
-            disabled={disable}
-            // {(checked ? (checked = { checked }) : null)}
-            checked={checked}
-          />
-          <p
-            className={userType === "employee" ? "custom-checkbox-emp" : "custom-checkbox"}
-            style={disable ? { opacity: 0.5 } : props?.checkboxWidth ? { ...props?.checkboxWidth } : null}
-          >
-            {/* <img src={check} alt="" /> */}
-            <CheckSvg />
-          </p>
-        </div>
-        <p className="label" style={style ? style : null}>
-          {label}
-        </p>
+        <input
+          type="checkbox"
+          className={userType === "employee" ? "input-emp" : ""}
+          onChange={onChange}
+          style={{ cursor: "pointer" }}
+          value={value || label}
+          {...props}
+          ref={inputRef}
+          disabled={disable}
+          // {(checked ? (checked = { checked }) : null)}
+          checked={checked}
+        />
+        <span
+          className={userType === "employee" ? "custom-checkbox-emp" : "custom-checkbox"}
+          style={disable ? { opacity: 0.5 } : props?.checkboxWidth ? { ...props?.checkboxWidth } : null}
+        >
+          {/* <img src={check} alt="" /> */}
+          <CheckSvg />
+        </span>
+
+        <span style={style ? style : null}>{label}</span>
       </div>
     );
   }

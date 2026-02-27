@@ -31,7 +31,7 @@
   @apply flex fixed bottom-0 h-10 bg-grey-bg pb-md pt-sm justify-center w-full;
 
   img {
-    @apply ml-sm
+    @apply ml-sm;
   }
 }
 
@@ -52,12 +52,6 @@
 }
 
 @screen dt {
-  .ground-container {
-    margin-bottom: 56px;
-    padding-left: 0px;
-    /* @apply p-md; */
-  }
-
   .heading-m {
     @apply text-heading-m-dt;
   }
@@ -71,7 +65,8 @@
     margin-bottom: 40px;
   }
 
-  .employee-home-footer {}
+  .employee-home-footer {
+  }
 
   .moduleCardWrapper {
     /* @apply flex flex-row flex-wrap !important; */

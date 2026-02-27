@@ -150,7 +150,7 @@ const EmployeeHome = ({ modules }) => {
     },
   });
   return (
-    <div className="employee-app-container">
+    <div className="employee-app-homepage-container">
       {dashboardConfig && dashboardCemp ? <EmployeeDashboard modules={modules} /> : null}
       <div className="home-header">
         <div className="header-top-section">
