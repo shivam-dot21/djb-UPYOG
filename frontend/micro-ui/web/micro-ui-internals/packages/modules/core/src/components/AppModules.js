@@ -58,13 +58,10 @@ export const AppModules = ({ stateCode, userType, modules, appTenants }) => {
     let CardComponent = Digit.ComponentRegistryService.getComponent(`${activeModule.code}Card`);
 
     if (CardComponent) {
-      if (window.Digit.Utils.browser.isMobile()) {
-        return null;
-      }
       return (
         <div
           className="collapsible-sidebar-container"
-          style={{ lexShrink: 0, borderRight: "1px solid #e0e0e0", background: "#f8f9fa", transition: "width 0.3s ease" }}
+          style={{ lexShrink: 0, borderRight: "1px solid #e0e0e0", background: "#f8f9fa", transition: "width 0.3s ease", marginRight: "10px" }}
         >
           <ExpandedViewContext.Provider value={{ isModuleSidebar: true }}>
             <CardComponent />

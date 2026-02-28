@@ -470,9 +470,7 @@
 }
 
 .new-employee-card {
-  background-image: url("https://objectstorage.ap-hyderabad-1.oraclecloud.com/n/axn3czn1s06y/b/djb-dev-asset-bucket/o/dashboard_card_img.png");
-  background-size: cover;
-  background-position: center;
+  position: relative;
   border: 1px solid #f3f4f6;
   border-radius: 12px;
   padding: 15px;
@@ -483,6 +481,23 @@
   max-width: 426px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
   font-family: "Inter", -apple-system, sans-serif;
+  overflow: hidden;
+}
+
+.new-employee-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: url("https://objectstorage.ap-hyderabad-1.oraclecloud.com/n/axn3czn1s06y/b/djb-dev-asset-bucket/o/dashboard_card_img.png");
+  background-size: cover;
+  background-position: center;
+  opacity: 0.2;
+  z-index: 0;
+}
+
+.new-employee-card>* {
+  position: relative;
+  z-index: 1;
 }
 
 .card-header-row {
