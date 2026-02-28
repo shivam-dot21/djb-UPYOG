@@ -116,12 +116,12 @@ const CitizenHome = ({ modules, getCitizenMenu, fetchedCitizen, isLoading }) => 
                     Info={
                       code === "OBPS"
                         ? () => (
-                            <CitizenInfoLabel
-                              style={{ margin: "0px", padding: "10px" }}
-                              info={t("CS_FILE_APPLICATION_INFO_LABEL")}
-                              text={t(`BPA_CITIZEN_HOME_STAKEHOLDER_INCLUDES_INFO_LABEL`)}
-                            />
-                          )
+                          <CitizenInfoLabel
+                            style={{ margin: "0px", padding: "10px" }}
+                            info={t("CS_FILE_APPLICATION_INFO_LABEL")}
+                            text={t(`BPA_CITIZEN_HOME_STAKEHOLDER_INCLUDES_INFO_LABEL`)}
+                          />
+                        )
                         : null
                     }
                     isInfo={code === "OBPS" ? true : false}
@@ -154,7 +154,8 @@ const EmployeeHome = ({ modules }) => {
       {dashboardConfig && dashboardCemp ? <EmployeeDashboard modules={modules} /> : null}
       <div className="home-header">
         <div className="header-top-section">
-          <span className="title">{t("MY_WORKSPACE")}</span>
+          <span className="subtitle">{t('WELCOME !')}</span>
+
           <span className="subtitle">{name}</span>
         </div>
       </div>
