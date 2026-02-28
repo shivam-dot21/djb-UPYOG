@@ -61,7 +61,10 @@
   "eslintConfig": {
     "extends": [
       "react-app"
-    ]
+    ],
+    "globals": {
+    "Digit": "readonly"
+  }
   },
   "browserslist": [
     ">0.2%",
