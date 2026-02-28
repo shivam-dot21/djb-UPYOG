@@ -1,7 +1,7 @@
-import React from "react";
+import React, { useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Switch, useLocation } from "react-router-dom";
-import { PrivateRoute, BreadcrumbHeader, PrintBtnCommon } from "@djb25/digit-ui-react-components";
+import { PrivateRoute, BreadcrumbHeader, PrintBtnCommon, Toast, MultiLink, LinkButton } from "@djb25/digit-ui-react-components";
 
 import WSResponse from "./WSResponse";
 import Response from "./Response";
@@ -10,11 +10,19 @@ import WSDisconnectionResponse from "./DisconnectionApplication/WSDisconnectionR
 import WSRestorationResponse from "./RestorationApplication/WSRestorationResponse";
 import { ArrowLeft } from "@djb25/digit-ui-react-components";
 import { HomeIcon } from "@djb25/digit-ui-react-components";
+import { getFiles, getPDFData, getQueryStringParams } from "../../utils";
+
+import getModifyPDFData from "../../utils/getWsAckDataForModifyPdfs";
 
 const BILLSBreadCrumbs = ({ location }) => {
   const { t } = useTranslation();
 
   const search = useLocation().search;
+
+  const [showWaringToast, setShowWaringToast] = useState(null);
+
+  const [showOptions, setShowOptions] = useState(false);
+  const menuRef = useRef();
   const fromScreen = new URLSearchParams(search).get("from") || null;
   const IsEdit = new URLSearchParams(search).get("isEdit") || null;
   const applicationNumbercheck = new URLSearchParams(search).get("applicationNumber") || null;
@@ -44,6 +52,145 @@ const BILLSBreadCrumbs = ({ location }) => {
       printWindow.print();
     }
   };
+  const tenantId = Digit.ULBService.getCurrentTenantId();
+  let filters = getQueryStringParams(location.search);
+  const applicationNumber = filters?.applicationNumber;
+  const serviceType = filters?.service;
+
+  const userInfo = Digit.UserService.getUser();
+  let { data: applicationDetails } = Digit.Hooks.ws.useWSDetailsPage(t, tenantId, applicationNumber, serviceType, userInfo, {
+    privacy: Digit.Utils.getPrivacyObject(),
+  });
+  let dowloadOptions = [],
+    appStatus = applicationDetails?.applicationData?.applicationStatus || "";
+  const handleDownloadPdf = async () => {
+    const tenantInfo = applicationDetails?.applicationData?.tenantId;
+    let result = applicationDetails?.applicationData;
+
+    if (applicationDetails?.applicationData?.applicationType?.includes("MODIFY_")) {
+      const PDFdata = getModifyPDFData({ ...result }, { ...applicationDetails?.propertyDetails }, tenantInfo, t, oldApplication);
+      PDFdata.then((ress) => Digit.Utils.pdf.generateModifyPdf(ress));
+      return;
+    }
+    const PDFdata = getPDFData({ ...result }, { ...applicationDetails?.propertyDetails }, tenantInfo, t);
+    PDFdata.then((ress) => Digit.Utils.pdf.generatev1(ress));
+  };
+  const applicationDownloadObject = {
+    order: 3,
+    label: t("WS_APPLICATION"),
+    onClick: handleDownloadPdf,
+  };
+
+  const handleEstimateDownload = async () => {
+    if (applicationDetails?.applicationData?.additionalDetails?.estimationFileStoreId) {
+      getFiles([applicationDetails?.applicationData?.additionalDetails?.estimationFileStoreId], applicationDetails?.tenantId);
+    } else {
+      const warningCount = sessionStorage.getItem("WARINIG_COUNT") || "0";
+      const warningCountDetails = JSON.parse(warningCount);
+      if (warningCountDetails == 0) {
+        const filters = { applicationNumber };
+        console.log(filters, "filters");
+        const response = await Digit.WSService.search({
+          tenantId: applicationDetails?.tenantId,
+          filters: { ...filters },
+          businessService: serviceType == "WATER" ? "WS" : "SW",
+        });
+        let details = serviceType == "WATER" ? response?.WaterConnection?.[0] : response?.SewerageConnections?.[0];
+        if (details?.additionalDetails?.estimationFileStoreId) {
+          getFiles([details?.additionalDetails?.estimationFileStoreId], tenantId);
+        } else {
+          sessionStorage.setItem("WARINIG_COUNT", warningCountDetails ? warningCountDetails + 1 : 1);
+          setTimeout(() => {
+            sessionStorage.setItem("WARINIG_COUNT", "0");
+          }, 60000);
+          setShowWaringToast({
+            isError: false,
+            isWarning: true,
+            key: "warning",
+            message: t("WS_WARNING_FILESTOREID_PLEASE_TRY_AGAIN_SOMETIME_LABEL"),
+          });
+        }
+      } else if (!showWaringToast) {
+        setShowWaringToast({ isError: false, isWarning: true, key: "warning", message: t("WS_WARNING_FILESTOREID_PLEASE_TRY_AGAIN_SOMETIME_LABEL") });
+      }
+    }
+  };
+
+  const wsEstimateDownloadObject = {
+    order: 1,
+    label: t("WS_ESTIMATION_NOTICE"),
+    onClick: handleEstimateDownload,
+  };
+
+  const { data: reciept_data, isLoading: recieptDataLoading } = Digit.Hooks.useRecieptSearch(
+    {
+      tenantId: tenantId,
+      businessService: serviceType == "WATER" ? "WS.ONE_TIME_FEE" : "SW.ONE_TIME_FEE",
+      consumerCodes: applicationDetails?.applicationData?.applicationNo,
+    },
+    {
+      enabled: applicationDetails?.applicationData?.applicationType?.includes("NEW_") ? true : false,
+      privacy: Digit.Utils.getPrivacyObject(),
+    }
+  );
+
+  const sanctionDownloadObject = {
+    order: 2,
+    label: t("WS_SANCTION_LETTER"),
+    onClick: () => getFiles([applicationDetails?.applicationData?.additionalDetails?.sanctionFileStoreId], applicationDetails?.tenantId),
+  };
+
+  async function getRecieptSearch(tenantId, payments, consumerCodes, receiptKey) {
+    let response = null;
+    if (payments?.fileStoreId) {
+      response = { filestoreIds: [payments?.fileStoreId] };
+      const fileStore = await Digit.PaymentService.printReciept(tenantId, { fileStoreIds: response.filestoreIds[0] });
+      window.open(fileStore[response.filestoreIds[0]], "_blank");
+    } else {
+      response = await Digit.PaymentService.generatePdf(tenantId, { Payments: [{ ...payments }] }, receiptKey);
+      const fileStore = await Digit.PaymentService.printReciept(tenantId, { fileStoreIds: response.filestoreIds[0] });
+      window.open(fileStore[response?.filestoreIds[0]], "_blank");
+    }
+  }
+
+  const appFeeDownloadReceipt = {
+    order: 4,
+    label: t("DOWNLOAD_RECEIPT_HEADER"),
+    onClick: () =>
+      getRecieptSearch(Digit.ULBService.getStateId(), reciept_data?.Payments?.[0], applicationDetails?.applicationData?.applicationNo, receiptKey),
+  };
+
+  const handleViewTimeline = () => {
+    const timelineSection = document.getElementById("timeline");
+    if (timelineSection) {
+      timelineSection.scrollIntoView({ behavior: "smooth" });
+    }
+  };
+
+  switch (appStatus) {
+    case "PENDING_FOR_DOCUMENT_VERIFICATION":
+    case "PENDING_FOR_CITIZEN_ACTION":
+    case "PENDING_FOR_FIELD_INSPECTION":
+      dowloadOptions = [applicationDownloadObject];
+      break;
+    case "PENDING_APPROVAL_FOR_CONNECTION":
+    case "PENDING_FOR_PAYMENT":
+      dowloadOptions = [applicationDownloadObject, wsEstimateDownloadObject];
+      break;
+    case "PENDING_FOR_CONNECTION_ACTIVATION":
+    case "CONNECTION_ACTIVATED":
+      if (applicationDetails?.applicationData?.applicationType?.includes("NEW_") && reciept_data?.Payments?.length > 0)
+        dowloadOptions = [sanctionDownloadObject, wsEstimateDownloadObject, applicationDownloadObject, appFeeDownloadReceipt];
+      else dowloadOptions = [sanctionDownloadObject, wsEstimateDownloadObject, applicationDownloadObject];
+      break;
+    case "REJECTED":
+      dowloadOptions = [applicationDownloadObject];
+      break;
+
+    default:
+      dowloadOptions = [applicationDownloadObject];
+      break;
+  }
 
   let crumbs = [
     {
@@ -146,6 +293,27 @@ const BILLSBreadCrumbs = ({ location }) => {
       content: fromScreen ? `${t(fromScreen)} / ${t("WS_APPLICATION_DETAILS_HEADER")}` : t("WS_APPLICATION_DETAILS_HEADER"),
       show: location.pathname.includes("/application-details") ? true : false,
       isBack: sessionStorage.getItem("redirectedfromEDIT") !== "true" && fromScreen && true,
+      rightContent: (
+        <div style={{ zIndex: "10", display: "flex", flexDirection: "row-reverse", alignItems: "center", gap: "10px" }}>
+          <div style={{ zIndex: "10", position: "relative", maxWidth: "100% !important" }}>
+            {dowloadOptions && dowloadOptions.length > 0 && (
+              <React.Fragment>
+                <MultiLink
+                  className="abcd"
+                  onHeadClick={() => setShowOptions(!showOptions)}
+                  displayOptions={showOptions}
+                  options={dowloadOptions}
+                  downloadBtnClassName={"employee-download-btn-className"}
+                  optionsClassName={"employee-options-btn-className"}
+                  ref={menuRef}
+                  style={{ margin: "0px", color: "#fff" }}
+                />
+              </React.Fragment>
+            )}
+          </div>
+          <LinkButton label={t("VIEW_TIMELINE")} style={{ color: "#A52A2A" }} onClick={handleViewTimeline}></LinkButton>
+        </div>
+      ),
     },
     {
       path:
@@ -269,21 +437,33 @@ const BILLSBreadCrumbs = ({ location }) => {
   crumbs[lastCrumbIndex] = { ...crumbs[lastCrumbIndex], isclickable: false };
 
   return (
-    <BreadcrumbHeader
-      style={
-        window?.location.href.includes("/employee/ws/bill-amendment") || window?.location.href.includes("/employee/ws/response")
-          ? { marginLeft: "20px" }
-          : {}
-      }
-      leftContent={
-        <React.Fragment>
-          <ArrowLeft className="icon" />
-          Back
-        </React.Fragment>
-      }
-      onLeftClick={() => window.history.back()}
-      breadcrumbs={crumbs}
-    />
+    <React.Fragment>
+      {showWaringToast && (
+        <Toast
+          style={{ zIndex: "10000" }}
+          warning={showWaringToast?.isWarning}
+          error={showWaringToast?.isWarning ? false : true}
+          label={t(showWaringToast?.message)}
+          onClose={() => setShowWaringToast(null)}
+          isDleteBtn={true}
+        />
+      )}
+      <BreadcrumbHeader
+        style={
+          window?.location.href.includes("/employee/ws/bill-amendment") || window?.location.href.includes("/employee/ws/response")
+            ? { marginLeft: "20px" }
+            : {}
+        }
+        leftContent={
+          <React.Fragment>
+            <ArrowLeft className="icon" />
+            Back
+          </React.Fragment>
+        }
+        onLeftClick={() => window.history.back()}
+        breadcrumbs={crumbs}
+      />
+    </React.Fragment>
   );
 };
 

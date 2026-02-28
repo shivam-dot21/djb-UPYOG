@@ -26,13 +26,22 @@ export default function BreadcrumbHeader({ leftContent, breadcrumbs = [], onLeft
               const isLastItem = ci === visibleCrumbs.length - 1;
 
               if (crumb?.isBack) {
-                return (
-                  <li key={ci} className="bread-crumb--item">
-                    <span style={{ cursor: "pointer" }} onClick={() => window.history.back()}>
-                      {crumb.content}
-                    </span>
-                  </li>
-                );
+                const parts = crumb.content.split("/").map((p) => p.trim());
+                return parts.map((part, index) => (
+                  <React.Fragment key={`${ci}-${index}`}>
+                    <li className="bread-crumb-item">
+                      <span style={{ cursor: "pointer" }} onClick={() => window.history.back()}>
+                        {part.replace(/\//g, "").trim()}
+                      </span>
+                    </li>
+
+                    {index !== parts.length - 1 && (
+                      <li className="bread-crumb-separator">
+                        <span className="iconn">&gt;</span>
+                      </li>
+                    )}
+                  </React.Fragment>
+                ));
               }
 
               return (

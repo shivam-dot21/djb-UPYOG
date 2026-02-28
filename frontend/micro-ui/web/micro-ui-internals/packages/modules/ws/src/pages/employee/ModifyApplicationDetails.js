@@ -228,7 +228,6 @@ const ModifyApplicationDetails = () => {
     return a.order - b.order;
   });
 
-  console.log("🚀");
   return (
     <Fragment>
       <div className={"employee-main-application-details"}>
