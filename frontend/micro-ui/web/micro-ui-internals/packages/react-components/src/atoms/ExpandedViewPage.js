@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect, useState } from "react";
+import React, { Fragment, useEffect, useState, useMemo } from "react";
 import { useHistory, useLocation } from "react-router-dom";
 import ModuleHeader from "./ModuleHeader";
 import { ArrowLeft, HomeIcon } from "./svgindex";
@@ -16,6 +16,7 @@ const ExpandedViewPage = ({ modules = [] }) => {
 
   const [activeModuleCode, setActiveModuleCode] = useState(null);
 
+  // 🔹 Initial Load Logic
   useEffect(() => {
     if (!location.state) {
       history.push("/digit-ui/employee");
@@ -23,7 +24,13 @@ const ExpandedViewPage = ({ modules = [] }) => {
     }
 
     if (moduleName) {
-      const found = modules.find((m) => m.code === moduleName || t(`ACTION_TEST_${m.code}`) === moduleName || m.name === moduleName);
+      const found = modules.find(
+        (m) =>
+          m.code === moduleName ||
+          t(`ACTION_TEST_${m.code}`) === moduleName ||
+          m.name === moduleName
+      );
+
       if (found) {
         setActiveModuleCode(found.code);
       } else {
@@ -32,20 +39,37 @@ const ExpandedViewPage = ({ modules = [] }) => {
     }
   }, [location.state, history, modules, moduleName, t]);
 
-  const sidebarList = modules.filter((m) => Digit.ComponentRegistryService.getComponent(`${m.code}Card`));
+  // 🔹 Sidebar Module List
+  const sidebarList = modules.filter((m) =>
+    Digit.ComponentRegistryService.getComponent(`${m.code}Card`)
+  );
 
-  const getBreadcrumbLabel = () => {
-    const pathname = location.pathname;
-    if (pathname.includes("/module/details")) return "MODULE_DETAILS";
-    return "";
-  };
+  // 🔹 Dynamic Breadcrumb Label
+  const activeModuleLabel = useMemo(() => {
+    if (!activeModuleCode) return "";
 
-  const breadcrumbs = [{ icon: HomeIcon, label: t("HOME"), path: "/digit-ui/employee" }, { label: t(getBreadcrumbLabel()) }];
+    const foundModule = modules.find((m) => m.code === activeModuleCode);
 
+    if (foundModule) {
+      return t(`ACTION_TEST_${foundModule.code}`);
+    }
+
+    return moduleName || activeModuleCode;
+  }, [activeModuleCode, modules, moduleName, t]);
+
+  const breadcrumbs = [
+    { icon: HomeIcon, path: "/digit-ui/employee" },
+    { label: activeModuleLabel },
+  ];
+
+  // 🔹 Render Right Side Content
   const renderContent = () => {
     if (!activeModuleCode) return null;
 
-    const CardComponent = Digit.ComponentRegistryService.getComponent(`${activeModuleCode}Card`);
+    const CardComponent =
+      Digit.ComponentRegistryService.getComponent(
+        `${activeModuleCode}Card`
+      );
 
     if (CardComponent) {
       return (
@@ -55,11 +79,19 @@ const ExpandedViewPage = ({ modules = [] }) => {
       );
     }
 
-    if ((activeModuleCode === moduleName || t(`ACTION_TEST_${activeModuleCode}`) === moduleName) && links.length > 0) {
+    if (
+      (activeModuleCode === moduleName ||
+        t(`ACTION_TEST_${activeModuleCode}`) === moduleName) &&
+      links.length > 0
+    ) {
       return <ModuleLinksView links={links} moduleName={moduleName} />;
     }
 
-    return <div className="no-links-msg">Module content not found for {activeModuleCode}.</div>;
+    return (
+      <div className="no-links-msg">
+        Module content not found for {activeModuleCode}.
+      </div>
+    );
   };
 
   if (!location.state) return null;
@@ -69,22 +101,20 @@ const ExpandedViewPage = ({ modules = [] }) => {
       <div className="ground-container employee-app-container employee-app-homepage-container">
         <ModuleHeader
           leftContent={
-            <React.Fragment>
+            <>
               <ArrowLeft className="icon" />
               Back
-            </React.Fragment>
+            </>
           }
           onLeftClick={() => window.history.back()}
           breadcrumbs={breadcrumbs}
         />
+
         <div className="expanded-page-container">
-          {/* LEFT SIDEBAR (Navigation) */}
+          {/* 🔹 LEFT SIDEBAR */}
           <div className="expanded-sidebar">
             <div className="sidebar-header">
               <span className="sidebar-title">All Modules</span>
-              {/* <button className="clear-btn" onClick={() => history.goBack()}>
-                                Clear / Close
-                            </button> */}
             </div>
 
             <div className="sidebar-menu">
@@ -96,12 +126,16 @@ const ExpandedViewPage = ({ modules = [] }) => {
                   <div
                     key={idx}
                     className={`sidebar-item ${isActive ? "active" : ""}`}
-                    onClick={() => {
-                      setActiveModuleCode(mod.code);
-                    }}
+                    onClick={() => setActiveModuleCode(mod.code)}
                   >
                     <div className="sidebar-icon-placeholder">
-                      <svg className="sidebar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
+                      <svg
+                        className="sidebar-icon"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="1.8"
+                      >
                         <path d="M12 2l8 4.5v11L12 22l-8-4.5v-11L12 2z" />
                         <path d="M12 22v-9.5" />
                         <path d="M20 6.5l-8 4.5-8-4.5" />
@@ -114,7 +148,7 @@ const ExpandedViewPage = ({ modules = [] }) => {
             </div>
           </div>
 
-          {/* RIGHT CONTENT */}
+          {/* 🔹 RIGHT CONTENT */}
           <div style={{ flex: 1 }}>{renderContent()}</div>
         </div>
       </div>

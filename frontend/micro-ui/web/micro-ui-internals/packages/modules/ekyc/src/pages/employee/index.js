@@ -25,7 +25,7 @@ const EmployeeApp = ({ path }) => {
     };
 
     const breadcrumbs = [
-        { icon: HomeIcon, label: t("HOME"), path: "/digit-ui/employee" },
+        { icon: HomeIcon, path: "/digit-ui/employee" },
         { label: t(getBreadcrumbLabel()) }
     ];
 

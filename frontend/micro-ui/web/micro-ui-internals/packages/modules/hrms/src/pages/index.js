@@ -25,7 +25,7 @@ const EmployeeApp = ({ path, url, userType }) => {
   const getDynamicBreadcrumbs = () => {
     // 1. Base steps that are always present
     let crumbs = [
-      { icon: HomeIcon, label: t("HOME"), path: "/digit-ui/employee" },
+      { icon: HomeIcon, path: "/digit-ui/employee" },
       { label: t("ACTION_TEST_HRMS"), path: "/digit-ui/employee/module/details?moduleName=HRMS" },
     ];
 

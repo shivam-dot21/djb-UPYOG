@@ -23,8 +23,8 @@ const EmployeeApp = ({ path }) => {
     if (pathname.includes("/tp/")) moduleName = "TP";
 
     let crumbs = [
-      { icon: HomeIcon, label: t("HOME"), path: "/digit-ui/employee" },
-      { label: t("MODULE_DETAILS"), path: `/digit-ui/employee/module/details?moduleName=${moduleName}` },
+      { icon: HomeIcon, path: "/digit-ui/employee" },
+      { label: t("WT_MODULE_NAME"), path: `/digit-ui/employee/module/details?moduleName=${moduleName}` },
     ];
 
     if (pathname.includes("/inbox")) {

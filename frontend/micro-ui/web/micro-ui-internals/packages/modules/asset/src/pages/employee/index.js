@@ -69,7 +69,15 @@ const EmployeeApp = ({ path, url, userType }) => {
     return "";
   };
 
-  const breadcrumbs = [{ icon: HomeIcon, label: t("HOME") }, { label: t(getBreadcrumbLabel()) }];
+  let moduleName = "ASSET";
+  if (location.pathname.includes("/mt/")) moduleName = "MT";
+  if (location.pathname.includes("/tp/")) moduleName = "TP";
+
+  const breadcrumbs = [
+    { icon: HomeIcon },
+    { label: t("TITLE_ASSET_MANAGEMENT"), path: `/digit-ui/employee/module/details?moduleName=${moduleName}` },
+    { label: t(getBreadcrumbLabel()) },
+  ];
 
   const NewAssetAssignApplication = Digit?.ComponentRegistryService?.getComponent("AssignAssetApplication");
   const DisposeApplication = Digit?.ComponentRegistryService?.getComponent("DisposeApplication");

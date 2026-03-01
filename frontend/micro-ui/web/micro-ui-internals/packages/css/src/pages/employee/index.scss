@@ -12,12 +12,6 @@
   }
 
   .card-home {
-    font-size: 16px;
-    /* padding: 0 0 16px 0; */
-    /* width: 23%; */
-    border-radius: 10px;
-    display: inline-block;
-    margin: 8px auto;
     cursor: pointer;
     overflow: hidden;
     transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
@@ -489,12 +483,6 @@
     .breadcrumb {
       @apply mb-lg;
       margin-left: 0;
-    }
-
-    .card-home {
-      /* width: 23%; */
-      margin-right: 10px;
-      margin-bottom: 10px;
     }
 
     .card-home-hrms {
