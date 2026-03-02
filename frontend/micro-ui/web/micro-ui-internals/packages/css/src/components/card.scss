@@ -180,6 +180,7 @@
 }
 
 @screen dt {
+
   .submit-bar,
   .submit-bar-disabled {
     width: 240px;
@@ -342,7 +343,7 @@
     }
 
     /* Remove any default margins that might interfere */
-    .label-field-pair > * {
+    .label-field-pair>* {
       margin: 0;
     }
 
@@ -373,8 +374,7 @@
       margin-right: auto;
     }
 
-    .header-content {
-    }
+    .header-content {}
 
     .header-end {
       margin-left: auto;
@@ -415,8 +415,7 @@
     margin-bottom: 24px;
   }
 
-  .info-banner-wrap-citizen-override {
-  }
+  .info-banner-wrap-citizen-override {}
 
   .oc-aknowledgement-screen {
     width: auto;
@@ -475,9 +474,16 @@
   gap: 24px;
   width: 100%;
   max-width: 426px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  min-height: 270px;
+  box-shadow: 0 14px 10px -6px rgba(0, 0, 0, 0.12), 0 8px 12px -8px rgba(0, 0, 0, 0.08);
   font-family: "Inter", -apple-system, sans-serif;
   overflow: hidden;
+  transition: transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1), box-shadow 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+.new-employee-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 24px 36px -8px rgba(0, 0, 0, 0.18), 0 12px 20px -10px rgba(0, 0, 0, 0.12);
 }
 
 .new-employee-card::before {
@@ -487,7 +493,7 @@
   background-image: url("https://objectstorage.ap-hyderabad-1.oraclecloud.com/n/axn3czn1s06y/b/djb-dev-asset-bucket/o/dashboard_card_img.png");
   background-size: cover;
   background-position: center;
-  opacity: 0.2;
+  opacity: 0.5;
   z-index: 0;
 }
 
@@ -574,9 +580,9 @@
 
 .secondary-kpi-item {
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-end;
   align-items: center;
-  gap: 24px;
+  gap: 8px;
   width: 100%;
 }
 
@@ -649,14 +655,18 @@
 .details-btn {
   background-color: #1e293b;
   color: #ffffff;
-  padding: 8px 20px;
-  border-radius: 20px;
-  font-size: 0.8rem;
+  padding: 6px 20px;
+  border-radius: 6px;
+  font-size: 0.75rem;
   font-weight: 600;
   border: none;
   cursor: pointer;
+  transition: background-color 0.2s;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
   flex-shrink: 0;
-  margin-bottom: 2px;
 }
 
 .details-btn:hover {

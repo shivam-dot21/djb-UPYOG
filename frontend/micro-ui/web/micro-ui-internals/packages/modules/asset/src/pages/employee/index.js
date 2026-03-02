@@ -101,7 +101,7 @@ const EmployeeApp = ({ path, url, userType }) => {
     <Switch>
       <AppContainer>
         <React.Fragment>
-          <div className="ground-container employee-app-container">
+          <div className="form-container">
             <ModuleHeader
               leftContent={
                 <React.Fragment>

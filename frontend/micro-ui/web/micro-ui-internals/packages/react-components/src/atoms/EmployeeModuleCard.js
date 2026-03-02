@@ -5,6 +5,28 @@ import ExpandedViewContext from "./ExpandedViewContext";
 import ModuleLinksView from "./ModuleLinksView";
 import CollapsibleModuleSidebar from "./CollapsibleModuleSidebar";
 
+const getNewButtonText = (moduleName, kpis, links) => {
+  let path = "";
+  if (kpis && kpis.length > 0 && kpis[0].link) {
+    path = kpis[0].link;
+  } else if (links && links.length > 0 && links[0].link) {
+    path = links[0].link;
+  }
+
+  path = path.toLowerCase();
+  const name = String(moduleName || "").toLowerCase();
+
+  if (path.includes("/ws/") || path.includes("/sw/") || (name.includes("water") && (name.includes("sew") || name.includes("sw")))) return "New connection";
+  if (path.includes("/wt/") || (name.includes("water") && name.includes("tanker"))) return "New application";
+  if (path.includes("/ekyc/") || name.includes("kyc")) return "New Kyc";
+  if (path.includes("/fsm/") || name.includes("fsm") || name.includes("sludge") || name.includes("faecal")) return "New";
+  if (path.includes("/vendor/") || name.includes("vendor")) return "New vendor";
+  if (path.includes("/hrms/") || name.includes("user management") || name.includes("employee")) return "New Employee";
+  if (path.includes("/asset/") || name.includes("asset")) return "New Asset";
+
+  return "New";
+};
+
 const EmployeeModuleCard = ({ Icon, moduleName, kpis = [], links = [], className, styles }) => {
   const history = useHistory();
   const { isExpandedView, isModuleSidebar } = useContext(ExpandedViewContext) || {};
@@ -45,27 +67,55 @@ const EmployeeModuleCard = ({ Icon, moduleName, kpis = [], links = [], className
               <Fragment>
                 <span className="main-kpi-number">{mainKpi.count || "0"}</span>
                 <div className="main-kpi-label-wrap">
+                  <div className="trend-icon">
+                    <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M12 19V5M5 12l7-7 7 7" />
+                    </svg>
+                  </div>
                   <span className="main-kpi-label">{mainKpi.label}</span>
                 </div>
               </Fragment>
             )}
           </div>
 
-          {/* Right: Secondary KPIs */}
+          {/* Right: Secondary KPIs & Links */}
           <div className="secondary-kpi-section">
-            {secondaryKpis.map((kpi, index) => {
-              const isHeader = !kpi.count && kpi.label === kpi.label.toUpperCase();
-              return (
-                <div key={index} className={`secondary-kpi-item ${isHeader ? "sec-kpi-header" : ""}`}>
-                  <span className="sec-kpi-label">{kpi.label}</span>
-                  {!isHeader && <span className="sec-kpi-value">{kpi.count ? kpi.count : <span className="sec-kpi-dot"></span>}</span>}
-                </div>
-              );
-            })}
+            {secondaryKpis
+              .filter((kpi) => {
+                const label = String(kpi.label || "").toLowerCase();
+                return label.includes("nearing sla") || label.includes("active employee");
+              })
+              .map((kpi, index) => {
+                const isHeader = !kpi.count && kpi.label === kpi.label?.toUpperCase();
+                return (
+                  <div key={index} className={`secondary-kpi-item ${isHeader ? "sec-kpi-header" : ""}`}>
+                    <span className="sec-kpi-label">
+                      {kpi.link ? (
+                        kpi.link.includes("digit-ui/") ? (
+                          <Link to={kpi.link} style={{ color: "inherit", textDecoration: "none" }}>
+                            {kpi.label}
+                          </Link>
+                        ) : (
+                          <a href={kpi.link} style={{ color: "inherit", textDecoration: "none" }}>
+                            {kpi.label}
+                          </a>
+                        )
+                      ) : (
+                        kpi.label
+                      )}
+                    </span>
+                    {!isHeader && <span className="sec-kpi-value">{kpi.count ? kpi.count : <span className="sec-kpi-dot"></span>}</span>}
+                  </div>
+                );
+              })}
           </div>
         </div>
 
-        <div className="card-footer-row" style={{ justifyContent: "flex-end", marginTop: "auto" }}>
+        <div className="card-footer-row" style={{ marginTop: "auto" }}>
+          <div className="footer-links">
+            <span className="pill-link" style={{ cursor: "pointer" }}>View Reports</span>
+            <span className="pill-link" style={{ cursor: "pointer" }}>+ {getNewButtonText(moduleName, kpis, links)}</span>
+          </div>
           <button className="details-btn" onClick={handleDetailsClick}>
             Details
           </button>
@@ -125,40 +175,62 @@ const ModuleCardFullWidth = ({
           )}
         </div>
 
-        {/* Right: Secondary KPIs */}
+        {/* Right: Secondary KPIs & Links */}
         <div className="secondary-kpi-section">
-          {secondaryKpis.map((kpi, index) => {
-            const isHeader =
-              !kpi.count && kpi.label === kpi.label?.toUpperCase();
+          {secondaryKpis
+            .filter((kpi) => {
+              const label = String(kpi.label || "").toLowerCase();
+              return label.includes("nearing sla") || label.includes("active employee");
+            })
+            .map((kpi, index) => {
+              const isHeader =
+                !kpi.count && kpi.label === kpi.label?.toUpperCase();
 
-            return (
-              <div
-                key={index}
-                className={`secondary-kpi-item ${
-                  isHeader ? "sec-kpi-header" : ""
-                }`}
-              >
-                <span className="sec-kpi-label">{kpi.label}</span>
-                {!isHeader && (
-                  <span className="sec-kpi-value">
-                    {kpi.count ? (
-                      kpi.count
+              return (
+                <div
+                  key={index}
+                  className={`secondary-kpi-item ${isHeader ? "sec-kpi-header" : ""
+                    }`}
+                >
+                  <span className="sec-kpi-label">
+                    {kpi.link ? (
+                      kpi.link.includes("digit-ui/") ? (
+                        <Link to={kpi.link} style={{ color: "inherit", textDecoration: "none" }}>
+                          {kpi.label}
+                        </Link>
+                      ) : (
+                        <a href={kpi.link} style={{ color: "inherit", textDecoration: "none" }}>
+                          {kpi.label}
+                        </a>
+                      )
                     ) : (
-                      <span className="sec-kpi-dot"></span>
+                      kpi.label
                     )}
                   </span>
-                )}
-              </div>
-            );
-          })}
+                  {!isHeader && (
+                    <span className="sec-kpi-value">
+                      {kpi.count ? (
+                        kpi.count
+                      ) : (
+                        <span className="sec-kpi-dot"></span>
+                      )}
+                    </span>
+                  )}
+                </div>
+              );
+            })}
         </div>
       </div>
 
       {/* Footer */}
       <div
         className="card-footer-row"
-        style={{ justifyContent: "flex-end", marginTop: "auto" }}
+        style={{ marginTop: "auto" }}
       >
+        <div className="footer-links">
+          <span className="pill-link" style={{ cursor: "pointer" }}>View Reports</span>
+          <span className="pill-link" style={{ cursor: "pointer" }}>+ {getNewButtonText(moduleName, kpis, links)}</span>
+        </div>
         <button className="details-btn" onClick={handleDetailsClick}>
           Details
         </button>
