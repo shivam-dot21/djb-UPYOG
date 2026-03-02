@@ -1,8 +1,11 @@
 import React from "react";
-import { Card, CardHeader, SubmitBar, CitizenInfoLabel, CardText, Loader, CardSubHeader, PrintBtnCommon } from "@djb25/digit-ui-react-components";
+import { Card, CardHeader, SubmitBar, CitizenInfoLabel, CardText, Loader, CardSubHeader, PrintBtnCommon, ActionBar } from "@djb25/digit-ui-react-components";
 import { useTranslation } from "react-i18next";
+import { useHistory,useRouteMatch } from "react-router-dom";
 
 const WSDocsRequired = ({ onSelect, userType, onSkip, config }) => {
+  const history = useHistory();
+  const match = useRouteMatch();
   const { t } = useTranslation();
   const tenantId = Digit.ULBService.getStateId();
   const goNext = () => {
@@ -95,6 +98,17 @@ const WSDocsRequired = ({ onSelect, userType, onSkip, config }) => {
             ))}
           </div>
         )}
+        <ActionBar style={{ display: "flex", justifyContent: "flex-end", alignItems: "baseline" }}>
+          {
+            <SubmitBar
+              label={t("ACTION_TEST_APPLY")}
+              onSubmit={() => {
+                history.push(match.path.replace("create-application", "new-application"));
+              }}
+              style={{ margin: "10px 10px 0px 0px" }}
+              disabled={wsDocsLoading ? true : false}
+            />}
+        </ActionBar>
       </Card>
     </div>
   );

@@ -30,6 +30,7 @@ const CheckBox = ({
   pageType,
   index,
   isLabelFirst,
+  errorStyle,   // 👈 explicitly remove it
   ...props
 }) => {
   const userType =
@@ -63,7 +64,7 @@ const CheckBox = ({
 
       <input
         type="checkbox"
-        className={inputClass}
+        className={`${inputClass} ${errorStyle && "employee-card-input-error"}`}
         onChange={onChange}
         value={value || label}
         ref={inputRef}

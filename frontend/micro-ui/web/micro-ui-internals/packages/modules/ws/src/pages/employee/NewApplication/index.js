@@ -1,11 +1,9 @@
-import { FormComposer, Header, Loader, Toast } from "@djb25/digit-ui-react-components";
+import { FormComposer,Loader, Toast } from "@djb25/digit-ui-react-components";
 import cloneDeep from "lodash/cloneDeep";
 import React, { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { useLocation, useHistory } from "react-router-dom";
-import * as func from "../../../utils";
 import _ from "lodash";
-import { newConfig as newConfigLocal } from "../../../config/wsCreateConfig";
 import {
   createPayloadOfWS,
   updatePayloadOfWS
@@ -13,9 +11,7 @@ import {
 
 const NewApplication = () => {
   const { t } = useTranslation();
-  const { state } = useLocation();
   const history = useHistory();
-  let filters = func.getQueryStringParams(location.search);
   const [canSubmit, setSubmitValve] = useState(false);
   const [isEnableLoader, setIsEnableLoader] = useState(false);
   const [showToast, setShowToast] = useState(null);
@@ -257,12 +253,9 @@ const NewApplication = () => {
   if (isEnableLoader || isLoading) {
     return <Loader />;
   }
-
+  
   return (
     <React.Fragment>
-      <div style={{ marginLeft: "15px" }}>
-        <Header>{t(config.head)}</Header>
-      </div>
       <FormComposer
         config={config.body}
         userType={"employee"}
@@ -271,7 +264,7 @@ const NewApplication = () => {
         label={t("CS_COMMON_SUBMIT")}
         onSubmit={onSubmit}
         defaultValues={sessionFormData}
-      ></FormComposer>
+      />
       {showToast && <Toast isDleteBtn={true} error={showToast?.key === "error" ? true : false} warning={showToast?.warning} label={t(showToast?.message)} onClose={closeToast} isWarning={showToast?.isWarning}/>}
       {/* {showToast && <Toast error={showToast.key} label={t(showToast?.message)} onClose={closeToast} />} */}
     </React.Fragment>

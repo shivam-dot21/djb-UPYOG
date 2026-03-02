@@ -89,7 +89,6 @@ const BILLSBreadCrumbs = ({ location }) => {
       const warningCountDetails = JSON.parse(warningCount);
       if (warningCountDetails == 0) {
         const filters = { applicationNumber };
-        console.log(filters, "filters");
         const response = await Digit.WSService.search({
           tenantId: applicationDetails?.tenantId,
           filters: { ...filters },
@@ -195,17 +194,23 @@ const BILLSBreadCrumbs = ({ location }) => {
   let crumbs = [
     {
       path: "/digit-ui/employee",
-      content: t("ES_COMMON_HOME"),
       show: true,
       style: isMobile ? { width: "20%" } : {},
       icon: HomeIcon,
     },
     {
+      path: "/digit-ui/employee/module/details",
+      content: t("ES_TITLE_WATER_AND_SEWERAGE"),
+      show: location.pathname.includes("/create-application") ||
+    location.pathname.includes("/new-application"),
+    },
+    {
       path: "/digit-ui/employee/ws/create-application",
       content: t("ES_COMMON_WS_DOCUMENTS_REQUIRED"),
-      show: location.pathname.includes("/create-application") ? true : false,
+      show: location.pathname.includes("/create-application") ||
+    location.pathname.includes("/new-application"),
       rightContent: (
-        <div onClick={printDiv} style={{ cursor: "pointer", display: "flex" }}>
+       location.pathname.includes("/create-application")&& <div onClick={printDiv} style={{ cursor: "pointer", display: "flex" }}>
           <PrintBtnCommon />
           <div style={{ fontSize: "24px", fontWeight: "400", color: "#0B0C0C" }}>{"Print"}</div>
         </div>
@@ -263,7 +268,7 @@ const BILLSBreadCrumbs = ({ location }) => {
     },
     {
       path: "/digit-ui/employee/ws/new-application",
-      content: t("ES_COMMON_WS_NEW_CONNECTION"),
+      content: fromScreen ? `${t(fromScreen)} / ${t("ES_COMMON_WS_NEW_CONNECTION")}` : t("ES_COMMON_WS_NEW_CONNECTION"),
       show: location.pathname.includes("/new-application") ? true : false,
     },
     {
