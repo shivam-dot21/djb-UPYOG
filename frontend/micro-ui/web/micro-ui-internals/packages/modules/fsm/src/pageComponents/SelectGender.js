@@ -4,8 +4,20 @@ import Timeline from "../components/TLTimelineInFSM";
 
 const SelectGender = ({ config, onSelect, t, userType, formData }) => {
   const stateId = Digit.ULBService.getStateId();
-  const { data: GenderData, isLoading } = Digit.Hooks.fsm.useMDMS(stateId, "common-masters", "FSMGenderType");
+  const { data: genderDataV2, isLoading: isV2Loading } = Digit.Hooks.useCommonMDMSV2(stateId, "common-masters", ["GenderType"]);
+  // const { data: GenderDataV1, isLoading: isV1Loading } = Digit.Hooks.fsm.useMDMS(stateId, "common-masters", "FSMGenderType");
   const [genderType, setGenderType] = useState(formData?.genderType || formData?.gender);
+
+  const genderList = genderDataV2?.["common-masters"]?.GenderType || genderDataV2?.MdmsRes?.["common-masters"]?.GenderType;
+  const GenderData = genderList?.length
+    ? genderList.filter((data) => data.active).map((genderDetails) => ({
+      ...genderDetails,
+      i18nKey: `COMMON_GENDER_${genderDetails.code}`,
+      value: `${genderDetails.code}`,
+    }))
+    : [];
+
+  const isLoading = !GenderData && isV2Loading;
 
   useEffect(() => {
     if (!isLoading && GenderData) {
@@ -53,7 +65,7 @@ const SelectGender = ({ config, onSelect, t, userType, formData }) => {
           className="payment-form-text-input-correction"
           isMandatory={config.isMandatory}
           selected={selectedValue}
-          option={GenderData?.sort((a, b) => a.code.localeCompare(b.code))}
+          option={GenderData}
           select={(value) => {
             setGenderType(value);
             onSelect(config.key, value);

@@ -1,4 +1,4 @@
-import { MdmsService } from "../../services/elements/MDMS";
+import { MdmsServiceV2 } from "../../services/elements/MDMSV2";
 import { useQuery } from "react-query";
 
 const useWTMDMS = (tenantId, moduleCode, type, config = {}) => {
@@ -7,7 +7,7 @@ const useWTMDMS = (tenantId, moduleCode, type, config = {}) => {
 
   const vehicleTypeQuery = useQuery(
     "WT_VEHICLE_TYPE",
-    () => MdmsService.getVehicleType(tenantId, moduleCode, type),
+    () => MdmsServiceV2.getVehicleType(tenantId, moduleCode, type),
     queryConfig
   );
 

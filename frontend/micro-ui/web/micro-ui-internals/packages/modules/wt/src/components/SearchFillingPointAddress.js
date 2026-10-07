@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Card, Menu, AddIcon, TextInput, Dropdown, Label, SubmitBar, Toast, ToggleSwitch } from "@djb25/digit-ui-react-components";
+import { Card, Menu, AddIcon, TextInput, Dropdown, Label, SubmitBar, Toast, ToggleSwitch, CardLabelError } from "@djb25/digit-ui-react-components";
 import { useTranslation } from "react-i18next";
 import { useHistory, Link, useLocation } from "react-router-dom";
 import LocalityModal from "./LocalityModal";
@@ -16,6 +16,7 @@ const SearchFillingPointAddress = () => {
   const [showAddMenu, setShowAddMenu] = useState(false);
   const [searchValue, setSearchValue] = useState("");
   const [mobileNumber, setMobileNumber] = useState("");
+  const [mobileNumberError, setMobileNumberError] = useState("");
   const [status, setStatus] = useState(null);
   const [fixedPointStatus, setFixedPointStatus] = useState(null);
   const [appliedFixedPointStatus, setAppliedFixedPointStatus] = useState(null);
@@ -135,11 +136,22 @@ const SearchFillingPointAddress = () => {
   const clearSearch = () => {
     setSearchValue("");
     setMobileNumber("");
+    setMobileNumberError("");
     setStatus(null);
     setFixedPointStatus(null);
     setAppliedFixedPointStatus(null);
     setSelectedFillingPoint(null);
     setSearchParams({});
+  };
+
+  const handleMobileChange = (e) => {
+    const val = e.target.value.replace(/\D/g, "").slice(0, 10);
+    setMobileNumber(val);
+    if (val && !/^[6-9]\d{9}$/.test(val)) {
+      setMobileNumberError(t("CORE_COMMON_MOBILE_ERROR"));
+    } else {
+      setMobileNumberError("");
+    }
   };
 
   const onTabChange = (tab) => {
@@ -164,6 +176,10 @@ const SearchFillingPointAddress = () => {
   };
 
   const onSearch = () => {
+    if (mobileNumber && !/^[6-9]\d{9}$/.test(mobileNumber)) {
+      setMobileNumberError(t("CORE_COMMON_MOBILE_ERROR"));
+      return;
+    }
     const filters = {
       ...(selectedTab === "FILLING_POINT" ? { fillingPointName: searchValue } : { name: searchValue }),
       mobileNumber: mobileNumber,
@@ -811,12 +827,11 @@ const SearchFillingPointAddress = () => {
               <Label>{t("WT_MOBILE_NUMBER")}</Label>
               <TextInput
                 value={mobileNumber}
-                onChange={(e) => setMobileNumber(e.target.value.replace(/\D/g, "").slice(0, 10))}
+                onChange={handleMobileChange}
                 placeholder={t("WT_ENTER_MOBILE_NUMBER")}
-                validation={{
-                  pattern: /^[6-9]\d{9}$/,
-                }}
+                maxlength={10}
               />
+              {mobileNumberError && <CardLabelError style={{ marginTop: "4px" }}>{mobileNumberError}</CardLabelError>}
             </div>
 
             {selectedTab === "FIXED_POINT" && (

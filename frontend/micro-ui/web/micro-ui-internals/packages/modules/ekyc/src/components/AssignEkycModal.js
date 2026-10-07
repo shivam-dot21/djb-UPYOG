@@ -34,10 +34,10 @@ const AssignEkycModal = ({ surveyor, isReassign, closeModal, refetchDashboard, t
   //   }));
   // }, [zroLocationsData]);
 
-  const { data: egovLocationData } = Digit.Hooks.useCommonMDMS(tenantId, "egov-location", ["TenantBoundary"]);
+  const { data: egovLocationData } = Digit.Hooks.useCommonMDMSV2(tenantId, "egov-location", ["TenantBoundary"]);
 
   const boundaryData = useMemo(() => {
-    const tenantBoundary = egovLocationData?.["egov-location"]?.TenantBoundary || [];
+    const tenantBoundary = egovLocationData?.["egov-location"]?.TenantBoundary || egovLocationData?.MdmsRes?.["egov-location"]?.TenantBoundary || [];
     const revenueData = tenantBoundary.find((item) => item?.hierarchyType?.code === "REVENUE");
     const boundary = revenueData?.boundary || [];
     return Array.isArray(boundary) ? boundary : [boundary];

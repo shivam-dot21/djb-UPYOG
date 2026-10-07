@@ -82,6 +82,14 @@ const AddFillingPointAddress = () => {
       tenantId,
     });
 
+    if (!isAeMobileValid || !isJeMobileValid || !isEeMobileValid) {
+      setShowToast({
+        label: t("CORE_COMMON_APPLICANT_MOBILE_NUMBER_INVALID"),
+        isError: true,
+      });
+      return;
+    }
+
     const mutation = editId ? updateFillingPoint : createFillingPoint;
 
     mutation(payload, {
@@ -109,13 +117,20 @@ const AddFillingPointAddress = () => {
 
   const isMobile = window.Digit.Utils.browser.isMobile();
 
+  const isAeMobileValid = /^[6-9]\d{9}$/.test(formData?.owner?.aeMobile || "");
+  const isJeMobileValid = /^[6-9]\d{9}$/.test(formData?.owner?.jeMobile || "");
+  const isEeMobileValid = /^[6-9]\d{9}$/.test(formData?.owner?.eeMobile || "");
+
   const isFormDisabled =
     !formData?.owner?.aeName ||
     !formData?.owner?.aeMobile ||
+    !isAeMobileValid ||
     !formData?.owner?.jeName ||
     !formData?.owner?.jeMobile ||
+    !isJeMobileValid ||
     !formData?.owner?.eeName ||
     !formData?.owner?.eeMobile ||
+    !isEeMobileValid ||
     !formData?.address?.addressLine1 ||
     !formData?.address?.city ||
     !formData?.address?.locality ||

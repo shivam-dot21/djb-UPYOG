@@ -136,7 +136,7 @@ const DriverConfig = (t, disabled = false) => {
           isMandatory: true,
           type: "mobileNumber",
           key: "phone",
-          disable: disabled,
+          // disable: disabled,
           populators: {
             name: "phone",
             validation: {

@@ -1,15 +1,69 @@
 const { createProxyMiddleware } = require("http-proxy-middleware");
-
+console.log("🔥🔥🔥 EXAMPLE setupProxy.js LOADED 🔥🔥🔥");
 const createProxy = createProxyMiddleware({
   //target: process.env.REACT_APP_PROXY_API || "https://uat.digit.org",
   // target: process.env.REACT_APP_PROXY_API || "https://qa.digit.org",
   target: process.env.REACT_APP_PROXY_API || "https://qa.digit.org",
   changeOrigin: true,
 });
+
 const assetsProxy = createProxyMiddleware({
   target: process.env.REACT_APP_PROXY_ASSETS || "https://qa.digit.org",
   changeOrigin: true,
 });
+
+const vendorProxy = createProxyMiddleware({
+  target: process.env.REACT_APP_VENDORPROXY_API || "http://192.168.0.62:8092",
+  changeOrigin: true,
+  onProxyReq: (proxyReq, req) => {
+    console.log("🔥 VENDOR REQUEST:", req.method, req.originalUrl);
+  },
+
+  onError: (err, req) => {
+    console.error("🔥 VENDOR PROXY ERROR:", err.message);
+  },
+});
+
+const vmProxy = createProxyMiddleware({
+  target: process.env.REACT_APP_VMPROXY_API || "http://192.168.0.62:8066",
+  changeOrigin: true,
+  onProxyReq: (proxyReq, req) => {
+    console.log("🔥 VM PROXY REQUEST:", req.method, req.originalUrl);
+  },
+
+  onError: (err, req) => {
+    console.error("🔥 VM PROXY ERROR:", err.message);
+  },
+});
+
+const vhProxy = createProxyMiddleware({
+  target: process.env.REACT_APP_VHPROXY_API || "http://192.168.0.62:8061",
+  changeOrigin: true,
+  onProxyReq: (proxyReq, req) => {
+    console.log("🔥 VH PROXY REQUEST:", req.method, req.originalUrl);
+  },
+
+  onError: (err, req) => {
+    console.error("🔥 VH PROXY ERROR:", err.message);
+  },
+});
+
+const reqProxy = createProxyMiddleware({
+  target: process.env.REACT_APP_REQPROXY_API || "http://192.168.0.62:8091",
+  changeOrigin: true,
+  onProxyReq: (proxyReq, req) => {
+    console.log("🔥 REQ PROXY REQUEST:", req.method, req.originalUrl);
+  },
+
+  onError: (err, req) => {
+    console.error("🔥 REQ PROXY ERROR:", err.message);
+  },
+});
+
+
+
+
+
 module.exports = function (app) {
   [
     "/access/v1/actions/mdms",
@@ -29,8 +83,8 @@ module.exports = function (app) {
     "/collection-services",
     "/pdf-service",
     "/pg-service",
-    "/vehicle",
-    "/vendor",
+    // "/vehicle",
+    // "/vendor",
     "/property-services",
     "/fsm-calculator/v1/billingSlab/_search",
     "/pt-calculator-v2",
@@ -96,40 +150,44 @@ module.exports = function (app) {
     "/asset-services/v1/assets/depreciation/_process",
     "/asset-services/v1/assets/depreciation/list",
     "/asset-services/v1/disposal/_create",
-    "/request-service/water-tanker/v1/_create",
+    // "/request-service/water-tanker/v1/_create",
     "/asset-services/maintenance/v1/_create",
     "/asset-services/maintenance/v1/_update",
     "/asset-services/maintenance/v1/_search",
     "/asset-services/v1/disposal/_search",
     "/asset-services/v1/assets/assignment/_search",
-    "/request-service/water-tanker/v1/_search",
-    "/request-service/water-tanker/v1/_update",
-    "/request-service/water-tanker/v1/emergency/_update",
-    "/request-service/water-tanker/fixed-point/v1/_create",
-    "/request-service/water-tanker/fixed-point/v1/_search",
-    "/request-service/water-tanker/fixed-point/v1/_update",
-    "/request-service/wt/filling-point/_create",
-    "/request-service/wt/filling-point/_search",
-    "/request-service/water-tanked/fixed/time/v1/_search",
-    "/request-service/water-tanked/fixed/time/v1/_create",
-    "/request-service/wt/filling-point/_update",
-    "/request-service/water-tanker/fixed-filling/v1/_mapping",
-    "/request-service/filling-point/locality/v1/_create",
-    "/request-service/water-tanked/fixed/time/v1/_update",
-    "/request-service/wt/filling-point/vendor/_map",
-    "/request-service/filling-point/locality/v1/_update",
-    "/vendor-management/api/v1/_create",
-    "/vendor-management/api/v1/work-order/_create",
+    // "/request-service/water-tanker/v1/_search",
+    // "/request-service/water-tanker/v1/_update",
+    // "/request-service/water-tanker/v1/emergency/_update",
+    // "/request-service/water-tanker/fixed-point/v1/_create",
+    // "/request-service/water-tanker/fixed-point/v1/_search",
+    // "/request-service/water-tanker/fixed-point/v1/_update",
+    // "/request-service/wt/filling-point/_create",
+    // "/request-service/wt/filling-point/_search",
+    // "/request-service/water-tanked/fixed/time/v1/_search",
+    // "/request-service/water-tanked/fixed/time/v1/_create",
+    // "/request-service/wt/filling-point/_update",
+    // "/request-service/water-tanker/fixed-filling/v1/_mapping",
+    // "/request-service/filling-point/locality/v1/_create",
+    // "/request-service/water-tanked/fixed/time/v1/_update",
+    // "/request-service/wt/filling-point/vendor/_map",
+    // "/request-service/filling-point/locality/v1/_update",
+    // "/vendor-management/api/v1/_create",
+    // "/vendor-management/api/v1/work-order/_create",
     "/sv-services/street-vending/_createdemand",
-    "/request-service/mobile-toilet/v1/_create",
-    "/request-service/mobile-toilet/v1/_update",
-    "/request-service/mobile-toilet/v1/_search",
-    "/request-service/v1/driver-trip-report/_search",
-    "/vendor-management/api/v1/vendorPlusAdditional/_search",
+    // "/request-service/mobile-toilet/v1/_create",
+    // "/request-service/mobile-toilet/v1/_update",
+    // "/request-service/mobile-toilet/v1/_search",
+    // "/request-service/v1/driver-trip-report/_search",
+    // "/vendor-management/api/v1/vendorPlusAdditional/_search",
     "/user/_updateAddress",
     "/ekyc-service",
     "/requester-services-dx",
     "/digit-ui/requester-services-dx"
   ].forEach((location) => app.use(location, createProxy));
   ["/pb-egov-assets"].forEach((location) => app.use(location, assetsProxy));
+  app.use("/request-service", reqProxy);
+  app.use("/vendor-management", vmProxy);
+  app.use("/vendor", vendorProxy);
+  app.use("/vehicle", vhProxy);
 };

@@ -26,10 +26,10 @@ const EditVendor = () => {
 
   const { data: dsoData, isLoading: daoDataLoading } = Digit.Hooks.fsm.useDsoSearch(tenantId, { ids: dsoId }, { staleTime: Infinity });
   const stateId = Digit.ULBService.getStateId();
-  const { data: genderTypeData } = Digit.Hooks.obps.useMDMS(stateId, "common-masters", ["GenderType"]);
+  const { data: genderTypeData } = Digit.Hooks.useCommonMDMSV2(stateId, "common-masters", ["GenderType"]);
   const [zones, setZones] = useState([]);
 
-  const { data: zroData, isLoading } = Digit.Hooks.useCommonMDMS(tenantId, "common-masters", ["ZroOfficeList"]);
+  const { data: zroData, isLoading } = Digit.Hooks.useCommonMDMSV2(tenantId, "common-masters", ["ZroOfficeList"]);
   useEffect(() => {
     const zroOfficeList = zroData?.["common-masters"]?.ZroOfficeList || zroData?.MdmsRes?.["common-masters"]?.ZroOfficeList || [];
 
@@ -45,8 +45,9 @@ const EditVendor = () => {
   }, [zroData]);
 
   useEffect(() => {
-    if (genderTypeData && genderTypeData["common-masters"]?.GenderType?.length) {
-      const menuItems = genderTypeData["common-masters"]?.GenderType?.filter((data) => data.active).map((genderDetails) => ({
+    const genderList = genderTypeData?.["common-masters"]?.GenderType || genderTypeData?.MdmsRes?.["common-masters"]?.GenderType;
+    if (genderList?.length) {
+      const menuItems = genderList.filter((data) => data.active).map((genderDetails) => ({
         i18nKey: `COMMON_GENDER_${genderDetails.code}`,
         code: `${genderDetails.code}`,
         value: `${genderDetails.code}`,

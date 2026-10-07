@@ -25,33 +25,33 @@ const RequestDetails = ({ t, config, onSelect, userType, formData }) => {
   const inputStyles = { width: user.type === "EMPcommonConfigLOYEE" ? "100%" : "100%" };
 
   // Fetch VehicleType data from MDMS
-  const { data: VehicleType } = Digit.Hooks.useCustomMDMS(tenantId, "request-service", [{ name: "VehicleType" }], {
+  const { data: VehicleType } = Digit.Hooks.useCustomMDMSV2(tenantId, "Request-Service", [{ name: "VehicleType" }], {
     select: (data) => {
-      const formattedData = data?.["request-service"]?.["VehicleType"];
+      const formattedData = data?.["Request-Service"]?.["VehicleType"];
       return formattedData;
     },
   });
 
   // Fetch TankerType data from MDMS
-  const { data: TankerType } = Digit.Hooks.useCustomMDMS(tenantId, "request-service", [{ name: "TankerType" }], {
+  const { data: TankerType } = Digit.Hooks.useCustomMDMSV2(tenantId, "Request-Service", [{ name: "TankerType" }], {
     select: (data) => {
-      const formattedData = data?.["request-service"]?.["TankerType"];
+      const formattedData = data?.["Request-Service"]?.["TankerType"];
       return formattedData;
     },
   });
 
   // Fetch TankerQuantity data from MDMS
-  const { data: TankerDetails } = Digit.Hooks.useCustomMDMS(tenantId, "request-service", [{ name: "TankerQuantity" }], {
+  const { data: TankerDetails } = Digit.Hooks.useCustomMDMSV2(tenantId, "Request-Service", [{ name: "TankerQuantity" }], {
     select: (data) => {
-      const formattedData = data?.["request-service"]?.["TankerQuantity"];
+      const formattedData = data?.["Request-Service"]?.["TankerQuantity"];
       return formattedData;
     },
   });
 
   // Fetch WaterType data from MDMS
-  const { data: WaterTypeData } = Digit.Hooks.useCustomMDMS(tenantId, "Request-service", [{ name: "WaterType" }], {
+  const { data: WaterTypeData } = Digit.Hooks.useCustomMDMSV2(tenantId, "Request-Service", [{ name: "WaterType" }], {
     select: (data) => {
-      const formattedData = data?.["Request-service"]?.["WaterType"];
+      const formattedData = data?.["Request-Service"]?.["WaterType"];
       return formattedData;
     },
   });

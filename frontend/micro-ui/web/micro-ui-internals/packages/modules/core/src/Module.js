@@ -19,7 +19,7 @@ import CreateAnonymousEDCR from "./pages/citizen/Home/EDCR";
 
 const DigitUIWrapper = ({ stateCode, enabledModules, moduleReducers }) => {
   const { isLoading, data: initData } = Digit.Hooks.useInitStore(stateCode, enabledModules);
-  if (isLoading) {
+  if (isLoading || !initData) {
     return <Loader page={true} />;
   }
 
@@ -31,7 +31,7 @@ const DigitUIWrapper = ({ stateCode, enabledModules, moduleReducers }) => {
             initData={initData}
             stateCode={stateCode}
             modules={initData?.modules}
-            appTenants={initData.tenants}
+            appTenants={initData?.tenants}
             logoUrl={initData?.stateInfo?.logoUrl}
           />
         </Body>

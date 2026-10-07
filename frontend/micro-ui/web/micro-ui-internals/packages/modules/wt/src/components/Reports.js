@@ -123,9 +123,7 @@ const Reports = ({ isLoading = false, t, onSubmit = () => {}, data = null, count
                     <MobileNumber
                       name="mobileNumber"
                       inputRef={register({
-                        minLength: { value: 10, message: t("CORE_COMMON_MOBILE_ERROR") },
-                        maxLength: { value: 10, message: t("CORE_COMMON_MOBILE_ERROR") },
-                        pattern: { value: /[6789][0-9]{9}/, message: t("CORE_COMMON_MOBILE_ERROR") },
+                        validate: (val) => !val || /^[6-9]\d{9}$/.test(val) || t("CORE_COMMON_MOBILE_ERROR"),
                       })}
                       type="number"
                       maxlength={10}
@@ -158,9 +156,7 @@ const Reports = ({ isLoading = false, t, onSubmit = () => {}, data = null, count
                     <MobileNumber
                       name="mobileNumber"
                       inputRef={register({
-                        minLength: { value: 10, message: t("CORE_COMMON_MOBILE_ERROR") },
-                        maxLength: { value: 10, message: t("CORE_COMMON_MOBILE_ERROR") },
-                        pattern: { value: /[6789][0-9]{9}/, message: t("CORE_COMMON_MOBILE_ERROR") },
+                        validate: (val) => !val || /^[6-9]\d{9}$/.test(val) || t("CORE_COMMON_MOBILE_ERROR"),
                       })}
                       type="number"
                       maxlength={10}

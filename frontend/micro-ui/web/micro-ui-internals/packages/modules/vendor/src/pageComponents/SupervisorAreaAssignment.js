@@ -15,7 +15,7 @@ const SupervisorAreaAssignment = ({ config, onSelect, t, userType, formData }) =
   const [areas, setAreas] = useState([]);
 
   // Fetching Hierarchy Data from MDMS
-  const { data: boundaryData, isLoading } = Digit.Hooks.useCommonMDMS(tenantId, "egov-location", ["TenantBoundary"]);
+  const { data: boundaryData, isLoading } = Digit.Hooks.useCommonMDMSV2(tenantId, "egov-location", ["TenantBoundary"]);
 
   useEffect(() => {
     console.log("Boundary Data State:", { boundaryData, isLoading });

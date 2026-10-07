@@ -1,5 +1,5 @@
 import { LocalizationService } from "../../elements/Localization/service";
-import { MdmsService } from "../../elements/MDMS";
+import { MdmsServiceV2 } from "../../elements/MDMSV2";
 import { Storage } from "../../atoms/Utils/Storage";
 import { ApiCacheService } from "../../atoms/ApiCacheService";
 
@@ -57,7 +57,7 @@ export const StoreService = {
     return await Promise.all(allBoundries);
   },
   digitInitData: async (stateCode, enabledModules) => {
-    const { MdmsRes } = await MdmsService.init(stateCode);
+    const { MdmsRes } = await MdmsServiceV2.init(stateCode);
     const stateInfo = MdmsRes["common-masters"]?.StateInfo?.[0] || {};
     const uiHomePage = MdmsRes["common-masters"]?.uiHomePage?.[0] || {};
     const localities = {};
@@ -96,7 +96,7 @@ export const StoreService = {
       .map((module) => module.tenants)
       .flat()
       .reduce((unique, ele) => (unique.find((item) => item.code === ele.code) ? unique : [...unique, ele]), []);
-    initData.tenants = MdmsRes?.tenant?.tenants.map((tenant) => ({
+    initData.tenants = (MdmsRes?.tenant?.tenants || []).map((tenant) => ({
       i18nKey: `TENANT_TENANTS_${tenant.code.replace(".", "_").toUpperCase()}`,
       ...tenant,
     }));

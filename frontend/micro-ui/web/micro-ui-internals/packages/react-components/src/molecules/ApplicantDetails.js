@@ -23,6 +23,7 @@ import React, { useState } from "react";
 import FormStep from "./FormStep";
 import TextInput from "../atoms/TextInput";
 import CardLabel from "../atoms/CardLabel";
+import CardLabelError from "../atoms/CardLabelError";
 import MobileNumber from "../atoms/MobileNumber";
 import RadioButtons from "../atoms/RadioButtons";
 import Dropdown from "../atoms/Dropdown";
@@ -43,6 +44,8 @@ const ApplicantDetails = ({ t, config, onSelect, formData }) => {
       formData?.infodetails?.existingDataSet?.owner?.mobileNumber ||
       ""
   );
+  const [mobileNumberError, setMobileNumberError] = useState("");
+  const [alternateNumberError, setAlternateNumberError] = useState("");
   const [gender, setGender] = useState(formData?.owner?.gender || "");
   const [dateOfBirth, setDateofBirth] = useState(formData?.owner?.dateOfBirth || formData?.owner?.requestDetails?.applicantName || "");
   const [emailId, setEmail] = useState(
@@ -61,10 +64,26 @@ const ApplicantDetails = ({ t, config, onSelect, formData }) => {
     setEmail(e.target.value);
   }
   function setMobileNo(e) {
-    setMobileNumber(e.target.value);
+    const val = e.target.value;
+    setMobileNumber(val);
+    if (!val) {
+      setMobileNumberError(t("CORE_COMMON_REQUIRED_ERRMSG"));
+    } else if (!/^[6-9]\d{9}$/.test(val)) {
+      setMobileNumberError(t("CORE_COMMON_APPLICANT_MOBILE_NUMBER_INVALID"));
+    } else {
+      setMobileNumberError("");
+    }
   }
   function setAltMobileNo(e) {
-    setAltMobileNumber(e.target.value);
+    const val = e.target.value;
+    setAltMobileNumber(val);
+    if (val && !/^[6-9]\d{9}$/.test(val)) {
+      setAlternateNumberError(t("CORE_COMMON_APPLICANT_MOBILE_NUMBER_INVALID"));
+    } else if (val && val === mobileNumber) {
+      setAlternateNumberError(t("ERR_SAME_AS_MOBILE_NUMBER", "Alternate mobile number should not be same as mobile number"));
+    } else {
+      setAlternateNumberError("");
+    }
   }
   function setGuardiansName(e) {
     setGuardian(e.target.value);
@@ -95,10 +114,29 @@ const ApplicantDetails = ({ t, config, onSelect, formData }) => {
   ];
 
   const goNext = () => {
+    const isMobileValid = /^[6-9]\d{9}$/.test(mobileNumber);
+    const isAltValid = !alternateNumber || (/^[6-9]\d{9}$/.test(alternateNumber) && alternateNumber !== mobileNumber);
+
+    if (!isMobileValid) {
+      setMobileNumberError(t("CORE_COMMON_APPLICANT_MOBILE_NUMBER_INVALID"));
+      return;
+    }
+    if (!isAltValid) {
+      setAlternateNumberError(
+        alternateNumber === mobileNumber
+          ? t("ERR_SAME_AS_MOBILE_NUMBER", "Alternate mobile number should not be same as mobile number")
+          : t("CORE_COMMON_APPLICANT_MOBILE_NUMBER_INVALID")
+      );
+      return;
+    }
+
     let owner = formData.owner;
     let applicantDetails = { ...owner, applicantName, mobileNumber, gender, dateOfBirth, alternateNumber, relationShipType, guardianName, emailId };
     onSelect(config.key, applicantDetails, false);
   };
+
+  const isMobileValid = /^[6-9]\d{9}$/.test(mobileNumber);
+  const isAltValid = !alternateNumber || (/^[6-9]\d{9}$/.test(alternateNumber) && alternateNumber !== mobileNumber);
 
   return (
     <React.Fragment>
@@ -107,13 +145,13 @@ const ApplicantDetails = ({ t, config, onSelect, formData }) => {
         onSelect={goNext}
         t={t}
         isDisabled={
-          !applicantName || !mobileNumber || config?.additionaFields?.guardianName
-            ? !guardianName
-            : null || config?.additionaFields?.dateofBirth
-            ? !dateOfBirth
-            : null || config?.additionaFields?.gender
-            ? !gender
-            : null
+          !applicantName ||
+          !mobileNumber ||
+          !isMobileValid ||
+          !isAltValid ||
+          (config?.additionaFields?.guardianName ? !guardianName : null) ||
+          (config?.additionaFields?.dateofBirth ? !dateOfBirth : null) ||
+          (config?.additionaFields?.gender ? !gender : null)
         }
         className={"search-form-wrapper"}
       >
@@ -171,6 +209,9 @@ const ApplicantDetails = ({ t, config, onSelect, formData }) => {
               onChange={(value) => setMobileNo({ target: { value } })}
               {...{ required: true, pattern: "[6-9]{1}[0-9]{9}", type: "tel", title: t("CORE_COMMON_APPLICANT_MOBILE_NUMBER_INVALID") }}
             />
+            {mobileNumber && !/^[6-9]\d{9}$/.test(mobileNumber) && (
+              <CardLabelError>{mobileNumberError || t("CORE_COMMON_APPLICANT_MOBILE_NUMBER_INVALID")}</CardLabelError>
+            )}
           </div>
           <div className="form-field wns-search-field">
             <CardLabel>{`${t("COMMON_ALT_MOBILE_NUMBER")}`}</CardLabel>
@@ -180,6 +221,12 @@ const ApplicantDetails = ({ t, config, onSelect, formData }) => {
               onChange={(value) => setAltMobileNo({ target: { value } })}
               {...{ required: false, pattern: "[6-9]{1}[0-9]{9}", type: "tel", title: t("CORE_COMMON_APPLICANT_MOBILE_NUMBER_INVALID") }}
             />
+            {alternateNumber && !/^[6-9]\d{9}$/.test(alternateNumber) && (
+              <CardLabelError>{t("CORE_COMMON_APPLICANT_MOBILE_NUMBER_INVALID")}</CardLabelError>
+            )}
+            {alternateNumber && alternateNumber === mobileNumber && (
+              <CardLabelError>{t("ERR_SAME_AS_MOBILE_NUMBER", "Alternate mobile number should not be same as mobile number")}</CardLabelError>
+            )}
           </div>
           {config?.additionaFields?.dateofBirth ? (
             <div className="form-field wns-search-field">

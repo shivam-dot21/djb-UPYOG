@@ -6,7 +6,7 @@ const SelectServiceType = ({ config, onSelect, t, userType, formData }) => {
   const [serviceTypes, setserviceTypes] = useState(formData?.serviceType);
   const [formattedServiceTypes, setFormattedServiceTypes] = useState([]);
 
-  const { data: ServiceType, isLoading } = Digit.Hooks.useCustomMDMS(tenantId, "tenant", [{ name: "citymodule" }], {
+  const { data: ServiceType, isLoading } = Digit.Hooks.useCustomMDMSV2(tenantId, "tenant", [{ name: "citymodule" }], {
     select: (data) => data?.tenant?.citymodule,
   });
 

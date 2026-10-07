@@ -9,7 +9,7 @@ const SelectEkycClusters = ({ config, onSelect, t, formData }) => {
   const [selectedClusters, setSelectedClusters] = useState(Array.isArray(formData?.clusterIds) ? formData.clusterIds : []);
   const selectedZones = React.useMemo(() => (Array.isArray(formData?.zoneIds) ? formData.zoneIds : []), [formData?.zoneIds]);
 
-  const { data: boundaryData } = Digit.Hooks.useCommonMDMS(tenantId, "egov-location", ["TenantBoundary"]);
+  const { data: boundaryData } = Digit.Hooks.useCommonMDMSV2(tenantId, "egov-location", ["TenantBoundary"]);
 
   useEffect(() => {
     const tenantBoundary = boundaryData?.["egov-location"]?.TenantBoundary?.[0] || boundaryData?.MdmsRes?.["egov-location"]?.TenantBoundary?.[0];

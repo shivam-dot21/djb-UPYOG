@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { SubmitBar, Toast, Loader, CardLabel, TextInput, MobileNumber, CollapsibleCardPage } from "@djb25/digit-ui-react-components";
+import { SubmitBar, Toast, Loader, CardLabel, CardLabelError, TextInput, MobileNumber, CollapsibleCardPage } from "@djb25/digit-ui-react-components";
 import { useTranslation } from "react-i18next";
 import { useLocation, useHistory } from "react-router-dom";
 import { useQueryClient } from "react-query";
@@ -78,6 +78,21 @@ const AddFixPointAddress = () => {
       tenantId,
     });
 
+    if (!isMobileNumberValid) {
+      setShowToast({ label: t("CORE_COMMON_APPLICANT_MOBILE_NUMBER_INVALID"), isError: true });
+      return;
+    }
+    if (!isAltMobileValid) {
+      setShowToast({
+        label:
+          formData?.owner?.alternateNumber === formData?.owner?.mobileNumber
+            ? t("ERR_SAME_AS_MOBILE_NUMBER", "Alternate mobile number should not be same as mobile number")
+            : t("CORE_COMMON_APPLICANT_MOBILE_NUMBER_INVALID"),
+        isError: true,
+      });
+      return;
+    }
+
     const mutation = editId ? updateFixedPoint : createFixedPoint;
     mutation(payload, {
       onSuccess: () => {
@@ -104,9 +119,16 @@ const AddFixPointAddress = () => {
 
   const isMobile = window.Digit.Utils.browser.isMobile();
 
+  const isMobileNumberValid = /^[6-9]\d{9}$/.test(formData?.owner?.mobileNumber || "");
+  const isAltMobileValid =
+    !formData?.owner?.alternateNumber ||
+    (/^[6-9]\d{9}$/.test(formData?.owner?.alternateNumber) && formData?.owner?.alternateNumber !== formData?.owner?.mobileNumber);
+
   const isFormDisabled =
     !formData?.owner?.name ||
     !formData?.owner?.mobileNumber ||
+    !isMobileNumberValid ||
+    !isAltMobileValid ||
     !formData?.address?.addressLine1 ||
     !formData?.address?.city ||
     !formData?.address?.locality ||
@@ -147,6 +169,9 @@ const AddFixPointAddress = () => {
                 onChange={(value) => handleSelect("owner", { mobileNumber: value })}
                 style={{ width: "100%" }}
               />
+              {formData?.owner?.mobileNumber && !/^[6-9]\d{9}$/.test(formData?.owner?.mobileNumber) && (
+                <CardLabelError>{t("CORE_COMMON_APPLICANT_MOBILE_NUMBER_INVALID")}</CardLabelError>
+              )}
             </div>
             <div style={{ display: "flex", flexDirection: "column" }}>
               <CardLabel>
@@ -170,6 +195,12 @@ const AddFixPointAddress = () => {
                 onChange={(value) => handleSelect("owner", { alternateNumber: value })}
                 style={{ width: "100%" }}
               />
+              {formData?.owner?.alternateNumber && !/^[6-9]\d{9}$/.test(formData?.owner?.alternateNumber) && (
+                <CardLabelError>{t("CORE_COMMON_APPLICANT_MOBILE_NUMBER_INVALID")}</CardLabelError>
+              )}
+              {formData?.owner?.alternateNumber && formData?.owner?.alternateNumber === formData?.owner?.mobileNumber && (
+                <CardLabelError>{t("ERR_SAME_AS_MOBILE_NUMBER", "Alternate mobile number should not be same as mobile number")}</CardLabelError>
+              )}
             </div>
           </div>
         </CollapsibleCardPage>

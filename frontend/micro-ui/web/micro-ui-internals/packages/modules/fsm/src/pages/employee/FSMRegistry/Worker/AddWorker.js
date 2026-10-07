@@ -37,7 +37,7 @@ const AddWorker = ({ parentUrl, heading }) => {
     mutate: PlantUserMutate,
   } = Digit.Hooks.fsm.usePlantUserCreate(tenantId);
 
-  const { isLoading: ismdms, data: mdmsOptions } = Digit.Hooks.useCustomMDMS(
+  const { isLoading: ismdms, data: mdmsOptions } = Digit.Hooks.useCustomMDMSV2(
     stateId,
     "FSM",
     [
@@ -56,7 +56,7 @@ const AddWorker = ({ parentUrl, heading }) => {
     ],
     {
       select: (data) => {
-        return data?.FSM;
+        return data?.FSM || data?.MdmsRes?.FSM;
       },
     }
   );

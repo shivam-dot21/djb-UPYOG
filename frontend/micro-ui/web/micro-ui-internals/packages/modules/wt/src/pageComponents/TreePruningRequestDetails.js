@@ -13,16 +13,16 @@ const TreePruningRequestDetails = ({ t, config, onSelect, userType, formData }) 
   const tenantId = Digit.ULBService.getStateId();
   const inputStyles = { width: user.type === "EMPLOYEE" ? "50%" : "100%" };
 
-  const { data: ReasonOfPruningType} = Digit.Hooks.useCustomMDMS(tenantId, "request-service", [{ name: "ReasonPruningType" }], {
+  const { data: ReasonOfPruningType } = Digit.Hooks.useCustomMDMSV2(tenantId, "request-service", [{ name: "ReasonPruningType" }], {
     select: (data) => {
       const formattedData = data?.["request-service"]?.["ReasonPruningType"];
       return formattedData;
     },
   });
- 
+
   const goNext = () => {
     let treePruningRequestDetails = formData.treePruningRequestDetails;
-    let Service = { ...treePruningRequestDetails, reasonOfPruning, geoTagLocation, supportingDocumentFile,latitude, longitude };
+    let Service = { ...treePruningRequestDetails, reasonOfPruning, geoTagLocation, supportingDocumentFile, latitude, longitude };
     onSelect(config.key, Service, false);
   };
 
@@ -65,23 +65,23 @@ const TreePruningRequestDetails = ({ t, config, onSelect, userType, formData }) 
     }
   };
   const fetchCurrentLocation = () => {
-  if ("geolocation" in navigator) {
-    navigator.geolocation.getCurrentPosition(
-      (position) => {
-        const { latitude, longitude } = position.coords;
-        setGeoTagLocation(`${latitude}, ${longitude}`); 
-        setLatitude(latitude);
-        setLongitude(longitude);
-      },
-      (error) => {
-        console.error("Error getting location:", error);
-        alert("Unable to retrieve your location. Please check your browser settings.");
-      }
-    );
-  } else {
-    alert("Geolocation is not supported by your browser.");
-  }
-};
+    if ("geolocation" in navigator) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const { latitude, longitude } = position.coords;
+          setGeoTagLocation(`${latitude}, ${longitude}`);
+          setLatitude(latitude);
+          setLongitude(longitude);
+        },
+        (error) => {
+          console.error("Error getting location:", error);
+          alert("Unable to retrieve your location. Please check your browser settings.");
+        }
+      );
+    } else {
+      alert("Geolocation is not supported by your browser.");
+    }
+  };
 
   const LoadingSpinner = () => (
     <div className="loading-spinner"
@@ -114,7 +114,7 @@ const TreePruningRequestDetails = ({ t, config, onSelect, userType, formData }) 
             isMandatory={false}
             optionKey="i18nKey"
             name={"geoTagLocation"}
-            value={geoTagLocation} 
+            value={geoTagLocation}
             placeholder={"Select Location"}
             onChange={handleInputChange}
             max={new Date().toISOString().split("T")[0]}
@@ -126,14 +126,14 @@ const TreePruningRequestDetails = ({ t, config, onSelect, userType, formData }) 
             className="location-input"
           />
           <div className="butt-icon"
-                    onClick={() => {
-                      fetchCurrentLocation("geoTagLocation");
-                    }} style={{ 
-            cursor: "pointer",
-            width: "25px",
-            marginBottom: "8px"
-          }}>
-            <LocationIcon className="fill-path-primary-main"/>
+            onClick={() => {
+              fetchCurrentLocation("geoTagLocation");
+            }} style={{
+              cursor: "pointer",
+              width: "25px",
+              marginBottom: "8px"
+            }}>
+            <LocationIcon className="fill-path-primary-main" />
           </div>
         </div>
 
@@ -147,14 +147,14 @@ const TreePruningRequestDetails = ({ t, config, onSelect, userType, formData }) 
             onUpload={(e) => handleFileUpload(e, setSupportingDocumentFile)}
             onDelete={() => {
               setSupportingDocumentFile(null);
-             
+
             }}
             message={isUploading ? (
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                 <LoadingSpinner />
                 <span>Uploading...</span>
               </div>
-            ) : supportingDocumentFile ? "1 File Uploaded" : "No File Uploaded"}           
+            ) : supportingDocumentFile ? "1 File Uploaded" : "No File Uploaded"}
             textStyles={{ width: "100%" }}
             accept="image/*, .pdf, .png, .jpeg, .jpg"
             buttonType="button"

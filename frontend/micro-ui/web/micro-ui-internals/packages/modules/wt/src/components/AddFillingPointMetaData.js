@@ -1,5 +1,5 @@
 import React from "react";
-import { LabelFieldPair, CardLabel, TextInput, CollapsibleCardPage } from "@djb25/digit-ui-react-components";
+import { LabelFieldPair, CardLabel, CardLabelError, TextInput, CollapsibleCardPage } from "@djb25/digit-ui-react-components";
 
 const AddFillingPointMetaData = ({
   t,
@@ -32,9 +32,10 @@ const AddFillingPointMetaData = ({
       isMandatory: true,
       componentInFront: <div className="employee-card-input employee-card-input--front">+91</div>,
       validation: {
-        pattern: "[6-9]{1}[0-9]{9}",
+        pattern: "^[6-9][0-9]{9}$",
         type: "tel",
         maxLength: 10,
+        title: "CORE_COMMON_APPLICANT_MOBILE_NUMBER_INVALID",
       },
     },
     {
@@ -60,9 +61,10 @@ const AddFillingPointMetaData = ({
       isMandatory: true,
       componentInFront: <div className="employee-card-input employee-card-input--front">+91</div>,
       validation: {
-        pattern: "[6-9]{1}[0-9]{9}",
+        pattern: "^[6-9][0-9]{9}$",
         type: "tel",
         maxLength: 10,
+        title: "CORE_COMMON_APPLICANT_MOBILE_NUMBER_INVALID",
       },
     },
     {
@@ -88,9 +90,10 @@ const AddFillingPointMetaData = ({
       isMandatory: true,
       componentInFront: <div className="employee-card-input employee-card-input--front">+91</div>,
       validation: {
-        pattern: "[6-9]{1}[0-9]{9}",
+        pattern: "^[6-9][0-9]{9}$",
         type: "tel",
         maxLength: 10,
+        title: "CORE_COMMON_APPLICANT_MOBILE_NUMBER_INVALID",
       },
     },
     {
@@ -131,15 +134,24 @@ const AddFillingPointMetaData = ({
                 {input.isMandatory ? <span className="check-page-link-button" style={{ color: "red", fontWeight: "bold" }}> * </span> : ""}
               </CardLabel>
 
-              <div style={{ display: "flex" }}>
-                {input.componentInFront || null}
+              <div style={{ display: "flex", flexDirection: "column" }}>
+                <div style={{ display: "flex" }}>
+                  {input.componentInFront || null}
 
-                <TextInput
-                  value={formData?.[sectionKey]?.[input.name] || ""}
-                  onChange={(e) => handleChange(e.target.value, input.name)}
-                  maxLength={input.validation?.maxLength}
-                  {...input.validation}
-                />
+                  <TextInput
+                    value={formData?.[sectionKey]?.[input.name] || ""}
+                    onChange={(e) => handleChange(e.target.value, input.name)}
+                    maxLength={input.validation?.maxLength}
+                    {...input.validation}
+                  />
+                </div>
+                {["aeMobile", "jeMobile", "eeMobile"].includes(input.name) &&
+                  formData?.[sectionKey]?.[input.name] &&
+                  !/^[6-9]\d{9}$/.test(formData?.[sectionKey]?.[input.name]) && (
+                    <CardLabelError style={{ marginTop: "4px" }}>
+                      {t("CORE_COMMON_APPLICANT_MOBILE_NUMBER_INVALID")}
+                    </CardLabelError>
+                )}
               </div>
             </LabelFieldPair>
           </div>

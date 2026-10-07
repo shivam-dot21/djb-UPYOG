@@ -11,7 +11,7 @@ const SelectVehicleType = ({ t, config, onSelect, formData, setValue }) => {
   // const { data: vehicleData, isLoading: vehicleLoading } = Digit.Hooks.useCustomMDMS(tenantId, "tenant", "VehicleMakeModel");
 
   // Fetch Service Type Data
-  const { data: serviceTypeData, isLoading: serviceLoading } = Digit.Hooks.useCustomMDMS(tenantId, "tenant", [{ name: "citymodule" }], {
+  const { data: serviceTypeData, isLoading: serviceLoading } = Digit.Hooks.useCustomMDMSV2(tenantId, "tenant", [{ name: "citymodule" }], {
     select: (data) => data?.tenant?.citymodule,
   });
 

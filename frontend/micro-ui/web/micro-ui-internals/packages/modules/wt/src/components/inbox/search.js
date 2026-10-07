@@ -68,6 +68,11 @@ const SearchApplication = ({ onSearch, type, onClose, searchFields, searchParams
   const mobileView = window.innerWidth <= 640;
 
   const onSubmitInput = (data) => {
+    if (data.mobileNumber && !/^[6-9]\d{9}$/.test(data.mobileNumber)) {
+      setError("mobileNumber", { type: "manual", message: t("CORE_COMMON_MOBILE_ERROR") });
+      return;
+    }
+
     const updatedData = { ...data };
 
     if (!data.mobileNumber) {
@@ -269,9 +274,20 @@ const SearchApplication = ({ onSearch, type, onClose, searchFields, searchParams
                                 name={input.name}
                                 control={control}
                                 defaultValue={""}
+                                rules={{
+                                  validate: (val) => !val || /^[6-9]\d{9}$/.test(val) || t("CORE_COMMON_MOBILE_ERROR"),
+                                }}
                               />
                             )}
                           </span>
+                          {formState?.errors?.[input.name]?.message ? (
+                            <span
+                              style={{ fontWeight: "700", color: "rgba(212, 53, 28)", paddingLeft: "8px", fontSize: "12px" }}
+                              className="inbox-search-form-error"
+                            >
+                              {formState?.errors?.[input.name]?.message}
+                            </span>
+                          ) : null}
                         </div>
                       );
                     })}
@@ -299,9 +315,20 @@ const SearchApplication = ({ onSearch, type, onClose, searchFields, searchParams
                               name={input.name}
                               control={control}
                               defaultValue={""}
+                              rules={{
+                                validate: (val) => !val || /^[6-9]\d{9}$/.test(val) || t("CORE_COMMON_MOBILE_ERROR"),
+                              }}
                             />
                           )}
                         </span>
+                        {formState?.errors?.[input.name]?.message ? (
+                          <span
+                            style={{ fontWeight: "700", color: "rgba(212, 53, 28)", paddingLeft: "8px", fontSize: "12px" }}
+                            className="inbox-search-form-error"
+                          >
+                            {formState?.errors?.[input.name]?.message}
+                          </span>
+                        ) : null}
                       </div>
                     ))}
                      <div className="input-fields">
@@ -422,6 +449,9 @@ const SearchApplication = ({ onSearch, type, onClose, searchFields, searchParams
                         name={input.name}
                         control={control}
                         defaultValue={""}
+                        rules={{
+                          validate: (val) => !val || /^[6-9]\d{9}$/.test(val) || t("CORE_COMMON_MOBILE_ERROR"),
+                        }}
                       />
                     )}
                   </span>

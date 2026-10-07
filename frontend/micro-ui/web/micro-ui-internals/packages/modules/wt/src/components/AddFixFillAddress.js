@@ -49,7 +49,7 @@ const AddFixFillAddress = ({ t, config, formData, onSelect, isEdit, userDetails 
     return allOptions.filter((opt) => !usedAddressTypes.includes(opt.code));
   }, [usedAddressTypes]);
 
-  const { data: egovLocationData } = Digit.Hooks.useCommonMDMS(tenantId, "egov-location", ["TenantBoundary"]);
+  const { data: egovLocationData } = Digit.Hooks.useCommonMDMSV2(tenantId, "egov-location", ["TenantBoundary"]);
 
   useEffect(() => {
     if (!city && allCities && allCities.length > 0) {

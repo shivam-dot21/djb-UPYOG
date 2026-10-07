@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { useTranslation } from "react-i18next";
 import { FormComposer, Toast, InfoIcon, VerticalTimeline } from "@djb25/digit-ui-react-components";
 import { useHistory } from "react-router-dom";
@@ -12,6 +12,7 @@ const AddVehicle = ({ parentUrl, heading }) => {
   const history = useHistory();
   const { t } = useTranslation();
   const queryClient = useQueryClient();
+  const lastCheckedVehicle = useRef("");
 
   const [, setMutationHappened] = Digit.Hooks.useSessionStorage("FSM_MUTATION_HAPPENED", false);
   const [, , clearError] = Digit.Hooks.useSessionStorage("FSM_ERROR_DATA", false);
@@ -100,7 +101,7 @@ const AddVehicle = ({ parentUrl, heading }) => {
     return state + "-" + rtoDigits + middleLetters + "-" + number.slice(0, 4);
   };
 
-  const onFormValueChange = (setValue, formData) => {
+  const onFormValueChange = async (setValue, formData) => {
     if (formData?.registrationNumber) {
       let updatedRegNo = formatVehicleNumber(formData.registrationNumber);
       if (updatedRegNo.length > 15) {
@@ -108,6 +109,21 @@ const AddVehicle = ({ parentUrl, heading }) => {
       }
       if (updatedRegNo !== formData.registrationNumber) {
         setValue("registrationNumber", updatedRegNo);
+      }
+
+      // Check if vehicle is already registered
+      if (/^[A-Z]{2}-[0-9]{1,2}[A-Z]{0,2}-(?:[A-Z]{1,2}-)?[0-9]{1,4}$/.test(updatedRegNo) && lastCheckedVehicle.current !== updatedRegNo) {
+        lastCheckedVehicle.current = updatedRegNo;
+        const res = await Digit.FSMService.vehiclesSearch(tenantId || "dl.djb", {
+          registrationNumber: updatedRegNo,
+          status: "ACTIVE,DISABLED",
+        });
+        if (res?.vehicle?.length > 0) {
+          setShowToast({ key: "error", action: t("ES_FSM_REGISTRY_VEHICLE_ALREADY_REGISTERED", "Vehicle is already registered") });
+          setTimeout(closeToast, 5000);
+          setSubmitValve(false);
+          return;
+        }
       }
     }
     if (
@@ -131,6 +147,7 @@ const AddVehicle = ({ parentUrl, heading }) => {
   };
 
   const onSubmit = (data) => {
+    if (showToast?.key === "error") return;
     const registrationNumber = data?.registrationNumber;
     const vehicleType = data?.vehicle?.type?.code;
     const vehicleModal = data?.vehicle?.modal?.code;

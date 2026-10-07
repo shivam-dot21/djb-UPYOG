@@ -32,6 +32,21 @@ const AddDriver = () => {
     { enabled: !!(isCitizen && mobileNumber) }
   );
 
+  const [genderMenu, setGenderMenu] = useState([]);
+  const { data: genderTypeData } = Digit.Hooks.useCommonMDMSV2(stateId, "common-masters", ["GenderType"]);
+
+  useEffect(() => {
+    const genderList = genderTypeData?.["common-masters"]?.GenderType || genderTypeData?.MdmsRes?.["common-masters"]?.GenderType;
+    if (genderList?.length) {
+      const menuItems = genderList.filter((data) => data.active).map((genderDetails) => ({
+        i18nKey: `COMMON_GENDER_${genderDetails.code}`,
+        code: `${genderDetails.code}`,
+        value: `${genderDetails.code}`,
+      }));
+      setGenderMenu(menuItems);
+    }
+  }, [genderTypeData]);
+
   useEffect(() => {
     setMutationHappened(false);
     clearSuccessData();
@@ -39,7 +54,9 @@ const AddDriver = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const Config = DriverConfig(t);
+  const Config = React.useMemo(() => {
+    return DriverConfig(t, genderMenu);
+  }, [t, genderMenu]);
 
   const [canSubmit, setSubmitValve] = useState(false);
 
@@ -74,7 +91,7 @@ const AddDriver = () => {
       /^[A-Za-z\s]+$/.test(formData?.driverName) &&
       formData?.license &&
       /^[A-Z]{2}-[0-9]{2}-[0-9]{4}-[0-9]{7}$/.test(formData?.license) &&
-      formData?.selectGender &&
+      (formData?.gender || formData?.selectGender) &&
       formData?.dob &&
       new Date(formData?.dob).getTime() <= new Date().setFullYear(new Date().getFullYear() - 18)
     ) {
@@ -92,7 +109,7 @@ const AddDriver = () => {
   const onSubmit = (data) => {
     const name = data?.driverName;
     const license = data?.license;
-    const gender = data?.selectGender?.code;
+    const gender = data?.gender?.code || data?.selectGender?.code || data?.gender || data?.selectGender;
     const emailId = data?.emailId;
     const phone = data?.phone;
     const dob = new Date(`${data.dob}`).getTime() || new Date(`1/1/1970`).getTime();

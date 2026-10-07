@@ -1,4 +1,4 @@
-import { MdmsService } from "../../services/elements/MDMS";
+import { MdmsServiceV2 as MdmsService } from "../../services/elements/MDMSV2";
 import { useQuery } from "react-query";
 
 const useMDMS = (tenantId, moduleCode, type, config = {}, payload = []) => {

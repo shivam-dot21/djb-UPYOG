@@ -165,10 +165,10 @@ const AddressDetails = ({ t, config, onSelect, formData, isEdit, userDetails, di
     return allOptions.filter((opt) => !usedAddressTypes.includes(opt.code));
   }, [location.state?.usedAddressTypes]);
   const locationTenantId = city?.code || tenantId;
-  const { data: egovLocationData } = Digit.Hooks.useCommonMDMS(locationTenantId, "egov-location", ["TenantBoundary"]);
+  const { data: egovLocationData } = Digit.Hooks.useCommonMDMSV2(locationTenantId, "egov-location", ["TenantBoundary"]);
 
   const boundaryData = useMemo(() => {
-    const tenantBoundary = egovLocationData?.["egov-location"]?.TenantBoundary || [];
+    const tenantBoundary = egovLocationData?.["egov-location"]?.TenantBoundary || egovLocationData?.MdmsRes?.["egov-location"]?.TenantBoundary || [];
     const revenueData = tenantBoundary.find((item) => item?.hierarchyType?.code === "REVENUE");
     const boundary = revenueData?.boundary || [];
     return Array.isArray(boundary) ? boundary : [boundary];

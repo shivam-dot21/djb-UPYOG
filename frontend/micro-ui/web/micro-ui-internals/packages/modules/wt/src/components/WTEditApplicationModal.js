@@ -37,7 +37,7 @@ const WTEditApplicationModal = ({ t, applicationData, closeModal }) => {
     dispatchDetails: {}
   });
   const [showToast, setShowToast] = useState(null);
- const { data: vendorData } = Digit.Hooks.fsm.useVendorSearch({
+  const { data: vendorData } = Digit.Hooks.fsm.useVendorSearch({
     tenantId,
     filters: {
       ...(getFirstAvailable(formData?.dispatchDetails?.fillingPoint?.id, formData?.dispatchDetails?.fillingPoint?.fillingPointId, formData?.dispatchDetails?.fillingPoint?.bookingId)
@@ -54,19 +54,19 @@ const WTEditApplicationModal = ({ t, applicationData, closeModal }) => {
     }
   });
   // MDMS Data
-  const { data: VehicleType } = Digit.Hooks.useCustomMDMS(stateId, "request-service", [{ name: "VehicleType" }], {
+  const { data: VehicleType } = Digit.Hooks.useCustomMDMSV2(stateId, "request-service", [{ name: "VehicleType" }], {
     select: (data) => data?.["request-service"]?.["VehicleType"] || [],
   });
 
-  const { data: TankerType } = Digit.Hooks.useCustomMDMS(stateId, "request-service", [{ name: "TankerType" }], {
+  const { data: TankerType } = Digit.Hooks.useCustomMDMSV2(stateId, "request-service", [{ name: "TankerType" }], {
     select: (data) => data?.["request-service"]?.["TankerType"] || [],
   });
 
-  const { data: TankerDetails } = Digit.Hooks.useCustomMDMS(stateId, "request-service", [{ name: "TankerQuantity" }], {
+  const { data: TankerDetails } = Digit.Hooks.useCustomMDMSV2(stateId, "request-service", [{ name: "TankerQuantity" }], {
     select: (data) => data?.["request-service"]?.["TankerQuantity"] || [],
   });
 
-  const { data: WaterTypeData } = Digit.Hooks.useCustomMDMS(stateId, "Request-service", [{ name: "WaterType" }], {
+  const { data: WaterTypeData } = Digit.Hooks.useCustomMDMSV2(stateId, "Request-service", [{ name: "WaterType" }], {
     select: (data) => data?.["Request-service"]?.["WaterType"] || [],
   });
 
@@ -359,131 +359,131 @@ const WTEditApplicationModal = ({ t, applicationData, closeModal }) => {
 
   return (
     <React.Fragment>
-    <Modal
-      headerBarMain={<h1 className="heading-m">{t("WT_EDIT_APPLICATION_DETAILS")}</h1>}
-      headerBarEnd={<CloseBtn onClick={closeModal} />}
-      actionCancelLabel={t("CS_COMMON_CANCEL")}
-      actionCancelOnSubmit={closeModal}
-      actionSaveLabel={t("CS_COMMON_UPDATE")}
-      actionSaveOnSubmit={handleUpdate}
-    >
-      <Card style={{ maxHeight: "70vh", overflowY: "auto", padding: "20px" }}>
-        {/* Applicant Details */}
-        <div style={{ marginBottom: "24px" }}>
-          <h2 style={{ fontSize: "18px", fontWeight: "bold", marginBottom: "16px", color: "#0B0C10", borderBottom: "1px solid #e0e0e0", paddingBottom: "8px" }}>
-            {t("WT_APPLICANT_DETAILS")}
-          </h2>
-          <div style={{ display: "flex", flexWrap: "wrap", gap: "16px" }}>
-            <div style={{ flex: "1 1 100%" }}>
-              <CardLabel style={{ fontWeight: "600", marginBottom: "4px", fontSize: "14px" }}>{t("WT_FIXED_POINT")}</CardLabel>
-              <Dropdown
-                selected={formData.owner.fixedPoint}
-                option={fixedPointOptions}
-                select={handleFixedPointSelect}
-                optionKey="name"
-                t={t}
-                placeholder={t("WT_SELECT_FIXED_POINT")}
-                disable={true}
-              />
-            </div>
-            <div style={{ flex: "1 1 200px" }}>
-              <CardLabel style={{ fontWeight: "600", marginBottom: "4px", fontSize: "14px" }}>{t("WT_APPLICANT_NAME")}</CardLabel>
-              <TextInput value={formData.owner.applicantName} onChange={(e) => setFormData({ ...formData, owner: { ...formData.owner, applicantName: e.target.value } })} disable={true} />
-            </div>
-            <div style={{ flex: "1 1 200px" }}>
-              <CardLabel style={{ fontWeight: "600", marginBottom: "4px", fontSize: "14px" }}>{t("WT_MOBILE_NUMBER")}</CardLabel>
-              <MobileNumber value={formData.owner.mobileNumber} onChange={(val) => setFormData({ ...formData, owner: { ...formData.owner, mobileNumber: val } })} disable={true} />
-            </div>
-            <div style={{ flex: "1 1 200px" }}>
-              <CardLabel style={{ fontWeight: "600", marginBottom: "4px", fontSize: "14px" }}>{t("WT_ALT_MOBILE_NUMBER")}</CardLabel>
-              <MobileNumber value={formData.owner.alternateNumber} onChange={(val) => setFormData({ ...formData, owner: { ...formData.owner, alternateNumber: val } })} disable={true} />
-            </div>
-            <div style={{ flex: "1 1 200px" }}>
-              <CardLabel style={{ fontWeight: "600", marginBottom: "4px", fontSize: "14px" }}>{t("WT_EMAIL_ID")}</CardLabel>
-              <TextInput value={formData.owner.emailId} onChange={(e) => setFormData({ ...formData, owner: { ...formData.owner, emailId: e.target.value } })} disable={true} />
-            </div>
-          </div>
-        </div>
-
-        {/* Address Details */}
-        <div style={{ marginBottom: "24px" }}>
-          <h2 style={{ fontSize: "18px", fontWeight: "bold", marginBottom: "16px", color: "#0B0C10", borderBottom: "1px solid #e0e0e0", paddingBottom: "8px" }}>
-            {t("WT_ADDRESS_DETAILS")}
-          </h2>
-          <div style={{ display: "flex", flexWrap: "wrap", gap: "16px" }}>
-            {["houseNo", "streetName", "addressLine1", "addressLine2", "landmark", "pincode"].map(key => (
-              <div key={key} style={{ flex: "1 1 200px" }}>
-                <CardLabel style={{ fontWeight: "600", marginBottom: "4px", fontSize: "14px" }}>{t(`WT_${key.toUpperCase()}`)}</CardLabel>
-                <TextInput value={formData.address[key]} onChange={(e) => setFormData({ ...formData, address: { ...formData.address, [key]: e.target.value } }) }  disable={true}/>
+      <Modal
+        headerBarMain={<h1 className="heading-m">{t("WT_EDIT_APPLICATION_DETAILS")}</h1>}
+        headerBarEnd={<CloseBtn onClick={closeModal} />}
+        actionCancelLabel={t("CS_COMMON_CANCEL")}
+        actionCancelOnSubmit={closeModal}
+        actionSaveLabel={t("CS_COMMON_UPDATE")}
+        actionSaveOnSubmit={handleUpdate}
+      >
+        <Card style={{ maxHeight: "70vh", overflowY: "auto", padding: "20px" }}>
+          {/* Applicant Details */}
+          <div style={{ marginBottom: "24px" }}>
+            <h2 style={{ fontSize: "18px", fontWeight: "bold", marginBottom: "16px", color: "#0B0C10", borderBottom: "1px solid #e0e0e0", paddingBottom: "8px" }}>
+              {t("WT_APPLICANT_DETAILS")}
+            </h2>
+            <div style={{ display: "flex", flexWrap: "wrap", gap: "16px" }}>
+              <div style={{ flex: "1 1 100%" }}>
+                <CardLabel style={{ fontWeight: "600", marginBottom: "4px", fontSize: "14px" }}>{t("WT_FIXED_POINT")}</CardLabel>
+                <Dropdown
+                  selected={formData.owner.fixedPoint}
+                  option={fixedPointOptions}
+                  select={handleFixedPointSelect}
+                  optionKey="name"
+                  t={t}
+                  placeholder={t("WT_SELECT_FIXED_POINT")}
+                  disable={true}
+                />
               </div>
-            ))}
+              <div style={{ flex: "1 1 200px" }}>
+                <CardLabel style={{ fontWeight: "600", marginBottom: "4px", fontSize: "14px" }}>{t("WT_APPLICANT_NAME")}</CardLabel>
+                <TextInput value={formData.owner.applicantName} onChange={(e) => setFormData({ ...formData, owner: { ...formData.owner, applicantName: e.target.value } })} disable={true} />
+              </div>
+              <div style={{ flex: "1 1 200px" }}>
+                <CardLabel style={{ fontWeight: "600", marginBottom: "4px", fontSize: "14px" }}>{t("WT_MOBILE_NUMBER")}</CardLabel>
+                <MobileNumber value={formData.owner.mobileNumber} onChange={(val) => setFormData({ ...formData, owner: { ...formData.owner, mobileNumber: val } })} disable={true} />
+              </div>
+              <div style={{ flex: "1 1 200px" }}>
+                <CardLabel style={{ fontWeight: "600", marginBottom: "4px", fontSize: "14px" }}>{t("WT_ALT_MOBILE_NUMBER")}</CardLabel>
+                <MobileNumber value={formData.owner.alternateNumber} onChange={(val) => setFormData({ ...formData, owner: { ...formData.owner, alternateNumber: val } })} disable={true} />
+              </div>
+              <div style={{ flex: "1 1 200px" }}>
+                <CardLabel style={{ fontWeight: "600", marginBottom: "4px", fontSize: "14px" }}>{t("WT_EMAIL_ID")}</CardLabel>
+                <TextInput value={formData.owner.emailId} onChange={(e) => setFormData({ ...formData, owner: { ...formData.owner, emailId: e.target.value } })} disable={true} />
+              </div>
+            </div>
           </div>
-        </div>
 
-        {/* Request Details */}
-        <div style={{ marginBottom: "24px" }}>
-          <h2 style={{ fontSize: "18px", fontWeight: "bold", marginBottom: "16px", color: "#0B0C10", borderBottom: "1px solid #e0e0e0", paddingBottom: "8px" }}>
-            {t("WT_REQUEST_DETAILS")}
-          </h2>
-          <div style={{ display: "flex", flexWrap: "wrap", gap: "16px" }}>
-            <div style={{ flex: "1 1 200px" }}>
-              <CardLabel style={{ fontWeight: "600", marginBottom: "4px", fontSize: "14px" }}>{t("WT_TANKER_TYPE")}</CardLabel>
-              <Dropdown selected={formData.requestDetails.tankerType} option={tankerTypeOptions} select={(val) => setFormData({ ...formData, requestDetails: { ...formData.requestDetails, tankerType: val } })} optionKey="i18nKey" t={t} />
-            </div>
-            <div style={{ flex: "1 1 200px" }}>
-              <CardLabel style={{ fontWeight: "600", marginBottom: "4px", fontSize: "14px" }}>{t("WT_WATER_TYPE")}</CardLabel>
-              <Dropdown selected={formData.requestDetails.waterType} option={waterTypeOptions} select={(val) => setFormData({ ...formData, requestDetails: { ...formData.requestDetails, waterType: val } })} optionKey="i18nKey" t={t} />
-            </div>
-            <div style={{ flex: "1 1 200px" }}>
-              <CardLabel style={{ fontWeight: "600", marginBottom: "4px", fontSize: "14px" }}>{t("WT_TANKER_QUANTITY")}</CardLabel>
-              <Dropdown selected={formData.requestDetails.tankerQuantity} option={tankerQtyOptions} select={(val) => setFormData({ ...formData, requestDetails: { ...formData.requestDetails, tankerQuantity: val } })} optionKey="i18nKey" t={t} />
-            </div>
-            <div style={{ flex: "1 1 200px" }}>
-              <CardLabel style={{ fontWeight: "600", marginBottom: "4px", fontSize: "14px" }}>{t("WT_WATER_QUANTITY")}</CardLabel>
-              <Dropdown selected={formData.requestDetails.waterQuantity} option={vehicleCapacityOptions} select={(val) => setFormData({ ...formData, requestDetails: { ...formData.requestDetails, waterQuantity: val } })} optionKey="i18nKey" t={t} />
-            </div>
-            <div style={{ flex: "1 1 200px" }}>
-              <CardLabel style={{ fontWeight: "600", marginBottom: "4px", fontSize: "14px" }}>{t("WT_DELIVERY_DATE")}</CardLabel>
-              <TextInput type="date" value={formData.requestDetails.deliveryDate} onChange={(e) => setFormData({ ...formData, requestDetails: { ...formData.requestDetails, deliveryDate: e.target.value } })} />
-            </div>
-            <div style={{ flex: "1 1 200px" }}>
-              <CardLabel style={{ fontWeight: "600", marginBottom: "4px", fontSize: "14px" }}>{t("WT_DELIVERY_TIME")}</CardLabel>
-              <TextInput type="time" value={formData.requestDetails.deliveryTime} onChange={(e) => setFormData({ ...formData, requestDetails: { ...formData.requestDetails, deliveryTime: e.target.value } })} />
-            </div>
-            <div style={{ flex: "1 1 100%" }}>
-              <CardLabel style={{ fontWeight: "600", marginBottom: "4px", fontSize: "14px" }}>{t("WT_DESCRIPTION")}</CardLabel>
-              <TextArea value={formData.requestDetails.description} onChange={(e) => setFormData({ ...formData, requestDetails: { ...formData.requestDetails, description: e.target.value } })} />
+          {/* Address Details */}
+          <div style={{ marginBottom: "24px" }}>
+            <h2 style={{ fontSize: "18px", fontWeight: "bold", marginBottom: "16px", color: "#0B0C10", borderBottom: "1px solid #e0e0e0", paddingBottom: "8px" }}>
+              {t("WT_ADDRESS_DETAILS")}
+            </h2>
+            <div style={{ display: "flex", flexWrap: "wrap", gap: "16px" }}>
+              {["houseNo", "streetName", "addressLine1", "addressLine2", "landmark", "pincode"].map(key => (
+                <div key={key} style={{ flex: "1 1 200px" }}>
+                  <CardLabel style={{ fontWeight: "600", marginBottom: "4px", fontSize: "14px" }}>{t(`WT_${key.toUpperCase()}`)}</CardLabel>
+                  <TextInput value={formData.address[key]} onChange={(e) => setFormData({ ...formData, address: { ...formData.address, [key]: e.target.value } })} disable={true} />
+                </div>
+              ))}
             </div>
           </div>
-        </div>
 
-        {/* Dispatch Details */}
-        <div style={{ marginBottom: "24px" }}>
-          <h2 style={{ fontSize: "18px", fontWeight: "bold", marginBottom: "16px", color: "#0B0C10", borderBottom: "1px solid #e0e0e0", paddingBottom: "8px" }}>
-            {t("WT_DISPATCH_DETAILS")}
-          </h2>
-          <div style={{ display: "flex", flexWrap: "wrap", gap: "16px" }}>
-            <div style={{ flex: "1 1 200px" }}>
-              <CardLabel style={{ fontWeight: "600", marginBottom: "4px", fontSize: "14px" }}>{t("WT_FILLING_POINT")}</CardLabel>
-              <Dropdown selected={formData.dispatchDetails.fillingPoint} option={fillingPointOptions} select={handleFillingPointSelect} optionKey="name" t={t} />
-            </div>
-            <div style={{ flex: "1 1 200px" }}>
-              <CardLabel style={{ fontWeight: "600", marginBottom: "4px", fontSize: "14px" }}>{t("WT_VENDOR")}</CardLabel>
-              <Dropdown selected={formData.dispatchDetails.vendor} option={vendorOptions} select={handleVendorSelect} optionKey="name" t={t} />
-            </div>
-            <div style={{ flex: "1 1 200px" }}>
-              <CardLabel style={{ fontWeight: "600", marginBottom: "4px", fontSize: "14px" }}>{t("WT_VEHICLE")}</CardLabel>
-              <Dropdown selected={formData.dispatchDetails.vehicle} option={vehicleOptions} select={(val) => setFormData({ ...formData, dispatchDetails: { ...formData.dispatchDetails, vehicle: val } })} optionKey="name" t={t} />
-            </div>
-            <div style={{ flex: "1 1 200px" }}>
-              <CardLabel style={{ fontWeight: "600", marginBottom: "4px", fontSize: "14px" }}>{t("WT_DRIVER")}</CardLabel>
-              <Dropdown selected={formData.dispatchDetails.driver} option={driverOptions} select={(val) => setFormData({ ...formData, dispatchDetails: { ...formData.dispatchDetails, driver: val } })} optionKey="name" t={t} />
+          {/* Request Details */}
+          <div style={{ marginBottom: "24px" }}>
+            <h2 style={{ fontSize: "18px", fontWeight: "bold", marginBottom: "16px", color: "#0B0C10", borderBottom: "1px solid #e0e0e0", paddingBottom: "8px" }}>
+              {t("WT_REQUEST_DETAILS")}
+            </h2>
+            <div style={{ display: "flex", flexWrap: "wrap", gap: "16px" }}>
+              <div style={{ flex: "1 1 200px" }}>
+                <CardLabel style={{ fontWeight: "600", marginBottom: "4px", fontSize: "14px" }}>{t("WT_TANKER_TYPE")}</CardLabel>
+                <Dropdown selected={formData.requestDetails.tankerType} option={tankerTypeOptions} select={(val) => setFormData({ ...formData, requestDetails: { ...formData.requestDetails, tankerType: val } })} optionKey="i18nKey" t={t} />
+              </div>
+              <div style={{ flex: "1 1 200px" }}>
+                <CardLabel style={{ fontWeight: "600", marginBottom: "4px", fontSize: "14px" }}>{t("WT_WATER_TYPE")}</CardLabel>
+                <Dropdown selected={formData.requestDetails.waterType} option={waterTypeOptions} select={(val) => setFormData({ ...formData, requestDetails: { ...formData.requestDetails, waterType: val } })} optionKey="i18nKey" t={t} />
+              </div>
+              <div style={{ flex: "1 1 200px" }}>
+                <CardLabel style={{ fontWeight: "600", marginBottom: "4px", fontSize: "14px" }}>{t("WT_TANKER_QUANTITY")}</CardLabel>
+                <Dropdown selected={formData.requestDetails.tankerQuantity} option={tankerQtyOptions} select={(val) => setFormData({ ...formData, requestDetails: { ...formData.requestDetails, tankerQuantity: val } })} optionKey="i18nKey" t={t} />
+              </div>
+              <div style={{ flex: "1 1 200px" }}>
+                <CardLabel style={{ fontWeight: "600", marginBottom: "4px", fontSize: "14px" }}>{t("WT_WATER_QUANTITY")}</CardLabel>
+                <Dropdown selected={formData.requestDetails.waterQuantity} option={vehicleCapacityOptions} select={(val) => setFormData({ ...formData, requestDetails: { ...formData.requestDetails, waterQuantity: val } })} optionKey="i18nKey" t={t} />
+              </div>
+              <div style={{ flex: "1 1 200px" }}>
+                <CardLabel style={{ fontWeight: "600", marginBottom: "4px", fontSize: "14px" }}>{t("WT_DELIVERY_DATE")}</CardLabel>
+                <TextInput type="date" value={formData.requestDetails.deliveryDate} onChange={(e) => setFormData({ ...formData, requestDetails: { ...formData.requestDetails, deliveryDate: e.target.value } })} />
+              </div>
+              <div style={{ flex: "1 1 200px" }}>
+                <CardLabel style={{ fontWeight: "600", marginBottom: "4px", fontSize: "14px" }}>{t("WT_DELIVERY_TIME")}</CardLabel>
+                <TextInput type="time" value={formData.requestDetails.deliveryTime} onChange={(e) => setFormData({ ...formData, requestDetails: { ...formData.requestDetails, deliveryTime: e.target.value } })} />
+              </div>
+              <div style={{ flex: "1 1 100%" }}>
+                <CardLabel style={{ fontWeight: "600", marginBottom: "4px", fontSize: "14px" }}>{t("WT_DESCRIPTION")}</CardLabel>
+                <TextArea value={formData.requestDetails.description} onChange={(e) => setFormData({ ...formData, requestDetails: { ...formData.requestDetails, description: e.target.value } })} />
+              </div>
             </div>
           </div>
-        </div>
-      </Card>
-    </Modal>
-    {showToast && <Toast error={showToast.isError} label={showToast.label} onClose={() => setShowToast(null)} />}
+
+          {/* Dispatch Details */}
+          <div style={{ marginBottom: "24px" }}>
+            <h2 style={{ fontSize: "18px", fontWeight: "bold", marginBottom: "16px", color: "#0B0C10", borderBottom: "1px solid #e0e0e0", paddingBottom: "8px" }}>
+              {t("WT_DISPATCH_DETAILS")}
+            </h2>
+            <div style={{ display: "flex", flexWrap: "wrap", gap: "16px" }}>
+              <div style={{ flex: "1 1 200px" }}>
+                <CardLabel style={{ fontWeight: "600", marginBottom: "4px", fontSize: "14px" }}>{t("WT_FILLING_POINT")}</CardLabel>
+                <Dropdown selected={formData.dispatchDetails.fillingPoint} option={fillingPointOptions} select={handleFillingPointSelect} optionKey="name" t={t} />
+              </div>
+              <div style={{ flex: "1 1 200px" }}>
+                <CardLabel style={{ fontWeight: "600", marginBottom: "4px", fontSize: "14px" }}>{t("WT_VENDOR")}</CardLabel>
+                <Dropdown selected={formData.dispatchDetails.vendor} option={vendorOptions} select={handleVendorSelect} optionKey="name" t={t} />
+              </div>
+              <div style={{ flex: "1 1 200px" }}>
+                <CardLabel style={{ fontWeight: "600", marginBottom: "4px", fontSize: "14px" }}>{t("WT_VEHICLE")}</CardLabel>
+                <Dropdown selected={formData.dispatchDetails.vehicle} option={vehicleOptions} select={(val) => setFormData({ ...formData, dispatchDetails: { ...formData.dispatchDetails, vehicle: val } })} optionKey="name" t={t} />
+              </div>
+              <div style={{ flex: "1 1 200px" }}>
+                <CardLabel style={{ fontWeight: "600", marginBottom: "4px", fontSize: "14px" }}>{t("WT_DRIVER")}</CardLabel>
+                <Dropdown selected={formData.dispatchDetails.driver} option={driverOptions} select={(val) => setFormData({ ...formData, dispatchDetails: { ...formData.dispatchDetails, driver: val } })} optionKey="name" t={t} />
+              </div>
+            </div>
+          </div>
+        </Card>
+      </Modal>
+      {showToast && <Toast error={showToast.isError} label={showToast.label} onClose={() => setShowToast(null)} />}
     </React.Fragment>
   );
 };

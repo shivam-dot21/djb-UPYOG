@@ -53,7 +53,7 @@ const SelectEkycZones = ({ config, onSelect, t, formData, isMultiSelect = true, 
     );
   }, [supervisorSearchResponse, loggedInUser]);
 
-  const { data: zroData, isLoading } = Digit.Hooks.useCommonMDMS("dl", "common-masters", ["ZroOfficeList"]);
+  const { data: zroData, isLoading } = Digit.Hooks.useCommonMDMSV2("dl", "common-masters", ["ZroOfficeList"]);
 
   useEffect(() => {
     const zroOfficeList = zroData?.["common-masters"]?.ZroOfficeList || zroData?.MdmsRes?.["common-masters"]?.ZroOfficeList || [];

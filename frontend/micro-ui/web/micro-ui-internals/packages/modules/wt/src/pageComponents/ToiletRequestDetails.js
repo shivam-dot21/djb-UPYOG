@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { FormStep, CardLabel, TextInput, TextArea,Dropdown } from "@djb25/digit-ui-react-components";
+import { FormStep, CardLabel, TextInput, TextArea, Dropdown } from "@djb25/digit-ui-react-components";
 
 /* This page is developed for the Mobile Toilet Request Details page.
    It allows users to enter details such as the number of mobile toilets required, delivery dates, and special requests. */
-   
+
 const ToiletRequestDetails = ({ t, config, onSelect, userType, formData }) => {
   const user = Digit.UserService.getUser().info;
   const [mobileToilet, setMobileToilet] = useState(formData?.toiletRequestDetails?.mobileToilet || "");
@@ -12,21 +12,21 @@ const ToiletRequestDetails = ({ t, config, onSelect, userType, formData }) => {
   const [deliveryfromDate, setdeliveryfromDate] = useState(formData?.toiletRequestDetails?.deliveryfromDate || "");
   const [deliverytoDate, setdeliverytoDate] = useState(formData?.toiletRequestDetails?.deliverytoDate || "");
   const [specialRequest, setSpecialRequest] = useState(formData?.toiletRequestDetails?.specialRequest || "");
-  const tenantId=Digit.ULBService.getStateId();
-  const inputStyles = {width:user.type === "EMPLOYEE" ? "52%" : "100%"};
-   // Fetch noOfMobileToilet data from MDMS
-   const { data: NoOfMobileToilet} = Digit.Hooks.useCustomMDMS(tenantId, "request-service", [{ name: "NoOfMobileToilet" }], {
+  const tenantId = Digit.ULBService.getStateId();
+  const inputStyles = { width: user.type === "EMPLOYEE" ? "52%" : "100%" };
+  // Fetch noOfMobileToilet data from MDMS
+  const { data: NoOfMobileToilet } = Digit.Hooks.useCustomMDMSV2(tenantId, "request-service", [{ name: "NoOfMobileToilet" }], {
     select: (data) => {
       const formattedData = data?.["request-service"]?.["NoOfMobileToilet"];
       return formattedData;
     },
   });
 
-  let noOfMobileToilet =[];
+  let noOfMobileToilet = [];
 
   // Iterate over the noOfMobileToilet array and push data to the Vehicle array
   NoOfMobileToilet && NoOfMobileToilet.map((data) => {
-    noOfMobileToilet.push({ i18nKey: `${data.code}`, code: `${data.code}`, value: `${data.code}`});
+    noOfMobileToilet.push({ i18nKey: `${data.code}`, code: `${data.code}`, value: `${data.code}` });
   });
 
   function SetdeliveryfromDate(e) {
@@ -90,16 +90,16 @@ const ToiletRequestDetails = ({ t, config, onSelect, userType, formData }) => {
       >
         <div>
           <CardLabel>{t("MT_NUMBER_OF_MOBILE_TOILETS")} <span className="check-page-link-button">*</span></CardLabel>
-           <Dropdown
-              className="form-field"
-              selected={mobileToilet}
-              placeholder={"Select Number of Mobile Toilets"}
-              select={setMobileToilet}
-              option={noOfMobileToilet}
-              style={inputStyles}
-              optionKey="i18nKey"
-              t={t}
-            />
+          <Dropdown
+            className="form-field"
+            selected={mobileToilet}
+            placeholder={"Select Number of Mobile Toilets"}
+            select={setMobileToilet}
+            option={noOfMobileToilet}
+            style={inputStyles}
+            optionKey="i18nKey"
+            t={t}
+          />
 
           <CardLabel>{`${t("MT_DELIVERY_FROM_DATE")}`} <span className="astericColor">*</span></CardLabel>
           <TextInput
@@ -151,7 +151,6 @@ const ToiletRequestDetails = ({ t, config, onSelect, userType, formData }) => {
             placeholder="Special Request"
             value={specialRequest}
             onChange={SetSpecialRequest}
-            style={{ width: user.type === "EMPLOYEE" ? "51.6%" : null }}
           />
 
         </div>

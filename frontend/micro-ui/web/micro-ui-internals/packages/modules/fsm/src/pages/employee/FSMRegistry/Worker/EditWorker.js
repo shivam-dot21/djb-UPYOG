@@ -25,7 +25,7 @@ const EditWorker = ({ parentUrl, heading }) => {
   const id = searchParams.get("id");
   const [checkRoleField, setCheckRoleField] = useState(false);
 
-  const { isLoading: ismdms, data: mdmsOptions } = Digit.Hooks.useCustomMDMS(
+  const { isLoading: ismdms, data: mdmsOptions } = Digit.Hooks.useCustomMDMSV2(
     stateId,
     "FSM",
     [
@@ -44,7 +44,7 @@ const EditWorker = ({ parentUrl, heading }) => {
     ],
     {
       select: (data) => {
-        return data?.FSM;
+        return data?.FSM || data?.MdmsRes?.FSM;
       },
     }
   );

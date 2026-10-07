@@ -73,19 +73,7 @@ const SearchFields = ({ register, control, reset, tenantId, t, previousPage, for
         <MobileNumber
           name="mobileNumber"
           inputRef={register({
-            minLength: {
-              value: 10,
-              message: t("CORE_COMMON_MOBILE_ERROR"),
-            },
-            maxLength: {
-              value: 10,
-              message: t("CORE_COMMON_MOBILE_ERROR"),
-            },
-            pattern: {
-              value: /[6789][0-9]{9}/,
-              //type: "tel",
-              message: t("CORE_COMMON_MOBILE_ERROR"),
-            },
+            validate: (val) => !val || /^[6-9]\d{9}$/.test(val) || t("CORE_COMMON_MOBILE_ERROR"),
           })}
           type="number"
           componentInFront={<div className="employee-card-input employee-card-input--front">+91</div>}
